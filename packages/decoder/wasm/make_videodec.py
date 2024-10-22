@@ -14,6 +14,8 @@ sargs = {
     'ASSERTIONS': 0,
     'ERROR_ON_UNDEFINED_SYMBOLS': 0,
     'DISABLE_EXCEPTION_CATCHING': 1,
+    'ENVIRONMENT': 'web,worker',
+    'USE_ES6_IMPORT_META': 0,
     'INVOKE_RUN':0,
     'USE_PTHREADS': 0,
     'MODULARIZE' : 1,

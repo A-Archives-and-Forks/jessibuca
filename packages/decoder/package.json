@@ -1,6 +1,6 @@
 {
   "name": "jv4-decoder",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "",
   "type": "module",
   "main": "src/index.ts",

@@ -21,7 +21,7 @@ export class VideoDecoderSoftBase extends FSM implements VideoDecoderInterface {
 
   };
   @ChangeState([FSM.INIT, "closed"], "initialized")
-  initialize(): Promise<void> {
+  initialize(opt?: EmscriptenModule): Promise<void> {
     return new Promise(resolve => {
       const opts: any = this.module;
       opts.print = ((text: string) => console.log(text));
@@ -32,6 +32,7 @@ export class VideoDecoderSoftBase extends FSM implements VideoDecoderInterface {
         console.log(`video soft decoder initialize success`);
         resolve();
       });
+      if (opt) Object.assign(opts, opt)
       this.createModule(opts);
     });
 

@@ -40,7 +40,7 @@ public:
 
     virtual void videoInfo(int width, int height);
     virtual void yuvData(unsigned char* yuv, unsigned int timestamp);
-     
+
     void clear();
 
     void reportError(const char* format, ...);
@@ -50,7 +50,7 @@ public:
 
 VideoDecoder::VideoDecoder(val&& v) : mJsObject(move(v)) {
 
-  
+
 }
 
 VideoDecoder::~VideoDecoder() {
@@ -65,7 +65,7 @@ void VideoDecoder::clear() {
 
     mVideoWith = 0;
     mVideoHeight = 0;
-    
+
     if (mDecoderV) {
         delete mDecoderV;
         mDecoderV = nullptr;
@@ -76,10 +76,10 @@ void VideoDecoder::clear() {
 void VideoDecoder::reportError(const char* format, ...) {
 
     va_list ap;
-  
+
     va_start(ap, format);
     char* buf = nullptr;
-    vasprintf(&buf, format, ap); 
+    vasprintf(&buf, format, ap);
     va_end(ap);
 
 
@@ -90,13 +90,13 @@ void VideoDecoder::reportError(const char* format, ...) {
 void VideoDecoder::setCodec(string vtype, string format, string extra)
 {
      printf("Use Video Decoder, VideoDecoder::setCodec vtype %s, format %s, extra %d \n", vtype.c_str(), format.c_str(), extra.length());
-    
+
     clear();
 
     int videotype = 0;
     int videoformat = 0;
 
-    if (vtype.compare("avc") == 0) {
+    if (vtype.rfind("avc") == 0) {
 
         videotype = Video_H264;
 
@@ -113,7 +113,7 @@ void VideoDecoder::setCodec(string vtype, string format, string extra)
             return;
         }
 
-    } else if (vtype.compare("hevc") == 0) {
+    } else if (vtype.rfind("hevc") == 0) {
 
         videotype = Video_H265;
 

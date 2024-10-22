@@ -14,9 +14,11 @@ sargs = {
     'ASSERTIONS': 0,
     'ERROR_ON_UNDEFINED_SYMBOLS': 0,
     'DISABLE_EXCEPTION_CATCHING': 1,
+    'ENVIRONMENT': 'web,worker',
     'INVOKE_RUN':0,
     'USE_PTHREADS': 0,
     'MODULARIZE' : 1,
+    'USE_ES6_IMPORT_META': 0,
     'EXPORT_ES6' : 1
 }
 emcc_args = [

@@ -50,7 +50,7 @@ public:
 
     virtual void videoInfo(int width, int height);
     virtual void yuvData(unsigned char* yuv, unsigned int timestamp);
-     
+
     void clear();
 
     void parseAVCExtraData(unsigned char* extradata, int extradatalen);
@@ -72,7 +72,7 @@ VideoDecoder::VideoDecoder(val&& v) : mJsObject(move(v)) {
 
     mBuf = NULL;
     mBufMaxLen = 0;
-  
+
 }
 
 VideoDecoder::~VideoDecoder() {
@@ -87,7 +87,7 @@ void VideoDecoder::clear() {
 
     mVideoWith = 0;
     mVideoHeight = 0;
-    
+
     if (mDecoderV) {
         delete mDecoderV;
         mDecoderV = nullptr;
@@ -110,10 +110,10 @@ void VideoDecoder::clear() {
 void VideoDecoder::reportError(const char* format, ...) {
 
     va_list ap;
-  
+
     va_start(ap, format);
     char* buf = nullptr;
-    vasprintf(&buf, format, ap); 
+    vasprintf(&buf, format, ap);
     va_end(ap);
 
 
@@ -153,7 +153,7 @@ void VideoDecoder::parseAVCExtraData(unsigned char* extradata, int extradatalen)
 
     unsigned char startCode[4] = {0, 0, 0, 1};
 
-    
+
     int offset = 5;
 
     if (offset > extradatalen) {
@@ -242,7 +242,7 @@ void VideoDecoder::parseHEVCExtraData(unsigned char* extradata, int extradatalen
                 copyCodecInfo(startCode, 4);
                 copyCodecInfo(&extradata[offset], onenallen);
 
-            } 
+            }
 
             offset += onenallen;
 
@@ -255,13 +255,13 @@ void VideoDecoder::parseHEVCExtraData(unsigned char* extradata, int extradatalen
 void VideoDecoder::setCodec(string vtype, string format, string extra)
 {
      printf("Use Video SIMD Decoder, VideoDecoder::setCodec vtype %s, format %s, extra %d \n", vtype.c_str(), format.c_str(), extra.length());
-    
+
     clear();
 
     int videotype = 0;
     int videoformat = 0;
 
-    if (vtype.compare("avc") == 0) {
+    if (vtype.rfind("avc") == 0) {
 
         videotype = Video_H264;
 
@@ -281,7 +281,7 @@ void VideoDecoder::setCodec(string vtype, string format, string extra)
 
         mDecoderV = new Decoder_AVC_LIBAVC(this);
 
-    } else if (vtype.compare("hevc") == 0) {
+    } else if (vtype.rfind("hevc") == 0) {
 
         videotype = Video_H265;
 
@@ -328,7 +328,7 @@ bool VideoDecoder::convertAnnexB(unsigned char* data, int datalen) {
         nallenptr[1] = data[offset+2];
         nallenptr[2] = data[offset+1];
         nallenptr[3] = data[offset];
-        
+
         data[offset] = 0;
         data[offset+1] = 0;
         data[offset+2] = 0;
@@ -369,8 +369,8 @@ bool VideoDecoder::convertAnnexB(unsigned char* data, int datalen) {
     if (offset != datalen) {
 
         printf("convertAnnexB error offset %d datalen %d \n", offset, datalen);
-        
-    } 
+
+    }
 
   //  printf("convertAnnexB end offset %d datalen %d bf %d \n", offset, datalen, bf);
 
@@ -386,7 +386,7 @@ int VideoDecoder::addCodecInfo(unsigned char* data, int datalen) {
         if (mBuf) {
             free(mBuf);
         }
-        
+
         mBuf = (unsigned char*)malloc(buflen);
         mBufMaxLen = buflen;
     }

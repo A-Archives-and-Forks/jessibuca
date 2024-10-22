@@ -33,8 +33,10 @@ export class VideoDecoderHard extends FSM implements VideoDecoderInterface {
         return 'hvc1.1.6.L0.12.34.56.78.9A.BC';
       case "av1":
         return 'av01.0.05M.08';
-      default:
+      case "avc":
         return 'avc1.420028';
+      default:
+        return config.codec
     }
   }
   @Includes("configured")

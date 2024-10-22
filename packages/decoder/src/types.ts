@@ -41,7 +41,7 @@ export const enum VideoDecoderEvent {
 };
 
 export interface VideoDecoderInterface extends EventEmitter {
-  initialize(): Promise<void>;
+  initialize(opt?: EmscriptenModule): Promise<void>;
   configure(config: VideoDecoderConfig): void;
   decode(packet: EncodedVideoChunkInit): void;
   flush(): void;
