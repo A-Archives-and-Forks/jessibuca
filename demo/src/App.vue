@@ -23,6 +23,7 @@ import Renderer from './components/Renderer.vue'
         <Renderer/>
       </n-tab-pane>
       <n-tab-pane name="ui" tab="UI">
+        <UI/>
       </n-tab-pane>
     </n-tabs>
   </n-message-provider>

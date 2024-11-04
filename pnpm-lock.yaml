@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -79,8 +83,8 @@ importers:
   packages/decoder:
     dependencies:
       afsm:
-        specifier: ^2.2.5
-        version: 2.2.5
+        specifier: ^2.4.7
+        version: 2.4.7
       eventemitter3:
         specifier: ^4.0.7
         version: 4.0.7
@@ -394,8 +398,8 @@ packages:
       eventemitter3: 4.0.7
     dev: false
 
-  /afsm@2.2.5:
-    resolution: {integrity: sha512-e/wqEXql36mf5AN1v9zDbhCHcjxm3hdtbFO0inMNxYol/hZbLQOszABan8N9IjNBFHCI4JWRo/oQZWxpGvuphg==}
+  /afsm@2.4.7:
+    resolution: {integrity: sha512-5Ii4O9NHPikytLNSfZyOVG6s8DRvhJKlZ/Mo+1EEl85cYoCabZITMjQVuQLsZd0rYo5bNN9BDLNa0Too2etDYg==}
     dependencies:
       eventemitter3: 4.0.7
     dev: false

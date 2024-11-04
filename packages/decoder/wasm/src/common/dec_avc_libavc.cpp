@@ -83,7 +83,7 @@ class AVCCodec {
   IV_COLOR_FORMAT_T mColorFormat;
   size_t mNumCores;
   iv_obj_t *mCodec;
-  
+
 
 };
 
@@ -296,8 +296,8 @@ void AVCCodec::decodeHeader(const uint8_t *data, size_t size) {
     }
   }
   /* if width / height are invalid, set them to defaults */
-  if (!mWidth) mWidth = 1920;
-  if (!mHeight) mHeight = 1088;
+//   if (!mWidth) mWidth = 1920;
+//   if (!mHeight) mHeight = 1088;
 }
 
 IV_API_CALL_STATUS_T AVCCodec::decodeFrame(const uint8_t *data, size_t size, UWORD32 ts,
@@ -424,9 +424,9 @@ void Decoder_AVC_LIBAVC::decode(unsigned char *buf, unsigned int buflen, unsigne
         if (ret == IV_SUCCESS && pictype < IV_NA_FRAME) {
 
             mObserver->yuvData(mCodec->mBuf, pts);
-            
+
            // printf("SIMD AVC Decoder Success jsts %d ts %d pictype 0x%x consumebyte %d left %d \n", timestamp, pts, pictype, bytesConsumed, size - bytesConsumed);
-        } 
+        }
 
         bytesConsumed = std::min(size, bytesConsumed);
         data += bytesConsumed;

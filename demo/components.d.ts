@@ -12,9 +12,11 @@ declare module '@vue/runtime-core' {
     Demuxer: typeof import('./src/components/Demuxer.vue')['default']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NSelect: typeof import('naive-ui')['NSelect']
+    NSpace: typeof import('naive-ui')['NSpace']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']
     Renderer: typeof import('./src/components/Renderer.vue')['default']
+    UI: typeof import('./src/components/UI.vue')['default']
   }
 }
