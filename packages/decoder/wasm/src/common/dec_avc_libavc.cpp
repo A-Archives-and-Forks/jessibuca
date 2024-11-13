@@ -420,7 +420,11 @@ void Decoder_AVC_LIBAVC::decode(unsigned char *buf, unsigned int buflen, unsigne
         UWORD32 pts = 0;
 
         ret = mCodec->decodeFrame(data, size, timestamp, &bytesConsumed, &pictype, &pts);
-
+         if (mVideoWith!=mCodec->mWidth || mVideoHeight!=mCodec->mHeight) {
+            mVideoWith = mCodec->mWidth;
+            mVideoHeight = mCodec->mHeight;
+            mObserver->videoInfo(mVideoWith, mVideoHeight);
+         }
         if (ret == IV_SUCCESS && pictype < IV_NA_FRAME) {
 
             mObserver->yuvData(mCodec->mBuf, pts);
