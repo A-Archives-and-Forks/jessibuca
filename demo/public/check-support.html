@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>check support</title>
+    <script src="./vue.js"></script>
+</head>
+
+<body>
+<div id="app">
+    <p>UA: {{ ua }}</p>
+    <p>ASM: {{ asm }}</p>
+    <p>Blob: {{ blob }}</p>
+    <p>WASM: {{ wasm }}</p>
+    <p>SIMD: {{ simd }}</p>
+    <p>Fetch: {{ fetch }}</p>
+    <p>WebGL: {{ webGL }}</p>
+    <p>Worker: {{ worker }}</p>
+    <p>ArrayBuffer: {{ arrayBuffer }}</p>
+    <p>AudioContext: {{ audioContext }}</p>
+    <p>ReadableStream: {{ readableStream }}</p>
+    <p>ReadableStreamBody: {{ readableStreamBody }}</p>
+    <p>VideoDecoder: {{checkVideoDecoder()}}</p>
+    <p>VideoEncoder: {{checkVideoEncoder()}}</p>
+    <p>AudioDecoder: {{checkAudioDecoder()}}</p>
+    <p>AudioEncoder: {{checkAudioEncoder()}}</p>
+    <p>OffscreenCanvas: {{checkOffscreenCanvas()}}</p>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            ua: navigator.userAgent,
+            asm: checkAsmJS(),
+            wasm: checkWebAssembly(),
+            simd: checkSIMD(),
+            worker: checkWorker(),
+            fetch: checkFetch(),
+            readableStream: checkReadableStream(),
+            readableStreamBody: checkReadableStreamBody(),
+            blob: checkBlob(),
+            arrayBuffer: checkArrayBuffer(),
+            audioContext: checkAudioContext(),
+            webGL: checkWebGL(),
+            aacEncoder: false,
+            avcEncoder: false,
+            hvcEncoder: false,
+        },
+        async mounted() {
+            this.aacEncoder = await checkAACEncoder();
+            this.avcEncoder = await checkAVCEncoder();
+            this.hvcEncoder = await checkHVCEncoder();
+        }
+    })
+
+    function checkAsmJS() {
+        try {
+            (function MyAsmModule() { "use asm" })();
+            return true;
+        }
+        catch (err) {
+            return false;
+        }
+    }
+
+    function checkWebAssembly() {
+        try {
+            if (typeof window.WebAssembly === 'object' && typeof window.WebAssembly.instantiate === 'function') {
+                const module = new window.WebAssembly.Module(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
+                if (module instanceof window.WebAssembly.Module) {
+                    return new window.WebAssembly.Instance(module) instanceof window.WebAssembly.Instance;
+                }
+            }
+            return false;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkWorker() {
+        return typeof window.Worker === 'function';
+    }
+
+    function checkFetch() {
+        return typeof window.fetch === 'function';
+    }
+
+    function checkURL() {
+        return window.URL && typeof window.URL.createObjectURL === 'function';
+    }
+
+    function checkReadableStream() {
+        return (
+            typeof window.ReadableStream === 'function' &&
+            typeof window.Response === 'function'
+        );
+    }
+
+    function checkReadableStreamBody() {
+        return Object.prototype.hasOwnProperty.call(window.Response.prototype, 'body');
+    }
+
+    function checkBlob() {
+        return (
+            typeof window.Blob === 'function' &&
+            (() => {
+                try {
+                    return !!new window.Blob();
+                } catch (e) {
+                    return false;
+                }
+            })()
+        );
+    }
+
+    function checkArrayBuffer() {
+        return typeof window.ArrayBuffer === 'function';
+    }
+
+    function checkAudioContext() {
+        return !!(window.AudioContext || window.webkitAudioContext);
+    }
+
+    function checkWebGL() {
+        if (window.WebGLRenderingContext) {
+            const canvas = document.createElement('canvas');
+            const names = ['webgl2', 'webgl', 'experimental-webgl', 'moz-webgl', 'webkit-3d'];
+            let context = false;
+            for (let i = 0; i < names.length; i += 1) {
+                try {
+                    context = canvas.getContext(names[i]);
+                    if (context && typeof context.getParameter === 'function') {
+                        return true;
+                    }
+                } catch (e) {
+                    //
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    function checkOffscreenCanvas() {
+        try {
+            var htmlCanvas = document.createElement("canvas");
+            var offscreen = htmlCanvas.transferControlToOffscreen();
+            var gl = offscreen.getContext("webgl");
+            console.log(gl);
+        } catch (error) {
+            return false;
+        }
+        return true;
+    }
+
+    function checkVideoDecoder() {
+        return typeof window.VideoDecoder === 'function';
+    }
+
+    function checkVideoEncoder() {
+        return typeof window.VideoEncoder === 'function';
+    }
+
+    function checkAudioDecoder() {
+        return typeof window.AudioDecoder === 'function';
+    }
+
+    function checkAudioEncoder() {
+        return typeof window.AudioEncoder === 'function';
+    }
+
+    function checkSIMD() {
+        return WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11]));
+    }
+
+
+    async function checkAACEncoder() {
+        let s = await AudioEncoder.isConfigSupported({ codec: "mp4a.40.2", bitrate: 96000, numberOfChannels: 1, sampleRate: 48000 });
+        return s.supported;
+    }
+
+    async function checkAVCEncoder() {
+        let s = await VideoEncoder.isConfigSupported({ codec: "avc1.64001E", width: 1280, height: 720 });
+        return s.supported;
+    }
+
+    async function checkHVCEncoder() {
+        let s = await VideoEncoder.isConfigSupported({ codec: "hev1.1.6.L120.90", width: 1280, height: 720 });
+        return s.supported;
+    }
+
+
+
+</script>
+
+<script>
+
+    const codecs = ["avc1.64002A", "hev1.1.6.L123.b0"];
+    const accelerations = ["prefer-hardware", "prefer-software"];
+    let configs = [];
+    async function run() {
+        for (const codec of codecs) {
+            for (const acceleration of accelerations) {
+                configs.push({
+                    codec,
+                    hardwareAcceleration: acceleration,
+                    codedWidth: 1920,
+                    codedHeight: 1080,
+                });
+            }
+        }
+
+        for (const config of configs) {
+            const support = await VideoDecoder.isConfigSupported(config);
+            const paragraph = document.createElement('p');
+
+            // 创建文本节点
+            const textNode = document.createTextNode(`VideoDecoder's config ${JSON.stringify(support.config)} support: ${support.supported}`);
+
+            // 将文本节点添加到 <p> 元素中
+            paragraph.appendChild(textNode);
+
+            // 将 <p> 元素插入到 <body> 元素的末尾
+            document.body.appendChild(paragraph);
+
+        }
+
+        configs = [];
+        for (const codec of codecs) {
+            for (const acceleration of accelerations) {
+                configs.push({
+                    codec,
+                    hardwareAcceleration: acceleration,
+                    width: 1280,
+                    height: 720,
+                    bitrate: 2_000_000,
+                    bitrateMode: "constant",
+                    framerate: 30,
+                    not_supported_field: 123,
+                });
+            }
+        }
+
+        for (const config of configs) {
+            const support = await VideoEncoder.isConfigSupported(config);
+            const paragraph = document.createElement('p');
+
+            // 创建文本节点
+            const textNode = document.createTextNode(`VideoEncoder's config ${JSON.stringify(support.config)} support: ${support.supported}`);
+
+            // 将文本节点添加到 <p> 元素中
+            paragraph.appendChild(textNode);
+
+            // 将 <p> 元素插入到 <body> 元素的末尾
+            document.body.appendChild(paragraph);
+        }
+    }
+    run();
+
+</script>
+</body>
+
+</html>
