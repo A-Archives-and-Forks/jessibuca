@@ -85,11 +85,12 @@
                 <div>
                     <span>硬解码：</span>
                     <input
+                        disabled
                         type="checkbox"
-                        checked
                         id="useMSE"
                     /><span>MediaSource</span>
                     <input
+                        disabled
                         type="checkbox"
                         id="useWCS"
                     /><span>Webcodec</span>
@@ -97,10 +98,12 @@
                 <div>
                     <span>软解码：</span>
                     <input
+                        checked
                         type="checkbox"
                         id="useSIMD"
                     /><span>WASM(SIMD)</span>
                     <input
+                        checked
                         type="checkbox",
                         id="isFFmpegSIMD"
                         onclick="replay()"
