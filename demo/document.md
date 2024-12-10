@@ -3104,6 +3104,8 @@ const jessibuca = new JessibucaPro({
 ```
 
 
+### Uncaught SyntaxError: Invalid or unexpected token 报错。
+
 ## 支持作者
 
 ### 第一作者
