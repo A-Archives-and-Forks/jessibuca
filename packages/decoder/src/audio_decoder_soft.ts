@@ -32,7 +32,7 @@ export class AudioDecoderSoft extends FSM implements AudioDecoderInterface {
       CreateModule(opts);
     });
   }
-  @ChangeState("initialized", "configured")
+  @ChangeState("initialized", "configured", { sync: true })
   configure(config: AudioDecoderConfig): void {
     this.config = config;
     this.decoder.setCodec(this.config.codec, this.config.description ?? '');
@@ -43,14 +43,14 @@ export class AudioDecoderSoft extends FSM implements AudioDecoderInterface {
   }
 
   flush(): void { }
-  @ChangeState("configured", "initialized")
+  @ChangeState("configured", "initialized", { sync: true })
   reset(): void {
     this.config = undefined;
     if (this.decoder) {
       this.decoder.clear();
     }
   }
-  @ChangeState([], "closed")
+  @ChangeState([], "closed", { sync: true })
   close(): void {
     this.removeAllListeners();
     if (this.decoder) {
@@ -88,7 +88,7 @@ export class AudioDecoderSoft extends FSM implements AudioDecoderInterface {
       size += data.length;
     }
     const data = new Float32Array(size);
-  
+
     this.emit(AudioDecoderEvent.AudioFrame, new AudioData({
       format: "f32-planar",
       sampleRate: this.sampleRate,

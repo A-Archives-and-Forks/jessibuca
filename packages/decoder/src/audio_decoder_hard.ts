@@ -19,16 +19,10 @@ export class AudioDecoderHard extends FSM implements AudioDecoderInterface {
       },
     });
   }
-  @ChangeState("initialized", "configured")
+  @ChangeState("initialized", "configured", { sync: true })
   configure(config: AudioDecoderConfig): void {
     this.config = config;
-    console.log("configure", config);
-    this.decoder.configure({
-      codec: { aac: 'mp4a.40.2', pcma: 'alaw', pcmu: 'ulaw' }[config.codec]!,
-      description: config.description,
-      sampleRate: config.sampleRate,
-      numberOfChannels: config.numberOfChannels,
-    });
+    this.decoder.configure(config);
   }
   @Includes("configured")
   decode(packet: EncodedAudioChunkInit): void {
@@ -38,11 +32,11 @@ export class AudioDecoderHard extends FSM implements AudioDecoderInterface {
   flush(): void {
     this.decoder.flush();
   }
-  @ChangeState([], FSM.INIT)
+  @ChangeState([], FSM.INIT, { sync: true })
   reset(): void {
     this.decoder.reset();
   }
-  @ChangeState([], "closed", { ignoreError: true })
+  @ChangeState([], "closed", { ignoreError: true, sync: true })
   close(): void {
     this.decoder.close();
   }

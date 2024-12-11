@@ -18,10 +18,9 @@ export class VideoDecoderHard extends FSM implements VideoDecoderInterface {
       },
     });
   }
-  @ChangeState("initialized", "configured")
+  @ChangeState("initialized", "configured", { sync: true })
   configure(config: VideoDecoderConfig): void {
     this.config = config;
-    console.log("configure", config);
     this.decoder.configure({
       ...config,
       codec: this.getCodec(config)
@@ -36,7 +35,7 @@ export class VideoDecoderHard extends FSM implements VideoDecoderInterface {
       case "avc":
         return 'avc1.420028';
       default:
-        return config.codec
+        return config.codec;
     }
   }
   @Includes("configured")
@@ -51,7 +50,7 @@ export class VideoDecoderHard extends FSM implements VideoDecoderInterface {
   reset(): void {
     this.decoder.reset();
   }
-  @ChangeState([], "closed", { ignoreError: true })
+  @ChangeState([], "closed", { ignoreError: true, sync: true })
   close(): void {
     if (this.decoder.state !== "closed")
       this.decoder.close();
