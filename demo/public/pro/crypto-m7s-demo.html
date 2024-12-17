@@ -97,7 +97,6 @@
         <div class="input">
             <div>
                 <input
-                    checked
                     onclick="replay()"
                     type="checkbox"
                     id="m7sCryptoAudio"
@@ -208,7 +207,7 @@
             isM7sCrypto: true,
             cryptoKeyUrl: $cryptoKeyUrl.value,
             m7sCryptoKey: $m7sKey.value,
-            m7sCryptoAudio: $m7sCryptoAudio.checked === true,
+            isCryptoAudio: $m7sCryptoAudio.checked === true,
         },);
 
         jessibuca.on('stats', (stats) => {
@@ -224,6 +223,7 @@
         jessibuca.on(JessibucaPro.EVENTS.crashLog,(log)=>{
             console.error('crashLog',log)
         })
+
 
         $player.style.display = 'inline-block';
         $pause.style.display = 'none';

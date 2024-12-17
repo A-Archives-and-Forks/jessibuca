@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Jessica sm4 crypto demo</title>
+    <title>Jessica xor crypto demo</title>
     <script src="./vconsole.js"></script>
     <script src="./js/jessibuca-pro-demo.js"></script>
     <link rel="stylesheet" href="./demo.css">
     <style>
         .container-shell:before {
-            content: "jessibuca pro sm4 crypto demo player";
+            content: "jessibuca pro xor crypto demo player";
         }
     </style>
 </head>
@@ -89,7 +89,7 @@
                 <span>缓存延迟(延迟超过会触发丢帧)：</span>
                 <input placeholder="单位：秒" type="text" id="videoBufferDelay" style="width: 50px" value="1">秒
                 <span>秘钥：</span>
-                <input type="text" id="xorKey" style="width: 200px" placeholder="请输入秘钥"
+                <input type="text" id="xorKey" style="width: 200px" placeholder="请输入xor秘钥"
                        value="">
                 <button id="replay">重播</button>
             </div>
@@ -97,7 +97,13 @@
         <div class="input">
             <div>
                 <input
+                    onclick="replay()"
+                    type="checkbox"
+                    id="xorCryptoAudio"
+                /><span>解密音频数据</span>
+                <input
                     checked
+                    onclick="replay()"
                     type="checkbox"
                     id="demuxUseWorker"
                 /><span>硬解码(MediaSource，Webcodec)worker解封装</span>
@@ -142,7 +148,7 @@
     var $fps = document.querySelector('.fps-inner');
     var $xorKey = document.getElementById('xorKey');
     var $demuxUseWorker = document.getElementById('demuxUseWorker');
-
+    var $xorCryptoAudio = document.getElementById('xorCryptoAudio');
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
     var jessibuca = null;
@@ -192,7 +198,8 @@
             // audioEngine:"worklet",
             // isFlv: true
             isXorCrypto: true,
-            xorCryptoKey: $xorKey.value
+            xorCryptoKey: $xorKey.value,
+            isCryptoAudio: $xorCryptoAudio.checked === true,
         },);
 
         jessibuca.on('stats', (stats) => {
