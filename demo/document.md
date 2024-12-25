@@ -927,8 +927,7 @@ https://blog.csdn.net/nbwgl/article/details/122652003
 
 使用`http`协议启动，可以配合`nginx`或者`node` 启动。
 
-> pro 支持通过配置参数，只使用mse解码，不启动worker。 见 demo-file.html
-
+> ~~pro 支持通过配置参数，只使用mse解码，不启动worker。 见 demo-file.html~~ 暂不推荐，这种只能走硬解码，没法走软解码。推荐走加载CDN资源的方案。
 
 #### 方案二：加载CDN资源
 

@@ -10,9 +10,12 @@ export default class DecoderWorker {
     }
 
     async destroy() {
-        this.decoderWorker.postMessage({cmd: WORKER_SEND_TYPE.close})
-        this.decoderWorker.terminate();
-        this.decoderWorker = null;
+        if (this.decoderWorker) {
+            this.decoderWorker.postMessage({cmd: WORKER_SEND_TYPE.close})
+            this.decoderWorker.terminate();
+            this.decoderWorker = null;
+        }
+
         this.player.debug.log(`decoderWorker`, 'destroy');
     }
 

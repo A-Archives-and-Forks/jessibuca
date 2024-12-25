@@ -11,7 +11,6 @@ export default class M7sLoader extends CommonLoader {
     destroy() {
         super.destroy();
         this.player.debug.log('M7sDemux', 'destroy')
-        this.player = null;
     }
 
     dispatch(data) {

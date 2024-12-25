@@ -13,6 +13,7 @@ export default class RecordRTCLoader extends Emitter {
         this.isRecording = false;
         this.recordingTimestamp = 0;
         this.recordingInterval = null;
+        this.recorder = null;
         player.debug.log('Recorder', 'init');
     }
 

@@ -79,6 +79,15 @@
                 /><span>检测到黑屏、绿屏、花屏、马赛克丢弃渲染</span>
             </div>
         </div>
+        <div class="input">
+           <div>
+               <input
+                   onclick="replay()"
+                   type="checkbox"
+                   id="isFlv"
+               /><span>强制识别成flv <span style="color: red">(播放路径path不是以.flv结尾的，建议勾选上)</span> </span>
+           </div>
+        </div>
 
         <div class="input">
             <div>输入URL：</div>
@@ -113,6 +122,7 @@
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
     var jessibuca = null;
+    var $isFlv = document.getElementById('isFlv');
 
     function create() {
         jessibuca = new JessibucaPro({
@@ -128,6 +138,7 @@
             useMSE: false,
             useWCS: false,
             useSIMD: true,
+            isFlv: $isFlv.checked === true,
             showBandwidth: showOperateBtns, // 显示网速
             showPerformance: showOperateBtns, // 显示性能
             operateBtns: {
