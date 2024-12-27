@@ -44,9 +44,17 @@ import {
   VideoDecoderMSE,
 } from "jv4-decoder/src";
 import { FlvDemuxer, DemuxEvent, PSDemuxer } from "jv4-demuxer/src";
-import { WebCodecsVideoRenderer } from "jv4-renderer/src";
+import {
+  WebCodecsVideoRenderer,
+  YUVCanvasRenderer,
+  CanvasRenderer,
+} from "jv4-renderer/src";
 import { DemuxMode } from "jv4-demuxer/src/base";
 import { fileSave, fileOpen } from "browser-fs-access";
+
+type RendererType = "webcodecs" | "yuv" | "canvas";
+type DecoderType = "soft" | "simd" | "webcodecs" | "mse";
+
 const message = useMessage();
 const url = ref("ws://localhost:8080/flv/vod/test");
 let messageReactive: MessageReactive | null = null;
@@ -57,7 +65,8 @@ const removeMessage = () => {
   }
 };
 const muxType = ref("flv");
-const decoderv = ref("mse");
+const decoderv = ref<DecoderType>("simd");
+const rendererType = ref<RendererType>("canvas");
 const dump = ref(false);
 const mode = ref(DemuxMode.PUSH);
 const stopDump = ref(() => {});
@@ -140,21 +149,8 @@ async function connect(file?: File, options?: UploadCustomRequestOptions) {
       message.success(ConnectionState.RECONNECTED);
     });
 
-    const videoDecoder = new {
-      soft: VideoDecoderSoft,
-      simd: VideoDecoderSoftSIMD,
-      webcodecs: VideoDecoderHard,
-      mse: VideoDecoderMSE,
-    }[decoderv.value]();
-    await videoDecoder.initialize(decoderv.value == "mse" ? document.getElementById("video") as HTMLVideoElement : undefined);
+    const { videoDecoder, audioDecoder, renderer } = await initializeDecoder();
 
-    const audioDecoder = new {
-      soft: AudioDecoderSoft,
-      simd: AudioDecoderSoft,
-      webcodecs: AudioDecoderHard,
-      mse: AudioDecoderHard,
-    }[decoderv.value]();
-    await audioDecoder.initialize();
     if (mode.value === DemuxMode.PULL) {
       await conn.connect();
     }
@@ -166,18 +162,17 @@ async function connect(file?: File, options?: UploadCustomRequestOptions) {
     demuxer.on(
       DemuxEvent.AUDIO_ENCODER_CONFIG_CHANGED,
       (aconfig: AudioDecoderConfig) => {
-        // message.info(DemuxEvent.AUDIO_ENCODER_CONFIG_CHANGED);
         audioDecoder.configure(aconfig);
       }
     );
     demuxer.on(
       DemuxEvent.VIDEO_ENCODER_CONFIG_CHANGED,
       (vconfig: VideoDecoderConfig) => {
-        // message.info(DemuxEvent.VIDEO_ENCODER_CONFIG_CHANGED);
         videoDecoder.configure(vconfig);
       }
     );
     if (decoderv.value == "mse") {
+      // @ts-ignore - MediaStreamTrackGenerator is experimental
       const audioTrack = new MediaStreamTrackGenerator({ kind: "audio" });
       const audioWriter = audioTrack.writable.getWriter();
       audioDecoder.on(AudioDecoderEvent.AudioFrame, (audioFrame: AudioData) => {
@@ -186,40 +181,7 @@ async function connect(file?: File, options?: UploadCustomRequestOptions) {
       });
       const audioElement = new Audio();
       audioElement.srcObject = new MediaStream([audioTrack]);
-      audioElement.play();
-    } else {
-      const renderer = new WebCodecsVideoRenderer(
-        document.getElementById("video") as HTMLVideoElement
-      );
-      videoDecoder.on(
-        VideoDecoderEvent.VideoCodecInfo,
-        (codecinfo: VideoCodecInfo) => {
-          message.info(`width: ${codecinfo.width} height: ${codecinfo.height}`);
-        }
-      );
-      videoDecoder.on(
-        VideoDecoderEvent.VideoFrame,
-        (videoFrame: VideoFrame) => {
-          display.videoDecodedFrames++;
-          vframs++;
-          renderer.writeVideo(videoFrame);
-        }
-      );
-
-      videoDecoder.on(VideoDecoderEvent.Error, (error: Error) => {
-        console.error(error);
-        videoDecoder.initialize();
-      });
-
-      audioDecoder.on(
-        AudioDecoderEvent.AudioCodecInfo,
-        (codecinfo: AudioCodecInfo) => {}
-      );
-
-      audioDecoder.on(AudioDecoderEvent.AudioFrame, (audioFrame: AudioData) => {
-        display.audioDecodedFrames++;
-        renderer.writeAudio(audioFrame);
-      });
+      await audioElement.play();
     }
 
     // audioDecoder.on(AudioDecoderEvent.Error, (error: ErrorInfo) => { });
@@ -278,11 +240,15 @@ async function connect(file?: File, options?: UploadCustomRequestOptions) {
       demuxer.gotVideo = gotVideo;
       await conn.connect();
     }
-  } catch (e) {
+  } catch (e: unknown) {
     if (options) options.onFinish();
     removeMessage();
     console.error(e);
-    message.error(e.message);
+    if (e instanceof Error) {
+      message.error(e.message);
+    } else {
+      message.error("An unknown error occurred");
+    }
   }
 }
 function disconnect() {
@@ -340,6 +306,176 @@ function onRemove(options: {
   conn.close();
   return true;
 }
+
+const videoElement = ref<HTMLVideoElement | null>(null);
+const canvasElement = ref<HTMLCanvasElement | null>(null);
+
+interface WASMDecoderInit {
+  print: (text: string) => void;
+  printErr: (text: string) => void;
+  onAbort: () => void;
+}
+
+const initializeDecoder = async () => {
+  const videoDecoder = (() => {
+    const isCanvasRenderer =
+      rendererType.value === "yuv" || rendererType.value === "canvas";
+    const canvas = canvasElement.value;
+    const video = videoElement.value;
+
+    if (!video && !canvas) {
+      throw new Error("Either video or canvas element is required");
+    }
+
+    switch (decoderv.value) {
+      case "soft":
+      case "simd":
+        if (isCanvasRenderer && !canvas) {
+          throw new Error("Canvas element required for YUV/Canvas renderer");
+        }
+        const decoder =
+          decoderv.value === "soft" ? VideoDecoderSoft : VideoDecoderSoftSIMD;
+        return new decoder({
+          yuvMode: rendererType.value === "yuv",
+          canvas: canvas as HTMLCanvasElement,
+          workerMode: false,
+          wasmPath: `${
+            decoderv.value === "soft" ? "videodec" : "videodec_simd"
+          }.wasm`,
+        });
+      case "webcodecs":
+        return new VideoDecoderHard();
+      case "mse":
+        if (!video) {
+          throw new Error("Video element required for MSE decoder");
+        }
+        return new VideoDecoderMSE();
+      default:
+        if (!video) {
+          throw new Error("Video element required for MSE decoder");
+        }
+        return new VideoDecoderMSE();
+    }
+  })();
+
+  const audioDecoder = (() => {
+    switch (decoderv.value) {
+      case "soft":
+      case "simd":
+        return new AudioDecoderSoft();
+      case "webcodecs":
+      case "mse":
+      default:
+        return new AudioDecoderHard();
+    }
+  })();
+
+  // Initialize decoders
+  if (decoderv.value === "mse" && videoElement.value) {
+    await videoDecoder.initialize(videoElement.value);
+  } else if (decoderv.value === "soft" || decoderv.value === "simd") {
+    // @ts-ignore - WASM decoder initialization requires different parameters
+    await (videoDecoder as any).initialize({
+      print: (text: string) => console.log(text),
+      printErr: (text: string) => console.error(text),
+      onAbort: () => console.error("WASM aborted"),
+    } as WASMDecoderInit);
+  } else {
+    // @ts-ignore - WebCodecs decoder doesn't need parameters
+    await (videoDecoder as any).initialize();
+  }
+  await audioDecoder.initialize();
+
+  const renderer = (() => {
+    const video = videoElement.value;
+    const canvas = canvasElement.value;
+
+    if (!video && !canvas) {
+      throw new Error("Either video or canvas element is required");
+    }
+
+    switch (rendererType.value) {
+      case "webcodecs":
+        if (!video) {
+          throw new Error("Video element required for WebCodecs renderer");
+        }
+        return new WebCodecsVideoRenderer(video);
+      case "yuv":
+        if (!canvas) {
+          throw new Error("Canvas element required for YUV renderer");
+        }
+        return new YUVCanvasRenderer(canvas);
+      case "canvas":
+      default:
+        if (!canvas) {
+          throw new Error("Canvas element required for Canvas renderer");
+        }
+        return new CanvasRenderer(canvas);
+    }
+  })();
+
+  videoDecoder.on(
+    VideoDecoderEvent.VideoFrame,
+    async (videoFrame: VideoFrame) => {
+      display.videoDecodedFrames++;
+      vframs++;
+      if (rendererType.value === "yuv" || rendererType.value === "canvas") {
+        if (
+          renderer instanceof YUVCanvasRenderer ||
+          renderer instanceof CanvasRenderer
+        ) {
+          renderer.writeVideo(videoFrame);
+        }
+      } else if (renderer instanceof WebCodecsVideoRenderer) {
+        await renderer.writeVideo(videoFrame);
+      }
+    }
+  );
+
+  videoDecoder.on(
+    VideoDecoderEvent.VideoCodecInfo,
+    (codecinfo: VideoCodecInfo) => {
+      message.info(`width: ${codecinfo.width} height: ${codecinfo.height}`);
+    }
+  );
+
+  videoDecoder.on(VideoDecoderEvent.Error, (error: Error) => {
+    console.error(error);
+    if (decoderv.value === "mse" && videoElement.value) {
+      // @ts-ignore - MSE decoder requires HTMLVideoElement
+      videoDecoder.initialize(videoElement.value);
+    } else if (decoderv.value === "soft" || decoderv.value === "simd") {
+      // @ts-ignore - WASM decoder initialization requires different parameters
+      (videoDecoder as any).initialize({
+        print: (text: string) => console.log(text),
+        printErr: (text: string) => console.error(text),
+        onAbort: () => console.error("WASM aborted"),
+      } as WASMDecoderInit);
+    } else {
+      // @ts-ignore - WebCodecs decoder doesn't need parameters
+      (videoDecoder as any).initialize();
+    }
+  });
+
+  audioDecoder.on(
+    AudioDecoderEvent.AudioCodecInfo,
+    (codecinfo: AudioCodecInfo) => {}
+  );
+
+  audioDecoder.on(AudioDecoderEvent.AudioFrame, (audioFrame: AudioData) => {
+    display.audioDecodedFrames++;
+    aframs++;
+    if (renderer instanceof WebCodecsVideoRenderer) {
+      renderer.writeAudio(audioFrame);
+    }
+  });
+
+  audioDecoder.on(AudioDecoderEvent.Error, (error: Error) => {
+    console.error(error);
+  });
+
+  return { videoDecoder, audioDecoder, renderer };
+};
 </script>
 
 <template>
@@ -358,6 +494,14 @@ function onRemove(options: {
         { label: 'simd', value: 'simd' },
         { label: 'webcodecs', value: 'webcodecs' },
         { label: 'mse', value: 'mse' },
+      ]"
+    ></n-select>
+    渲染方式<n-select
+      v-model:value="rendererType"
+      :options="[
+        { label: 'WebCodecs', value: 'webcodecs' },
+        { label: 'YUV Canvas', value: 'yuv' },
+        { label: 'Canvas', value: 'canvas' },
       ]"
     ></n-select>
   </n-space>
@@ -386,10 +530,20 @@ function onRemove(options: {
     <n-button @click="disconnect">Close</n-button>
   </n-space>
   <video
+    v-if="rendererType === 'webcodecs'"
+    ref="videoElement"
     id="video"
+    style="width: 100%; height: 100%"
     autoplay
-    style="width: 640px; height: 480px; object-fit: contain"
+    muted
+    playsinline
   ></video>
+  <canvas
+    v-else
+    ref="canvasElement"
+    id="video"
+    style="width: 100%; height: 100%"
+  ></canvas>
   <n-row>
     <n-col :span="12">
       <n-statistic label="下行总量" :value="data.totalDown"> </n-statistic>
