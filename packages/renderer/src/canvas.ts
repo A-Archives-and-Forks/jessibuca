@@ -2,8 +2,8 @@ export class CanvasRenderer {
   protected display: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private audioContext: AudioContext;
-  private audioWorklet?: AudioWorkletNode;
-  private initialized: boolean = false;
+  private audioQueue: { buffer: AudioBuffer; startTime: number; }[] = [];
+  private nextAudioStartTime: number = 0;
 
   constructor(display: HTMLCanvasElement) {
     this.display = display;
@@ -13,51 +13,86 @@ export class CanvasRenderer {
     this.audioContext = new AudioContext();
   }
 
-  private async initAudioWorklet() {
-    if (this.initialized) return;
+  async writeAudio(data: AudioData) {
+    const numberOfChannels = data.numberOfChannels;
+    const numberOfFrames = data.numberOfFrames;
+    const sampleRate = data.sampleRate;
 
-    const workletCode = `
-      class AudioRenderer extends AudioWorkletProcessor {
-        process(inputs, outputs, parameters) {
-          const input = this.port;
-          const output = outputs[0];
-      
-          if (input.messageData && input.messageData.length > 0) {
-            const audioData = input.messageData[0];
-            const numberOfFrames = Math.min(audioData.numberOfFrames, output[0].length);
-      
-            for (let channel = 0; channel < audioData.numberOfChannels; channel++) {
-              const inputChannel = audioData.getChannelData(channel);
-              const outputChannel = output[channel];
-              outputChannel.set(inputChannel.subarray(0, numberOfFrames));
-            }
-      
-            audioData.close();
-          }
-      
-          return true;
-        }
-      }
-      
-      registerProcessor('audio-renderer', AudioRenderer);
-    `;
+    // Create audio buffer
+    const audioBuffer = new AudioBuffer({
+      length: numberOfFrames,
+      numberOfChannels,
+      sampleRate,
+    });
 
-    const blob = new Blob([workletCode], { type: 'application/javascript' });
-    const url = URL.createObjectURL(blob);
-    await this.audioContext.audioWorklet.addModule(url);
-    URL.revokeObjectURL(url);
+    // Copy data to audio buffer
+    for (let channel = 0; channel < numberOfChannels; channel++) {
+      const channelData = new Float32Array(numberOfFrames);
+      data.copyTo(channelData, { planeIndex: channel });
+      audioBuffer.copyToChannel(channelData, channel);
+    }
 
-    this.audioWorklet = new AudioWorkletNode(this.audioContext, 'audio-renderer');
-    this.audioWorklet.connect(this.audioContext.destination);
-    this.initialized = true;
+    // Schedule the audio buffer
+    this.scheduleAudioBuffer(audioBuffer);
+
+    // Close the original AudioData
+    data.close();
   }
 
-  async writeAudio(data: AudioData) {
-    if (!this.initialized) {
-      await this.initAudioWorklet();
+  private scheduleAudioBuffer(buffer: AudioBuffer) {
+    const currentTime = this.audioContext.currentTime;
+
+    // If the queue is empty and we're past the next start time, reset it
+    if (this.audioQueue.length === 0 && currentTime > this.nextAudioStartTime) {
+      this.nextAudioStartTime = currentTime;
     }
-    if (this.audioWorklet) {
-      this.audioWorklet.port.postMessage(data);
+
+    // Add to queue with calculated start time
+    this.audioQueue.push({
+      buffer,
+      startTime: this.nextAudioStartTime
+    });
+
+    // Update next start time
+    this.nextAudioStartTime += buffer.duration;
+
+    // Process queue
+    this.processAudioQueue();
+  }
+
+  private processAudioQueue() {
+    const currentTime = this.audioContext.currentTime;
+
+    // Remove already played buffers
+    while (this.audioQueue.length > 0 &&
+      this.audioQueue[0].startTime + this.audioQueue[0].buffer.duration < currentTime) {
+      this.audioQueue.shift();
+    }
+
+    // Schedule next buffer if needed
+    while (this.audioQueue.length > 0) {
+      const nextAudio = this.audioQueue[0];
+
+      // If it's not time to play this buffer yet, break
+      if (nextAudio.startTime > currentTime) {
+        break;
+      }
+
+      // Create and schedule the source
+      const source = this.audioContext.createBufferSource();
+      source.buffer = nextAudio.buffer;
+      source.connect(this.audioContext.destination);
+
+      // If we're late, adjust the start position in the buffer
+      const startOffset = Math.max(0, currentTime - nextAudio.startTime);
+      const duration = nextAudio.buffer.duration - startOffset;
+
+      if (duration > 0) {
+        source.start(currentTime, startOffset);
+      }
+
+      // Remove from queue
+      this.audioQueue.shift();
     }
   }
 
@@ -74,9 +109,6 @@ export class CanvasRenderer {
   }
 
   close() {
-    if (this.audioWorklet) {
-      this.audioWorklet.disconnect();
-    }
     this.audioContext.close();
   }
 }
@@ -92,7 +124,6 @@ export interface YUVBuffers {
 export class YUVCanvasRenderer extends CanvasRenderer {
   private gl: WebGLRenderingContext;
   private program!: WebGLProgram;
-  private textures: WebGLTexture[] = [];
   private positionLocation!: number;
   private texCoordLocation!: number;
   private yTexture!: WebGLTexture;

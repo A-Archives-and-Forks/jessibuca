@@ -1,6 +1,6 @@
 {
   "name": "jv4-renderer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "type": "module",
   "main": "src/index.ts",
@@ -13,9 +13,5 @@
   "devDependencies": {
     "@types/dom-mediacapture-transform": "^0.1.1",
     "@types/dom-webcodecs": "^0.1.2"
-  },
-  "dependencies": {
-    "afsm": "^2.2.4",
-    "eventemitter3": "^4.0.7"
   }
 }
