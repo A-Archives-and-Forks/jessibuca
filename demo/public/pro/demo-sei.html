@@ -228,14 +228,18 @@
 
         if($videoSEISyncPts.checked){
             jessibuca.on('videoSEISyncPts', (value) => {
-                console.log(`videoSEISyncPts pts is ${value.pts}, ts is ${value.ts}, data is`,value.data);
+                const decoder = new TextDecoder(); // 创建一个 TextDecoder 对象
+                let seiString = decoder.decode(value.data);
+                console.log(`videoSEISyncPts pts is ${value.pts}, ts is ${value.ts}, data is`,value.data,'str is',seiString);
 
                 // 这里可以直接调用播放器的画框功能。
             })
         }
         else {
             jessibuca.on('videoSEI', (value) => {
-                console.log(`videoSEI ts is ${value.ts}, data is `,value.data);
+                const decoder = new TextDecoder(); // 创建一个 TextDecoder 对象
+                let seiString = decoder.decode(value.data);
+                console.log(`videoSEI ts is ${value.ts}, data is `,value.data,'str is',seiString);
                 //  todo: 代码注释掉了,这里接受sei 数据。
                 // seiList.push(value);
             })
