@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>audioContext support</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <p>默认采样率: {{defaultSampleRate}}</p>
+    <p>8000采样率：{{support8k}}</p>
+    <p>16000采样率：{{support16k}}</p>
+    <p>22050采样率：{{support22k}}</p>
+    <p>32000采样率：{{support32k}}</p>
+    <p>44100采样率：{{support44k}}</p>
+    <p>48000采样率：{{support48k}}</p>
+    <p>96000采样率：{{support96k}}</p>
+</div>
+<script>
+
+
+    // 更完整的检测工具
+    class AudioCapabilityDetector {
+        constructor() {
+            this.AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!this.AudioContext) {
+                throw new Error('AudioContext not supported in this browser');
+            }
+        }
+        async checkSampleRate(sampleRate) {
+            try {
+                const ctx = new this.AudioContext({sampleRate});
+                const actualRate = ctx.sampleRate;
+                await ctx.close();
+
+                return {
+                    supported: actualRate === sampleRate,
+                    actualRate: actualRate,
+                    requestedRate: sampleRate
+                };
+            } catch (e) {
+                return {
+                    supported: false,
+                    error: e.message,
+                    requestedRate: sampleRate
+                };
+            }
+        }
+
+        // 获取当前设备的默认采样率
+        async getDefaultSampleRate() {
+            const ctx = new this.AudioContext();
+            const rate = ctx.sampleRate;
+            await ctx.close();
+            return rate;
+        }
+    }
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            defaultSampleRate: '',
+            support8k: '',
+            support16k: '',
+            support22k: '',
+            support32k: '',
+            support44k: '',
+            support48k: '',
+            support96k: '',
+        },
+        async mounted() {
+            const detector = new AudioCapabilityDetector();
+            this.defaultSampleRate = await detector.getDefaultSampleRate();
+            this.support8k = await detector.checkSampleRate(8000);
+            this.support16k = await detector.checkSampleRate(16000);
+            this.support22k = await detector.checkSampleRate(22050);
+            this.support32k = await detector.checkSampleRate(32000);
+            this.support44k = await detector.checkSampleRate(44100);
+            this.support48k = await detector.checkSampleRate(48000);
+            this.support96k = await detector.checkSampleRate(96000);
+        }
+    })
+
+
+
+</script>
+</body>
+</html>
