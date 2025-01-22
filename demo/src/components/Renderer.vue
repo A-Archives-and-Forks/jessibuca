@@ -43,7 +43,7 @@ import {
   AudioDecoderHard,
   VideoDecoderMSE,
 } from "jv4-decoder/src";
-import { FlvDemuxer, DemuxEvent, PSDemuxer } from "jv4-demuxer/src";
+import { FlvDemuxer, DemuxEvent, PSDemuxer, HLSDemuxer } from "jv4-demuxer/src";
 import {
   WebCodecsVideoRenderer,
   YUVCanvasRenderer,
@@ -56,7 +56,8 @@ type RendererType = "webcodecs" | "yuv" | "canvas";
 type DecoderType = "soft" | "simd" | "webcodecs" | "mse";
 
 const message = useMessage();
-const url = ref("ws://localhost:8080/flv/vod/test");
+// const url = ref("ws://localhost:8080/flv/vod/test");
+const url = ref("http://giroro.tpddns.cn:8889/001.m3u8");
 let messageReactive: MessageReactive | null = null;
 const removeMessage = () => {
   if (messageReactive) {
@@ -64,11 +65,11 @@ const removeMessage = () => {
     messageReactive = null;
   }
 };
-const muxType = ref("flv");
+const muxType = ref<"flv" | "ps" | "hls">("flv");
 const decoderv = ref<DecoderType>("simd");
 const rendererType = ref<RendererType>("canvas");
 const dump = ref(false);
-const mode = ref(DemuxMode.PUSH);
+const mode = ref(DemuxMode.PULL);
 const stopDump = ref(() => {});
 let conn: Connection;
 const display = reactive({
@@ -103,21 +104,56 @@ async function connect(file?: File, options?: UploadCustomRequestOptions) {
     });
     const dumpFile = dump.value ? fileSave(p) : null;
     console.log(`connect ${file} url ${url.value}`);
+
+    // Initialize video/canvas element before connection
+    if (rendererType.value === "webcodecs" && videoElement.value) {
+      const video = videoElement.value;
+      video.style.width = "100%";
+      video.style.height = "100%";
+      video.autoplay = true;
+      video.muted = true;
+      video.playsInline = true;
+      // Ensure video is ready to play
+      await video.play().catch(console.error);
+    } else if (
+      (rendererType.value === "yuv" || rendererType.value === "canvas") &&
+      canvasElement.value
+    ) {
+      const canvas = canvasElement.value;
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      // Set canvas size to match container
+      const container = canvas.parentElement;
+      if (container) {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+      }
+    }
+
     if (file) {
       mode.value = DemuxMode.PULL;
       conn = new FileConnection(file);
       console.log(file.name, file.type);
       switch (file.type) {
         case "video/mp4":
-          muxType.value = "mp4";
+          muxType.value = "flv";
           break;
         case "video/x-flv":
           muxType.value = "flv";
+          break;
+        case "application/vnd.apple.mpegurl":
+        case "application/x-mpegURL":
+          muxType.value = "hls";
           break;
       }
     } else {
       if (url.value.endsWith(".flv")) {
         muxType.value = "flv";
+      } else if (url.value.endsWith(".m3u8")) {
+        muxType.value = "hls";
+        mode.value = DemuxMode.PULL;
+      } else if (url.value.endsWith(".ps")) {
+        muxType.value = "ps";
       }
       switch (getURLType(url.value)) {
         case "ws":
@@ -128,6 +164,7 @@ async function connect(file?: File, options?: UploadCustomRequestOptions) {
           break;
       }
     }
+
     conn.on(ConnectionEvent.Connecting, () => {
       messageReactive = message.loading(ConnectionEvent.Connecting);
     });
@@ -155,8 +192,10 @@ async function connect(file?: File, options?: UploadCustomRequestOptions) {
       await conn.connect();
     }
     const demuxer =
-      muxType.value == "flv"
+      muxType.value === "flv"
         ? new FlvDemuxer(conn, mode.value)
+        : muxType.value === "hls"
+        ? new HLSDemuxer(conn, mode.value)
         : new PSDemuxer(conn, mode.value);
 
     demuxer.on(
@@ -485,6 +524,7 @@ const initializeDecoder = async () => {
       :options="[
         { label: 'flv', value: 'flv' },
         { label: 'ps', value: 'ps' },
+        { label: 'hls', value: 'hls' },
       ]"
     ></n-select>
     dump<n-switch v-model:value="dump"></n-switch> 视频解码器<n-select

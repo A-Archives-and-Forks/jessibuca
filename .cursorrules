@@ -1,0 +1,5 @@
+当前进展请阅读 debug-progress.md 文件
+每次进展变化时，请更新 debug-progress.md 文件
+不要用 npm，要用 pnpm
+不要运行测试服务器，我会一直开着
+使用 debug-hls.ts 脚本进行调试

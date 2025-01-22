@@ -3,6 +3,7 @@ import Oput from "oput";
 export const enum DemuxEvent {
   AUDIO_ENCODER_CONFIG_CHANGED = "audio-encoder-config-changed",
   VIDEO_ENCODER_CONFIG_CHANGED = "video-encoder-config-changed",
+  DEMUX_ERROR = "demux-error"
 }
 export const enum DemuxMode {
   PULL,
@@ -15,10 +16,12 @@ export interface Source {
 export abstract class BaseDemuxer extends EventEmitter<{
   [DemuxEvent.AUDIO_ENCODER_CONFIG_CHANGED]: [AudioDecoderConfig];
   [DemuxEvent.VIDEO_ENCODER_CONFIG_CHANGED]: [VideoDecoderConfig];
+  [DemuxEvent.DEMUX_ERROR]: [Error];
 }> {
   constructor(
     public source?: Source,
-    public mode: DemuxMode = DemuxMode.PULL
+    public mode: DemuxMode = DemuxMode.PULL,
+    public format: 'annexb' | 'avcc' = 'annexb'
   ) {
     super();
     console.log("Demuxer Created:", Object.getPrototypeOf(this).constructor.name);
