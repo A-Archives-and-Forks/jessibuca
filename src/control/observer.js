@@ -1,5 +1,5 @@
 import {CONTROL_HEIGHT, EVENTS} from "../constant";
-import {bpsSize, formatTimeTips, getStyle, isBoolean, isMobile, setStyle} from "../utils";
+import {bpsSize, bpsSize$2, formatTimeTips, getStyle, isBoolean, isMobile, setStyle} from "../utils";
 import screenfull from "screenfull";
 
 export default (player, control) => {
@@ -149,7 +149,7 @@ export default (player, control) => {
 
 
     player.on(EVENTS.kBps, (rate) => {
-        const bps = bpsSize(rate);
+        const bps = bpsSize$2(rate * 1000);
         control.$speed && (control.$speed.innerHTML = bps);
     })
 }

@@ -310,6 +310,21 @@ export function bpsSize(value) {
 }
 
 
+export function bpsSize$2(value) {
+    if (null == value || value === '' || parseFloat(value) === 0 || value === 'NaN') {
+        return "0 KB/s";
+    }
+    const unitArr = ["B/s","KB/s", "MB/s", "GB/s", "TB/s", "PB/s", "EB/s", "ZB/s", "YB/s"];
+    let index = 0;
+    const srcsize = parseFloat(value / 8);
+    index = Math.floor(Math.log(srcsize) / Math.log(1024));
+    let size = srcsize / Math.pow(1024, index);
+    size = size.toFixed(2);//
+    return size + (unitArr[index] || unitArr[0]);
+}
+
+
+
 export function fpsStatus(fps) {
     let result = 0;
     if (fps >= 24) {

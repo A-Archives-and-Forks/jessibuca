@@ -778,6 +778,17 @@ jessibuca.toggleControlBar()
 const isShow = jessibuca.getControlBarShow()
 ```
 
+### kbpsToSpeed(kbps)
+- **用法**： 码率转换成网速 kbps -> KB/s
+- **返回**：`{number}`
+
+```js
+jessibuca.on("kBps", function (data) {
+    console.log('kBps:', data)
+    // 如果想要转换成网速
+    const speed = jessibuca.kbpsToSpeed(data);
+})
+```
 
 ### on(event, callback)
 
@@ -909,12 +920,18 @@ jessibuca.on("error", function (error) {
 
 ### kBps
 
-当前网速， 单位KB 每秒1次,
+当前码率， 每秒1次,
+
+> 码率是和网速是区分的，网速是指当前网络的下载速度，码率是指当前视频的码率。
+
+> 1 Bps = 8 bps
 
 ```js
 
 jessibuca.on("kBps", function (data) {
     console.log('kBps:', data)
+    // 如果想要转换成网速
+    const speed = jessibuca.kbpsToSpeed(data);
 })
 ```
 

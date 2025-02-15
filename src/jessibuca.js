@@ -858,6 +858,10 @@ class Jessibuca extends Emitter {
         return result;
     }
 
+    kbps2Speed(kbps) {
+        return Number(((kbps * 1000) / 8 / 1024).toFixed(2));
+    }
+
     _clearInitDecoderWorkerTimeout() {
         if (this.initDecoderWorkerTimeout) {
             clearTimeout(this.initDecoderWorkerTimeout);

@@ -11,7 +11,7 @@ export default class FetchLoader extends Emitter {
         this.abortController = new AbortController();
         //
         this.streamRate = calculationRate(rate => {
-            player.emit(EVENTS.kBps, (rate / 1024).toFixed(2));
+            player.emit(EVENTS.kBps, (rate / 1000).toFixed(2));
         });
         player.debug.log('FetchStream', 'init');
     }
@@ -45,7 +45,7 @@ export default class FetchLoader extends Emitter {
                         if (done) {
                             demux.close();
                         } else {
-                            this.streamRate && this.streamRate(value.byteLength);
+                            this.streamRate && this.streamRate(value.byteLength * 8);
                             demux.dispatch(value);
                             fetchNext();
                         }

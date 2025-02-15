@@ -93,7 +93,7 @@
 	  webm: 'webm'
 	};
 	const CONTAINER_DATA_SET_KEY = 'jessibuca';
-	const VERSION = '"3.3.15"';
+	const VERSION = '"3.3.16"';
 
 	// default player options
 	const DEFAULT_PLAYER_OPTIONS = {
@@ -784,6 +784,18 @@
 	  let size = parseFloat(value);
 	  size = size.toFixed(2);
 	  return size + 'KB/s';
+	}
+	function bpsSize$2(value) {
+	  if (null == value || value === '' || parseFloat(value) === 0 || value === 'NaN') {
+	    return "0 KB/s";
+	  }
+	  const unitArr = ["B/s", "KB/s", "MB/s", "GB/s", "TB/s", "PB/s", "EB/s", "ZB/s", "YB/s"];
+	  let index = 0;
+	  const srcsize = parseFloat(value / 8);
+	  index = Math.floor(Math.log(srcsize) / Math.log(1024));
+	  let size = srcsize / Math.pow(1024, index);
+	  size = size.toFixed(2); //
+	  return size + (unitArr[index] || unitArr[0]);
 	}
 	function fpsStatus(fps) {
 	  let result = 0;
@@ -2198,7 +2210,7 @@
 	    this.abortController = new AbortController();
 	    //
 	    this.streamRate = calculationRate(rate => {
-	      player.emit(EVENTS.kBps, (rate / 1024).toFixed(2));
+	      player.emit(EVENTS.kBps, (rate / 1000).toFixed(2));
 	    });
 	    player.debug.log('FetchStream', 'init');
 	  }
@@ -2236,7 +2248,7 @@
 	          if (done) {
 	            demux.close();
 	          } else {
-	            this.streamRate && this.streamRate(value.byteLength);
+	            this.streamRate && this.streamRate(value.byteLength * 8);
 	            demux.dispatch(value);
 	            fetchNext();
 	          }
@@ -2286,7 +2298,7 @@
 	    this.wsUrl = null;
 	    //
 	    this.streamRate = calculationRate(rate => {
-	      player.emit(EVENTS.kBps, (rate / 1024).toFixed(2));
+	      player.emit(EVENTS.kBps, (rate / 1000).toFixed(2));
 	    });
 	    player.debug.log('WebsocketLoader', 'init');
 	  }
@@ -2318,7 +2330,7 @@
 	      this.socketStatus = WEBSOCKET_STATUS.open;
 	    });
 	    proxy(this.socket, 'message', event => {
-	      this.streamRate && this.streamRate(event.data.byteLength);
+	      this.streamRate && this.streamRate(event.data.byteLength * 8);
 	      this._handleMessage(event.data);
 	    });
 	    proxy(this.socket, 'close', () => {
@@ -8552,6 +8564,7 @@
 	    this.isRecording = false;
 	    this.recordingTimestamp = 0;
 	    this.recordingInterval = null;
+	    this.recorder = null;
 	    player.debug.log('Recorder', 'init');
 	  }
 	  destroy() {
@@ -8654,11 +8667,13 @@
 	    player.debug.log('decoderWorker', 'init');
 	  }
 	  async destroy() {
-	    this.decoderWorker.postMessage({
-	      cmd: WORKER_SEND_TYPE.close
-	    });
-	    this.decoderWorker.terminate();
-	    this.decoderWorker = null;
+	    if (this.decoderWorker) {
+	      this.decoderWorker.postMessage({
+	        cmd: WORKER_SEND_TYPE.close
+	      });
+	      this.decoderWorker.terminate();
+	      this.decoderWorker = null;
+	    }
 	    this.player.debug.log(`decoderWorker`, 'destroy');
 	  }
 	  _initDecoderWorker() {
@@ -9150,7 +9165,6 @@
 	  destroy() {
 	    super.destroy();
 	    this.player.debug.log('M7sDemux', 'destroy');
-	    this.player = null;
 	  }
 	  dispatch(data) {
 	    const player = this.player;
@@ -10119,7 +10133,7 @@
 	    }
 	  });
 	  player.on(EVENTS.kBps, rate => {
-	    const bps = bpsSize(rate);
+	    const bps = bpsSize$2(rate * 1000);
 	    control.$speed && (control.$speed.innerHTML = bps);
 	  });
 	});
@@ -13070,6 +13084,9 @@
 	      result = this.player.getControlBarShow();
 	    }
 	    return result;
+	  }
+	  kbps2Speed(kbps) {
+	    return Number((kbps * 1000 / 8 / 1024).toFixed(2));
 	  }
 	  _clearInitDecoderWorkerTimeout() {
 	    if (this.initDecoderWorkerTimeout) {

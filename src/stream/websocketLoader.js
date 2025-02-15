@@ -11,7 +11,7 @@ export default class WebsocketLoader extends Emitter {
         this.wsUrl = null;
         //
         this.streamRate = calculationRate(rate => {
-            player.emit(EVENTS.kBps, (rate / 1024).toFixed(2));
+            player.emit(EVENTS.kBps, (rate / 1000).toFixed(2));
         });
 
         player.debug.log('WebsocketLoader', 'init');
@@ -46,7 +46,7 @@ export default class WebsocketLoader extends Emitter {
         });
 
         proxy(this.socket, 'message', event => {
-            this.streamRate && this.streamRate(event.data.byteLength);
+            this.streamRate && this.streamRate(event.data.byteLength * 8);
             this._handleMessage(event.data);
         });
 
