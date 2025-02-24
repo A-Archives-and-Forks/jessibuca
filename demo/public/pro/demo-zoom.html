@@ -103,22 +103,41 @@
         </div>
         <div class="input">
             <div>
-                电子放大开关：
-                <button onclick="toggleZoom('open')">打开电子放大</button>
-                <button onclick="toggleZoom('close')">关闭电子放大</button>
-                <button onclick="getCurrentZoomIndex()">获取当前电子放大档位</button>
-                <span> | </span>
-                电子放大最大倍数：
-                <input type="number" id="zoomMaxScale" value="5" style="width: 50px"> <button onclick="replay()">重播</button>
+                <span>电子放大最大倍数：</span>
+                <select id="zoomMaxScale" onchange="updateZoomMaxScale('select')">
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                </select>
+                自定义倍数：<input type="text" id="zoomMaxScaleInput" placeholder="支持1-100倍"><button onclick="updateZoomMaxScale('input')">更新</button>
             </div>
         </div>
         <div class="input">
             <div>
+
+                电子放大开关：
+                <button onclick="toggleZoom('open')">打开电子放大</button>
+                <button onclick="toggleZoom('close')">关闭电子放大</button>
+                <button onclick="getCurrentZoomIndex()">获取当前电子放大档位</button>
+
+            </div>
+        </div>
+        <div class="input">
+            <div>
+                其他配置：
                 <input
+                    checked
                     onclick="replay()"
                     type="checkbox"
                     id="zoomSupportGestureInMobile"
-                /><span>支持手势缩放(移动端)</span>
+                /><span>支持手势缩放(Mobile/Pad)</span>
+                <input
+                    checked
+                    onclick="replay()"
+                    type="checkbox"
+                    id="zoomSupportWheelInPc"
+                /><span>支持滚轴缩放(PC)</span>
             </div>
         </div>
 
@@ -157,8 +176,10 @@
     var $renderDom = document.getElementById('renderDom');
     var $isUseWebGPU = document.getElementById('isUseWebGPU');
     var $demuxUseWorker = document.getElementById('demuxUseWorker');
-    var $zoomMaxScale = document.getElementById('zoomMaxScale');
     var $zoomSupportGestureInMobile = document.getElementById('zoomSupportGestureInMobile');
+    var $zoomSupportWheelInPc = document.getElementById('zoomSupportWheelInPc');
+    var $zoomMaxScale = document.getElementById('zoomMaxScale');
+    var $zoomMaxScaleInput = document.getElementById('zoomMaxScaleInput');
 
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
@@ -204,13 +225,11 @@
             useCanvasRender: $renderDom.value === 'canvas',
             useWebGPU: $isUseWebGPU.value === 'webgpu',
             demuxUseWorker: $demuxUseWorker.checked === true,
+            zoomSupportGestureInMobile:$zoomSupportGestureInMobile.checked === true,
+            zoomSupportWheelInPc:$zoomSupportWheelInPc.checked === true,
             zoomMaxScale: Number($zoomMaxScale.value),
-            zoomSupportGestureInMobile: $zoomSupportGestureInMobile.checked === true,
         },);
 
-        jessibuca.on(JessibucaPro.EVENTS.playFailedAndPaused, (error) => {
-            jessibuca.showErrorMessageTips('播放异常：' + error);
-        })
 
         jessibuca.on('ptz', (arrow) => {
             // console.log('ptz', arrow);
@@ -242,15 +261,10 @@
     function play() {
         var href = $playHref.value;
         if (href) {
-            jessibuca.play(href).catch((error) => {
-                jessibuca.showErrorMessageTips(error.toString());
-            });
+            jessibuca.play(href);
             $player.style.display = 'none';
             $pause.style.display = 'inline-block';
             $destroy.style.display = 'inline-block';
-        }
-        else{
-            jessibuca.showErrorMessageTips('播放地址不能为空');
         }
     }
 
@@ -343,13 +357,25 @@
             }
         }
     }
-
     function getCurrentZoomIndex(){
         if(jessibuca){
             const zoomIndex = jessibuca.getCurrentZoomIndex();
             console.log('当前电子放大档位：', zoomIndex);
         }
     }
+
+    function updateZoomMaxScale(type) {
+        if (jessibuca) {
+            let scale = 5;
+            if (type === 'select') {
+                scale = Number($zoomMaxScale.value);
+            } else {
+                scale = Number($zoomMaxScaleInput.value);
+            }
+            jessibuca.updateZoomMaxScale(scale);
+        }
+    }
+
 </script>
 
 </body>

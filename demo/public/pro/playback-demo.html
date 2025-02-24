@@ -62,7 +62,7 @@
         </div>
         <div class="input">
             <div>
-                <span><span style="color: red">TPS:定频（本地设置）:</span>则支持播放器端控制播放速率(设置FPS+播放倍率)，播放器端设置的播放速率是固定的，不会随着流的速率变化而变化。
+                <span><span style="color: red">TPS:定频（本地设置）:</span>播放器端会提前缓存数据，然后根据流数据计算出fps，不会随着流的速率变化而变化。
                 支持设置播放器的播放倍率（提高渲染倍率）。<span
                         style="color: green">在推流码率足够的情况下，播放器会按照固定倍率播放</span>
             </span>
@@ -231,6 +231,7 @@
     var $isFFmpegSIMD = document.getElementById('isFFmpegSIMD');
     var $useWCS = document.getElementById('useWCS');
     var $playbackCheckStreamEnd = document.getElementById('playbackCheckStreamEnd');
+    var $useSIMDMThreading = document.getElementById('useSIMDMThreading');
 
 
     var forceNoOffscreen = true; //
@@ -262,6 +263,7 @@
             debugLevel: 'debug',
             showPerformance: true,
             isFFmpegSIMD: $isFFmpegSIMD.checked,
+            useMThreading: $useSIMDMThreading.checked === true,
             showBandwidth: showOperateBtns, // 显示网速
             showPlaybackOperate: showOperateBtns,
             operateBtns: {

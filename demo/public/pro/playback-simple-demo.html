@@ -55,13 +55,14 @@
         <div class="input">
             <div>
                 <span><span style="color: red">TPS:动态(根据流):</span>播放器的倍率播放完全是根据服务器端推流的速率，如果服务器端推的是一倍率且动态码率的流，
-                播放器就按照一倍率动态码率渲染。<span style="color: green">例如 fps会15到30之间跳动。</span><span style="color: red">（画面会看着卡顿）</span>
+                播放器就按照一倍率动态码率渲染。<span style="color: green">例如 fps会15到30之间跳动 。</span> <span
+                        style="color: red">（画面会看着卡顿）</span>
             </span>
             </div>
         </div>
         <div class="input">
             <div>
-                <span><span style="color: red">TPS:定频（本地设置）:</span>则支持播放器端控制播放速率(设置FPS+播放倍率)，播放器端设置的播放速率是固定的，不会随着流的速率变化而变化。
+                <span><span style="color: red">TPS:定频（本地设置）:</span>播放器端会提前缓存数据，然后根据流数据计算出fps，不会随着流的速率变化而变化。
                 支持设置播放器的播放倍率（提高渲染倍率）。<span
                         style="color: green">在推流码率足够的情况下，播放器会按照固定倍率播放</span>
             </span>
@@ -101,7 +102,7 @@
                         id="useSIMD"
                     /><span>WASM(SIMD)</span>
                     <input
-                        type="checkbox",
+                        type="checkbox" ,
                         id="isFFmpegSIMD"
                         onclick="replay()"
                     /><span>isSIMD(V2)</span>
@@ -123,13 +124,6 @@
                     <option value="true">定频（本地设置）</option>
                 </select>
             </div>
-        </div>
-        <div class="input">
-            <span>是否解码前缓冲数据(定频生效)</span>
-            <select id="isCacheBeforeDecodeForFpsRender" style="width: 50px">
-                <option value="true">是</option>
-                <option value="false" selected>否</option>
-            </select>
         </div>
         <div class="input">
             <span>是否显示操作按钮</span>
@@ -155,12 +149,7 @@
             </select>
         </div>
         <div class="input">
-            <div class="playback-fps" style="margin-left: 10px">
-                <span>FPS（定频(本地设置)生效）：</span><input style="width: 50px" type="text" id="playbackFps" value="25">帧
-            </div>
-        </div>
-        <div class="input">
-            <div class="playback-fps" style="margin-left: 10px">
+            <div>
                 <span>不断流暂停是否清除缓存数据</span>
                 <select id="isPlaybackPauseClearCache" style="width: 50px">
                     <option value="true" selected>是</option>
@@ -184,19 +173,19 @@
             <span id="supportWebgpu"></span>
         </div>
         <div class="input">
+            <div>
+                <span>进度条时长(单位：秒)</span>
+                <input id="playbackDuration" style="width: 100px" type="text" placeholder="单位秒" value="600">秒(例如十分钟：10*
+                60 = 600)
+            </div>
+        </div>
+        <div class="input">
             <span>是否检测流结束：</span>
             <select id="playbackCheckStreamEnd" style="width: 50px">
                 <option value="true" selected>是</option>
                 <option value="false">否</option>
             </select>
             <span>(如果检测流结束，会抛出streamEnd异常，否的话，则会渲染完所有数据抛出playbackEnd事件)</span>
-        </div>
-        <div class="input">
-            <div>
-                <span>进度条时长(单位：秒)</span>
-                <input id="playbackDuration" style="width: 100px" type="text" placeholder="单位秒" value="600">秒(例如十分钟：10*
-                60 = 600)
-            </div>
         </div>
         <div class="input">
             <button onclick="replay()">重播</button>
@@ -228,23 +217,21 @@
     var $playHref = document.getElementById('playUrl');
     var $container = document.getElementById('container');
     var $destroy = document.getElementById('destroy');
-    var $playbackFps = document.getElementById('playbackFps');
     var $isUseFpsRender = document.getElementById('isUseFpsRender');
     var $isShowControl = document.getElementById('isShowControl'); // 是否显示按钮
     var $isShow24H = document.getElementById('isShow24H'); // 是否显示操作栏
     var $onlyDecoderIFrame = document.getElementById('onlyDecoderIFrame');
-    var $isCacheBeforeDecodeForFpsRender = document.getElementById('isCacheBeforeDecodeForFpsRender');
     var $isPlaybackPauseClearCache = document.getElementById('isPlaybackPauseClearCache');
     var $uiUsePlaybackPause = document.getElementById('uiUsePlaybackPause');
     var $supportWebgpu = document.getElementById('supportWebgpu');
     var $isUseWebGPU = document.getElementById('isUseWebGPU');
-    var $playbackUseWCS = document.getElementById('playbackUseWCS');
     var $playbackDuration = document.getElementById('playbackDuration');
     var $useMSE = document.getElementById('useMSE');
     var $useSIMD = document.getElementById('useSIMD');
     var $isFFmpegSIMD = document.getElementById('isFFmpegSIMD');
     var $useWCS = document.getElementById('useWCS');
     var $playbackCheckStreamEnd = document.getElementById('playbackCheckStreamEnd');
+    var $useSIMDMThreading = document.getElementById('useSIMDMThreading');
 
 
     var forceNoOffscreen = true; //
@@ -276,6 +263,7 @@
             debugLevel: 'debug',
             showPerformance: true,
             isFFmpegSIMD: $isFFmpegSIMD.checked,
+            useMThreading: $useSIMDMThreading.checked === true,
             showBandwidth: showOperateBtns, // 显示网速
             showPlaybackOperate: showOperateBtns,
             operateBtns: {
@@ -299,21 +287,21 @@
         $destroy.style.display = 'none';
 
 
-        jessibuca.on(JessibucaPro.EVENTS.playFailedAndPaused, (error) => {
-            jessibuca.showErrorMessageTips('播放异常：' + error);
-        })
-
         jessibuca.on('playbackPreRateChange', (rate) => {
             jessibuca.forward(rate);
         })
 
-        jessibuca.on('playbackEnd',()=>{
+        jessibuca.on('playbackSeek', (data) => {
+            jessibuca.setPlaybackStartTime(data.ts);
+        })
+
+        jessibuca.on('playbackEnd', () => {
             console.error('playbackEnd: 播放结束');
         })
 
 
-        jessibuca.on('playbackSeek', (data) => {
-            jessibuca.setPlaybackStartTime(data.ts);
+        jessibuca.on(JessibucaPro.EVENTS.playFailedAndPaused, (error) => {
+            jessibuca.showErrorMessageTips('播放异常：' + error);
         })
 
     }
@@ -335,10 +323,8 @@
 
     function play() {
         var href = $playHref.value;
-        var playFps = $playbackFps.value || 20;
         var isUseFpsRender = $isUseFpsRender.value;
         const isShow24H = $isShow24H.value === 'true';
-        const isCacheBeforeDecodeForFpsRender = $isCacheBeforeDecodeForFpsRender.value === 'true';
 
         if (!href) {
             return
@@ -348,12 +334,11 @@
             jessibuca.playbackResume()
         } else {
             jessibuca.playback(href, {
-                fps: playFps,
                 controlType: 'simple',
                 duration: Number($playbackDuration.value),
                 showControl: isShow24H,
                 isUseFpsRender: isUseFpsRender === 'true',
-                isCacheBeforeDecodeForFpsRender: isCacheBeforeDecodeForFpsRender,
+                isCacheBeforeDecodeForFpsRender: isUseFpsRender === 'true',
                 showRateBtn: true,
                 supportWheel: true,
                 uiUsePlaybackPause: $uiUsePlaybackPause.value === 'true',
@@ -367,8 +352,7 @@
                 ],
                 useWCS: $useWCS.checked,
                 useMSE: $useMSE.checked,
-            }).catch((e) => {
-                jessibuca.showErrorMessageTips('播放异常：' + e);
+                useSIMD: $useSIMD.checked,
             });
         }
         isPlaybackPause = false;
