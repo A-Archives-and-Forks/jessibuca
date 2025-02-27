@@ -24,13 +24,23 @@
                 <span style="color: red">注意 'live/test' 是streamPath</span>
             </div>
         </div>
-        <div class="input" style="border-bottom: 1px solid">
+        <div class="input" >
             <div>
                 <span>ZLM的webrtc地址：</span>http://127.0.0.1/index/api/webrtc?app=live&stream={test}&type=play <br>
                 <span style="color:red;">注意：将zlm的webrtc播放地址，https:// 修改为 webrtc:// 就可以了</span>即：webrtc://127.0.0.1/index/api/webrtc?app=live&stream={test}&type=play
             </div>
         </div>
         <div class="input" style="border-bottom: 1px solid">
+            <div>
+                <input
+                    type="checkbox"
+                    id="isWebrtcForZLM"
+                /><span>强制ZLM服务器</span>
+            </div>
+            <span style="color: green">webrtc://127.0.0.1/index/api/webrtc?app=live&stream=test&type=play</span>
+
+        </div>
+        <div class="input">
             <div>
                 <span>SRS的webrtc地址：</span>webrtc://127.0.0.1/live/{livestream} <br>
                 <span style="color:red;">注意：将SRS的path前面拼接个/rtc/v1/play/就可以了</span>即：webrtc://127.0.0.1/rtc/v1/play/live/{livestream}
@@ -42,34 +52,32 @@
                     <input
                         type="checkbox"
                         id="isWebrtcForSRS"
-                    /><span>SRS服务器</span>
-                    <span style="color: green">webrtc://127.0.0.1/rtc/v1/play/live/{livestream}</span>
+                    /><span>强制SRS服务器（默认是4-版本）</span>
+                    <span style="color: green">url 格式：webrtc://127.0.0.1/rtc/v1/play/live/{livestream}</span>
                 </div>
                 <div>
                     <input
                         type="checkbox"
                         id="webrtcForSRSBySDK"
-                    /><span>SRS服务器新版本</span>
-                    <span style="color: green">webrtc://114.235.182.210/live/{liveStream}</span>
+                    /><span>SRS服务器(v4+)</span>
+                    <span style="color: green">url 格式：webrtc://127.0.0.1/index/api/webrtc?app=live&stream={livestream}</span>
+                </div>
+                <div>
+                    <input
+                        type="checkbox"
+                        id="webrtcForSRSByWhipWhep"
+                    /><span>SRS服务器（Whip-Whep)格式</span>
+                    <span style="color: green">url 格式：webrtc://127.0.0.1/rtc/v1/whep/?app=live&stream={livestream}</span>
                 </div>
             </div>
         </div>
-        <div class="input" style="border-bottom: 1px solid">
-            <div>
-                <input
-                    type="checkbox"
-                    id="isWebrtcForZLM"
-                /><span>ZLM服务器</span>
-            </div>
-            <span style="color: green">webrtc://127.0.0.1/index/api/webrtc?app=live&stream=test&type=play</span>
 
-        </div>
         <div class="input" style="border-bottom: 1px solid">
             <div>
                 <input
                     type="checkbox"
                     id="isForOthers"
-                /><span>其他Webrtc服务器</span>
+                /><span>强制其他Webrtc服务器</span>
                 <span>其他的webrtc地址：</span><span style="color: green">webrtc://127.0.0.1/test/sdp</span> <br>
                 播放器是不会根据url上面的路径来检测的的。
             </div>
@@ -86,7 +94,7 @@
             <button id="pause" style="display: none">停止</button>
         </div>
         <div class="input" style="line-height: 30px">
-            <button id="destroy">销毁</button>
+            <button id="destroy" style="display: none">销毁</button>
             <span class="fps-inner"></span>
         </div>
     </div>
@@ -101,6 +109,7 @@
     var $isForOthers = document.getElementById('isForOthers');
     var $isWebrtcForSRS = document.getElementById('isWebrtcForSRS');
     var $webrtcForSRSBySDK = document.getElementById('webrtcForSRSBySDK');
+    var $webrtcForSRSByWhipWhep = document.getElementById('webrtcForSRSByWhipWhep');
     var $isWebrtcForZLM = document.getElementById('isWebrtcForZLM');
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
@@ -137,7 +146,7 @@
             isEmitSEI: true,
             isWebrtcForSRS: $isWebrtcForSRS.checked === true,
             webrtcForSRSBySDK: $webrtcForSRSBySDK.checked === true,
-
+            webrtcForSRSByWhipWhep: $webrtcForSRSByWhipWhep.checked === true,
             // videoRenderType:'canvas'
         },);
 
@@ -173,15 +182,12 @@
     }
 
 
-    create();
+    // create();
 
     function play() {
         var href = $playHref.value;
         if (href) {
-            jessibuca.play(href, {
-                username: 'test',
-                password: 'test',
-            });
+            jessibuca.play(href);
             $player.style.display = 'none';
             $pause.style.display = 'inline-block';
             $destroy.style.display = 'inline-block';
