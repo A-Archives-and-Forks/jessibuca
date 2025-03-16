@@ -318,12 +318,14 @@ H265硬解码，对于电脑硬件支持情况：
 ### 4k 视频倍率支持
 
 
-| 解码器              | 分辨率   | 最大倍率 |
-|:-----------------|:------|:-----|
-| Wasm             | 4k | 不支持  |
-| Wasm 多线程         | 4k | 不支持   |
-| Wasm SIMD        | 4k | 不支持   |
-| Wasm SIMD 多线程    | 4k | 1倍   |
+| 解码器           | 分辨率 | 最大倍率              |
+|:--------------|:----|:------------------|
+| Wasm          | 4k  | 不支持               |
+| Wasm 多线程      | 4k  | 不支持               |
+| Wasm SIMD     | 4k  | 不支持               |
+| Wasm SIMD 多线程 | 4k  | 1倍                |
+| MediaSource   | 4k  | 看chrome://gpu/ 查看 |
+| Webcodec      | 4k  |看chrome://gpu/ 查看|
 
 > SIMD 软解码4k 只支持 3840X2160格式，4096X2160暂不支持
 
@@ -337,7 +339,8 @@ H265硬解码，对于电脑硬件支持情况：
 | Wasm 多线程         | 2k | 1倍   |
 | Wasm SIMD        | 2k | 1倍   |
 | Wasm SIMD 多线程    | 2k | 2倍   |
-
+| MediaSource   | 4k  | 看chrome://gpu/ 查看 |
+| Webcodec      | 4k  |看chrome://gpu/ 查看|
 
 
 ### 1080p 视频倍率支持
@@ -348,6 +351,8 @@ H265硬解码，对于电脑硬件支持情况：
 | Wasm 多线程         | 1080P | 4倍   |
 | Wasm SIMD        | 1080P | 3倍   |
 | Wasm SIMD 多线程    | 1080P | 4倍   |
+| MediaSource   | 4k  | 看chrome://gpu/ 查看 |
+| Webcodec      | 4k  |看chrome://gpu/ 查看|
 
 ### 720p 视频倍率支持
 
@@ -357,7 +362,8 @@ H265硬解码，对于电脑硬件支持情况：
 | Wasm 多线程         | 720p | 16倍  |
 | Wasm SIMD        | 720p | 4倍   |
 | Wasm SIMD 多线程    | 720p | 16倍    |
-
+| MediaSource   | 4k  | 看chrome://gpu/ 查看 |
+| Webcodec      | 4k  |看chrome://gpu/ 查看|
 
 ## 视频录制支持
 
