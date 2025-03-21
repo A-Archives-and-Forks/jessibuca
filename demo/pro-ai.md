@@ -145,6 +145,18 @@ toothbrush - 牙刷
 #### http
 [http://jessibuca.monibuca.com/pro/demo-ai-object-detector.html](http://jessibuca.monibuca.com/pro/demo-ai-object-detector.html)
 
+
+### 人物识别
+
+#### https
+[https://jessibuca.com/pro/demo-ai-person-detector.html](https://jessibuca.com/pro/demo-ai-object-detector.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/demo-ai-person-detector.html](http://jessibuca.monibuca.com/pro/demo-ai-object-detector.html)
+
+
+
+
 ### 定价
 
 添加微信：bosswancheng 咨询
