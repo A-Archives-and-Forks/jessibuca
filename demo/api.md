@@ -237,6 +237,14 @@ worker地址
 > 如果想无限次重试，可以设置为-1
 
 
+### loadingDecoderWorkerTimeout
+
+- **类型**：`number`
+- **默认值**：`10`
+- **用法**： 加载worker文件超时时间，单位秒
+
+> 加载worker文件超时之后，会抛出异常，不再播放视频。
+
 ### supportDblclickFullscreen
 
 - **类型**：`boolean`
