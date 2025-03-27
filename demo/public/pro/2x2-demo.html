@@ -250,7 +250,8 @@
             var id = i + 1;
             var $playHref = document.getElementById('playUrl' + id);
             let player = playList[i];
-            if ($playHref.value) {
+            const url = $playHref.value;
+            if (url) {
                 setTimeout((url) => {
                     console.log(url);
                     player && player.play(url).then(() => {
@@ -258,7 +259,7 @@
                     }).catch((e) => {
                         console.error(e);
                     });
-                }, 0, $playHref.value)
+                }, 0, url)
             }
         }
 
