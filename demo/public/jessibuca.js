@@ -18,60 +18,54 @@
 	function _typeof(o) {
 	  "@babel/helpers - typeof";
 
-	  return (module.exports = _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
+	  return module.exports = _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
 	    return typeof o;
 	  } : function (o) {
 	    return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
-	  }, module.exports.__esModule = true, module.exports["default"] = module.exports), _typeof(o);
+	  }, module.exports.__esModule = true, module.exports["default"] = module.exports, _typeof(o);
 	}
 	module.exports = _typeof, module.exports.__esModule = true, module.exports["default"] = module.exports;
 	});
 
 	unwrapExports(_typeof_1);
 
-	var toPrimitive = createCommonjsModule(function (module) {
+	var toPrimitive_1 = createCommonjsModule(function (module) {
 	var _typeof = _typeof_1["default"];
-	function _toPrimitive(input, hint) {
-	  if (_typeof(input) !== "object" || input === null) return input;
-	  var prim = input[Symbol.toPrimitive];
-	  if (prim !== undefined) {
-	    var res = prim.call(input, hint || "default");
-	    if (_typeof(res) !== "object") return res;
+	function toPrimitive(t, r) {
+	  if ("object" != _typeof(t) || !t) return t;
+	  var e = t[Symbol.toPrimitive];
+	  if (void 0 !== e) {
+	    var i = e.call(t, r || "default");
+	    if ("object" != _typeof(i)) return i;
 	    throw new TypeError("@@toPrimitive must return a primitive value.");
 	  }
-	  return (hint === "string" ? String : Number)(input);
+	  return ("string" === r ? String : Number)(t);
 	}
-	module.exports = _toPrimitive, module.exports.__esModule = true, module.exports["default"] = module.exports;
+	module.exports = toPrimitive, module.exports.__esModule = true, module.exports["default"] = module.exports;
 	});
 
-	unwrapExports(toPrimitive);
+	unwrapExports(toPrimitive_1);
 
-	var toPropertyKey = createCommonjsModule(function (module) {
+	var toPropertyKey_1 = createCommonjsModule(function (module) {
 	var _typeof = _typeof_1["default"];
 
-	function _toPropertyKey(arg) {
-	  var key = toPrimitive(arg, "string");
-	  return _typeof(key) === "symbol" ? key : String(key);
+	function toPropertyKey(t) {
+	  var i = toPrimitive_1(t, "string");
+	  return "symbol" == _typeof(i) ? i : i + "";
 	}
-	module.exports = _toPropertyKey, module.exports.__esModule = true, module.exports["default"] = module.exports;
+	module.exports = toPropertyKey, module.exports.__esModule = true, module.exports["default"] = module.exports;
 	});
 
-	unwrapExports(toPropertyKey);
+	unwrapExports(toPropertyKey_1);
 
 	var defineProperty = createCommonjsModule(function (module) {
-	function _defineProperty(obj, key, value) {
-	  key = toPropertyKey(key);
-	  if (key in obj) {
-	    Object.defineProperty(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-	  return obj;
+	function _defineProperty(e, r, t) {
+	  return (r = toPropertyKey_1(r)) in e ? Object.defineProperty(e, r, {
+	    value: t,
+	    enumerable: !0,
+	    configurable: !0,
+	    writable: !0
+	  }) : e[r] = t, e;
 	}
 	module.exports = _defineProperty, module.exports.__esModule = true, module.exports["default"] = module.exports;
 	});
@@ -93,7 +87,7 @@
 	  webm: 'webm'
 	};
 	const CONTAINER_DATA_SET_KEY = 'jessibuca';
-	const VERSION = '"3.3.16"';
+	const VERSION = '"3.3.18"';
 
 	// default player options
 	const DEFAULT_PLAYER_OPTIONS = {
@@ -183,7 +177,6 @@
 	  //
 	  autoUseSystemFullScreen: true // auto system full screen
 	};
-
 	const WORKER_CMD_TYPE = {
 	  init: 'init',
 	  initVideo: 'initVideo',
@@ -200,7 +193,6 @@
 	  invalidNalUnitSize: 'Invalid NAL unit size'
 	  // errorSplittingTheInputIntoNALUnits: 'Error splitting the input into NAL units'
 	};
-
 	const MEDIA_TYPE = {
 	  audio: 1,
 	  video: 2
@@ -329,7 +321,6 @@
 	  //
 	  12: 'H265(HEVC)' //
 	};
-
 	const VIDEO_ENC_CODE = {
 	  h264: 7,
 	  h265: 12
@@ -347,7 +338,6 @@
 	  // 视频画面做等比缩放后,高或宽对齐canvas区域,画面不被拉伸,但有黑边
 	  fullAuto: 2 // 视频画面做等比缩放后,完全填充canvas区域,画面不被拉伸,没有黑边,但画面显示不全
 	};
-
 	const CANVAS_RENDER_TYPE = {
 	  webcodecs: 'webcodecs',
 	  webgl: 'webgl',
@@ -374,7 +364,6 @@
 	  //
 	  arrowDown: 40 //
 	};
-
 	const WCS_ERROR = {
 	  keyframeIsRequiredError: 'A key frame is required after configure() or flush()',
 	  canNotDecodeClosedCodec: "Cannot call 'decode' on a closed codec"
@@ -437,7 +426,7 @@
 	  }
 	}
 
-	var property$1 = (player => {
+	var property$1 = player => {
 	  Object.defineProperty(player, 'rect', {
 	    get: () => {
 	      const clientRect = player.$container.getBoundingClientRect();
@@ -453,7 +442,7 @@
 	      }
 	    });
 	  });
-	});
+	};
 
 	var screenfull = createCommonjsModule(function (module) {
 	/*!
@@ -1011,7 +1000,7 @@
 	  }
 	}
 
-	var events$1 = (player => {
+	var events$1 = player => {
 	  try {
 	    const screenfullChange = e => {
 	      if (getTarget(e) === player.$container) {
@@ -1109,7 +1098,7 @@
 	      });
 	    });
 	  }
-	});
+	};
 
 	class Emitter {
 	  on(name, fn, ctx) {
@@ -1161,7 +1150,7 @@
 	  }
 	}
 
-	var createWebGL = ((gl, openWebglAlignment) => {
+	var createWebGL = (gl, openWebglAlignment) => {
 	  var vertexShaderScript = ['attribute vec4 vertexPos;', 'attribute vec4 texturePos;', 'varying vec2 textureCoord;', 'void main()', '{', 'gl_Position = vertexPos;', 'textureCoord = texturePos.xy;', '}'].join('\n');
 	  var fragmentShaderScript = ['precision highp float;', 'varying highp vec2 textureCoord;', 'uniform sampler2D ySampler;', 'uniform sampler2D uSampler;', 'uniform sampler2D vSampler;', 'const mat4 YUV2RGB = mat4', '(', '1.1643828125, 0, 1.59602734375, -.87078515625,', '1.1643828125, -.39176171875, -.81296875, .52959375,', '1.1643828125, 2.017234375, 0, -1.081390625,', '0, 0, 0, 1', ');', 'void main(void) {', 'highp float y = texture2D(ySampler,  textureCoord).r;', 'highp float u = texture2D(uSampler,  textureCoord).r;', 'highp float v = texture2D(vSampler,  textureCoord).r;', 'gl_FragColor = vec4(y, u, v, 1) * YUV2RGB;', '}'].join('\n');
 	  if (openWebglAlignment) {
@@ -1242,7 +1231,7 @@
 	      }
 	    }
 	  };
-	});
+	};
 
 	class CommonLoader$1 extends Emitter {
 	  constructor() {
@@ -1434,7 +1423,6 @@
 	      if (popup) popup.location.href = url;else location = url;
 	      popup = null; // reverse-tabnabbing #460
 	    };
-
 	    reader.readAsDataURL(blob);
 	  } else {
 	    var URL = _global.URL || _global.webkitURL;
@@ -2176,7 +2164,6 @@
 	    }
 	    // this.player.debug.log('AudioContext', `bufferList is ${this.bufferList.length}`)
 	  }
-
 	  pause() {
 	    this.audioSyncVideoOption = {
 	      diff: null
@@ -9389,7 +9376,6 @@
 	      if (chroma_format_idc === 3) {
 	        gb.readBits(1); // separate_colour_plane_flag
 	      }
-
 	      if (chroma_format_idc <= 3) {
 	        chroma_format = chroma_format_table[chroma_format_idc];
 	      }
@@ -9483,7 +9469,6 @@
 	        // overscan_info_present_flag
 	        gb.readBool(); // overscan_appropriate_flag
 	      }
-
 	      if (gb.readBool()) {
 	        // video_signal_type_present_flag
 	        gb.readBits(4); // video_format & video_full_range_flag
@@ -9492,13 +9477,11 @@
 	          gb.readBits(24); // colour_primaries & transfer_characteristics & matrix_coefficients
 	        }
 	      }
-
 	      if (gb.readBool()) {
 	        // chroma_loc_info_present_flag
 	        gb.readUEG(); // chroma_sample_loc_type_top_field
 	        gb.readUEG(); // chroma_sample_loc_type_bottom_field
 	      }
-
 	      if (gb.readBool()) {
 	        // timing_info_present_flag
 	        let num_units_in_tick = gb.readBits(32);
@@ -9781,6 +9764,7 @@
 	  }
 	  handleError(error) {
 	    this.player.debug.error('Webcodecs', 'VideoDecoder handleError', error);
+	    this.player.emitError(EVENTS_ERROR.webcodecsDecodeError);
 	  }
 	  decodeVideo(payload, ts, isIframe) {
 	    // this.player.debug.log('Webcodecs decoder', 'decodeVideo', ts, isIframe);
@@ -9878,7 +9862,7 @@
 	  return icons;
 	}, {});
 
-	var template = ((player, control) => {
+	var template = (player, control) => {
 	  if (player._opt.hasControl && player._opt.controlAutoHide) {
 	    player.$container.classList.add('jessibuca-controls-show-auto-hide');
 	  } else {
@@ -10001,9 +9985,9 @@
 	  Object.defineProperty(control, '$speed', {
 	    value: player.$container.querySelector('.jessibuca-speed')
 	  });
-	});
+	};
 
-	var observer$1 = ((player, control) => {
+	var observer$1 = (player, control) => {
 	  const {
 	    events: {
 	      proxy
@@ -10074,7 +10058,6 @@
 	    setStyle(control.$fullscreen, 'display', isFullScreen ? 'none' : 'flex');
 	    // control.autoSize();
 	  };
-
 	  const screenfullH5Control = () => {
 	    if (isMobile() && control.$controls && player._opt.useWebFullScreen) {
 	      setTimeout(() => {
@@ -10136,17 +10119,17 @@
 	    const bps = bpsSize$2(rate * 1000);
 	    control.$speed && (control.$speed.innerHTML = bps);
 	  });
-	});
+	};
 
-	var property = ((player, control) => {
+	var property = (player, control) => {
 	  Object.defineProperty(control, 'controlsRect', {
 	    get: () => {
 	      return control.$controls.getBoundingClientRect();
 	    }
 	  });
-	});
+	};
 
-	var events = ((player, control) => {
+	var events = (player, control) => {
 	  const {
 	    events: {
 	      proxy
@@ -10305,7 +10288,7 @@
 	      }
 	    };
 	  }
-	});
+	};
 
 	function styleInject(css, ref) {
 	  if ( ref === void 0 ) ref = {};
@@ -10338,7 +10321,7 @@
 	styleInject(css_248z$1);
 
 	// todo: 待定
-	var hotkey = ((player, control) => {
+	var hotkey = (player, control) => {
 	  const {
 	    events: {
 	      proxy
@@ -10382,7 +10365,7 @@
 	      }
 	    }
 	  });
-	});
+	};
 
 	class Control {
 	  constructor(player) {
@@ -10490,7 +10473,7 @@
 	var css_248z = ".jessibuca-container{position:relative;display:block;width:100%;height:100%;overflow:hidden}.jessibuca-container.jessibuca-fullscreen-web{position:fixed;z-index:9999;left:0;top:0;right:0;bottom:0;width:100vw!important;height:100vh!important;background:#000}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9wbGF5ZXIvc3R5bGUubGVzcyIsInN0eWxlLmxlc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEscUJBQ0ksaUJBQUEsQ0FDQSxhQUFBLENBQ0EsVUFBQSxDQUNBLFdBQUEsQ0FDQSxlQ0NKLENEQ0ksOENBQ0ksY0FBQSxDQUNBLFlBQUEsQ0FDQSxNQUFBLENBQ0EsS0FBQSxDQUNBLE9BQUEsQ0FDQSxRQUFBLENBQ0EscUJBQUEsQ0FDQSxzQkFBQSxDQUNBLGVDQ1IiLCJmaWxlIjoic3R5bGUubGVzcyJ9 */";
 	styleInject(css_248z);
 
-	var observer = (player => {
+	var observer = player => {
 	  const {
 	    _opt,
 	    debug,
@@ -10531,7 +10514,7 @@
 	      player.enableWakeLock();
 	    }
 	  });
-	});
+	};
 
 	class MP4$1 {
 	  static init() {
@@ -10587,17 +10570,14 @@
 	    // isom
 	    0x61, 0x76, 0x63, 0x31 // avc1
 	    ]);
-
 	    constants.STSD_PREFIX = new Uint8Array([0x00, 0x00, 0x00, 0x00,
 	    // version(0) + flags
 	    0x00, 0x00, 0x00, 0x01 // entry_count
 	    ]);
-
 	    constants.STTS = new Uint8Array([0x00, 0x00, 0x00, 0x00,
 	    // version(0) + flags
 	    0x00, 0x00, 0x00, 0x00 // entry_count
 	    ]);
-
 	    constants.STSC = constants.STCO = constants.STTS;
 	    constants.STSZ = new Uint8Array([0x00, 0x00, 0x00, 0x00,
 	    // version(0) + flags
@@ -10605,7 +10585,6 @@
 	    // sample_size
 	    0x00, 0x00, 0x00, 0x00 // sample_count
 	    ]);
-
 	    constants.HDLR_VIDEO = new Uint8Array([0x00, 0x00, 0x00, 0x00,
 	    // version(0) + flags
 	    0x00, 0x00, 0x00, 0x00,
@@ -10616,7 +10595,6 @@
 	    // reserved: 3 * 4 bytes
 	    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x56, 0x69, 0x64, 0x65, 0x6F, 0x48, 0x61, 0x6E, 0x64, 0x6C, 0x65, 0x72, 0x00 // name: VideoHandler
 	    ]);
-
 	    constants.HDLR_AUDIO = new Uint8Array([0x00, 0x00, 0x00, 0x00,
 	    // version(0) + flags
 	    0x00, 0x00, 0x00, 0x00,
@@ -10627,7 +10605,6 @@
 	    // reserved: 3 * 4 bytes
 	    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x53, 0x6F, 0x75, 0x6E, 0x64, 0x48, 0x61, 0x6E, 0x64, 0x6C, 0x65, 0x72, 0x00 // name: SoundHandler
 	    ]);
-
 	    constants.DREF = new Uint8Array([0x00, 0x00, 0x00, 0x00,
 	    // version(0) + flags
 	    0x00, 0x00, 0x00, 0x01,
@@ -10831,7 +10808,6 @@
 	    // Sample size
 	    MP4$1.box(MP4$1.types.stco, MP4$1.constants.STCO) // Chunk offset
 	    );
-
 	    return result;
 	  }
 
@@ -10903,7 +10879,6 @@
 	    0x05 // descriptor_type
 	    ].concat([configSize]).concat(config).concat([0x06, 0x01, 0x02 // GASpecificConfig
 	    ]));
-
 	    return MP4$1.box(MP4$1.types.esds, data);
 	  }
 
@@ -10945,7 +10920,6 @@
 	    // default_sample_size
 	    0x00, 0x01, 0x00, 0x01 // default_sample_flags
 	    ]);
-
 	    return MP4$1.box(MP4$1.types.trex, data);
 	  }
 
@@ -11262,7 +11236,6 @@
 	        // this.dropSourceBuffer(false)
 	      });
 	    }
-
 	    if (this.mediaSourceAppendBufferError) {
 	      debug.error('MediaSource', `this.mediaSourceAppendBufferError is true`);
 	      return;
@@ -11305,7 +11278,6 @@
 	      }
 	    }
 	  }
-
 	  stop() {
 	    this.abortSourceBuffer();
 	    this.removeSourceBuffer();
