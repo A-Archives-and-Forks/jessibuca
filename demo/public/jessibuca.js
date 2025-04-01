@@ -941,6 +941,7 @@
 	function removeElement(element) {
 	  let result = false;
 	  if (element) {
+	    element.innerHTML = '';
 	    if (element.parentNode) {
 	      element.parentNode.removeChild(element);
 	      result = true;
@@ -12342,6 +12343,7 @@
 	      this.$container.classList.remove('jessibuca-container');
 	      this.$container.classList.remove('jessibuca-fullscreen-web');
 	      removeElementDataset(this.$container, CONTAINER_DATA_SET_KEY);
+	      this.$container.innerHTML = '';
 	      this.$container = null;
 	    }
 	    this._opt = {};

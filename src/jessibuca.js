@@ -132,6 +132,7 @@ class Jessibuca extends Emitter {
             this.$container.classList.remove('jessibuca-container');
             this.$container.classList.remove('jessibuca-fullscreen-web');
             removeElementDataset(this.$container, CONTAINER_DATA_SET_KEY);
+            this.$container.innerHTML = '';
             this.$container = null;
         }
         this._opt = {};

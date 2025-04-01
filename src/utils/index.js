@@ -604,6 +604,7 @@ export function closeVideoFrame(videoFrame) {
 export function removeElement(element) {
     let result = false;
     if (element) {
+        element.innerHTML = '';
         if (element.parentNode) {
             element.parentNode.removeChild(element);
             result = true;
