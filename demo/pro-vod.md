@@ -72,6 +72,12 @@ ffmpeg -i input.mp4 -vcodec copy -acodec copy -movflags faststart -y output.mp4
 
 检查下Network的是否正在大量下载数据，如果是这样，那就是可能服务器不支持Range请求，导致需要等到完整的文件下载完毕才能播放。
 
+
+检查下network 有没有报：`ERR_CONTENT_LENGTH_MISMATCH` 错误
+
+
+
+
 解决方法：
 
 1. 服务器支持Range请求即可。
