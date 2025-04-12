@@ -158,6 +158,16 @@
                 /><span>设置Fmp4格式</span>
                 <input
                     type="checkbox"
+                    v-model="isTs"
+                    @change="restartPlay('isTs')"
+                /><span>设置Mpeg-ts格式</span>
+                <input
+                    type="checkbox"
+                    v-model="isPs"
+                    @change="restartPlay('isPs')"
+                /><span>设置Mpeg(PS)格式</span>
+                <input
+                    type="checkbox"
                     v-model="isNakedFlow"
                     @change="restartPlay('isNakedFlow')"
                 /><span>设置裸流格式</span>
@@ -279,7 +289,7 @@
             <div class="input">
                 <div>输入URL：</div>
                 <input
-                    placeholder="支持 hls/ws-raw/ws-flv/http-flv/fmp4/mpeg-ts/webrtc/Aliyun-rtc/裸流/等协议"
+                    placeholder="支持 hls/ws-raw/ws-flv/http-flv/fmp4/mpeg-ts/mpeg(ps)/webrtc/Aliyun-rtc/裸流/等协议"
                     type="input"
                     autocomplete="on"
                     v-model="playUrl"
@@ -586,6 +596,8 @@ export default {
             isFlv: false,
             isFmp4: false,
             isHls: false,
+            isTs: false,
+            isPs: false,
             isNakedFlow: false,
             decoderErrorAutoWasm: true,
             hiddenAutoPause: false,
@@ -916,7 +928,7 @@ export default {
                     ElMessage.success('play success');
                 }).catch((err) => {
                     ElMessage.error('播放失败');
-                    this.jessibuca.showErrorMessageTips('播放异常：'+ err.toString());
+                    this.jessibuca.showErrorMessageTips('播放异常：' + err.toString());
                 });
                 this.playType = 'play'
                 this.loading = true;
@@ -1198,25 +1210,27 @@ export default {
             } else if (type === 'simd') {
                 this.useMSE = false;
                 this.useWCS = false;
-            } else if (type === 'isNakedFlow') {
+            } else {
                 this.isFlv = false;
                 this.isFmp4 = false;
                 this.isHls = false;
-            } else if (type === 'isFlv') {
+                this.isPs = false;
+                this.isTs = false;
                 this.isNakedFlow = false;
-                this.isFmp4 = false;
-                this.isHls = false;
-            } else if (type === 'isFmp4') {
-                this.isNakedFlow = false;
-                this.isFlv = false;
-                this.isHls = false;
-            } else if (type === 'isHls') {
-                this.isNakedFlow = false;
-                this.isFlv = false;
-                this.isFmp4 = false;
+                if (type === 'isNakedFlow') {
+                    this.isNakedFlow = true;
+                } else if (type === 'isFlv') {
+                    this.isFlv = true;
+                } else if (type === 'isFmp4') {
+                    this.isFmp4 = true;
+                } else if (type === 'isHls') {
+                    this.isHls = true;
+                } else if (type === 'isTs') {
+                    this.isTs = true;
+                } else if (type === 'isPs') {
+                    this.isPs = true;
+                }
             }
-
-
             this.replay();
         },
 
