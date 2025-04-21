@@ -140,17 +140,6 @@ https://cdn-static.m-m10010.com/demo/hls/output.m3u8
 
 ### flv
 
-#### flv 点播文件播放器测试地址：
-
-https
-
-https://jessibuca.com/pro/playback-simple-demo-forward.html
-
-http
-
-http://jessibuca.monibuca.com/pro/playback-simple-demo-forward.html
-
-
 #### h264
 360p  西瓜视频测试地址
 

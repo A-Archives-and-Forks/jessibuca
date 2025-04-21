@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Jessibuca Pro 回放流 demo</title>
+    <title>Jessibuca Pro 点播 flv demo</title>
     <script src="./vconsole.js"></script>
     <script src="./js/jessibuca-pro-demo.js"></script>
     <link rel="stylesheet" href="./demo.css">
     <style>
         .container-shell:before {
-            content: "jessibuca pro 回放流 demo";
+            content: "jessibuca pro 点播 flv demo";
         }
     </style>
 </head>
@@ -53,9 +53,16 @@
         </div>
         <div class="input">
             <div>
+                <span style="color: red">Tips:</span> flv点播仅支持倍率播放，不支持seek逻辑
+            </div>
+        </div>
+
+        <div class="input">
+            <div>
                 <div>
                     <span>硬解码：</span>
                     <input
+                        checked
                         type="checkbox"
                         id="useWCS"
                     /><span>Webcodec</span>
@@ -63,12 +70,10 @@
                 <div>
                     <span>软解码：</span>
                     <input
-                        checked
                         type="checkbox"
                         id="useSIMD"
                     /><span>WASM(SIMD)</span>
                     <input
-                        checked
                         type="checkbox"
                         id="isFFmpegSIMD"
                         onclick="replay()"
@@ -81,6 +86,14 @@
                         /><span>启动多线程（WASM,WASM(SIMD)解码支持）</span>
                     </span>
 
+                </div>
+                <div>
+                    <input
+                        checked
+                        onclick="replay()"
+                        type="checkbox"
+                        id="isMute"
+                    /><span>是否静音播放</span>
                 </div>
             </div>
         </div>
@@ -96,18 +109,15 @@
                     onclick="replay()"
                     type="checkbox"
                     id="isFlv"
-                /><span>是否flv格式</span>
+                /><span>是否flv格式<span style="color: #007aff">(播放地址非.flv结尾需要勾选)</span></span>
             </div>
         </div>
-        <div class="input">
-            <div>
-                <div>
-                    测试地址：https://artplayer.org/assets/sample/video.flv
-                </div>
-            </div>
-        </div>
+
         <div class="input">
             <button onclick="replay()">重播</button>
+        </div>
+        <div class="input">
+            <a href="https://jessibuca.com/test-url.html#flv-1" target="_blank">测试地址</a>
         </div>
         <div class="input">
             <div>输入URL：</div>
@@ -140,6 +150,7 @@
     var $useSIMDMThreading = document.getElementById('useSIMDMThreading');
     var $demuxUseWorker = document.getElementById('demuxUseWorker');
     var $isFlv = document.getElementById('isFlv');
+    var $isMute = document.getElementById('isMute');
 
     var forceNoOffscreen = true; //
     var jessibuca = null;
@@ -202,10 +213,9 @@
                 useMSE: false,
                 useSIMD: $useSIMD.checked,
             },
-            isNotMute: false,
+            muted: $isMute.checked === true,
             playbackCheckStreamEnd: false,
             demuxUseWorker: $demuxUseWorker.checked === true,
-            demuxFlvUseV2: true,
             isFlv: $isFlv.checked === true,
         },);
 
