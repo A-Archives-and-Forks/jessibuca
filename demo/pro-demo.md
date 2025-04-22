@@ -184,6 +184,7 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 #### http
 [http://jessibuca.monibuca.com/pro/play-vod-demo-mp4.html](http://jessibuca.monibuca.com/pro/play-vod-demo-mp4.html)
 
+
 ### hls demo
 
 ------
@@ -193,6 +194,16 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 
 #### http
 [http://jessibuca.monibuca.com/pro/play-vod-demo-hls.html](http://jessibuca.monibuca.com/pro/play-vod-demo-hls.html)
+
+### flv demo
+
+------
+#### https
+
+[https://jessibuca.com/pro/play-vod-demo-flv.html](https://jessibuca.com/pro/play-vod-demo-flv.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/play-vod-demo-flv.html](http://jessibuca.monibuca.com/pro/play-vod-demo-flv.html)
 
 
 ### m7s加密demo
