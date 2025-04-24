@@ -2034,7 +2034,7 @@ https://developer.apple.com/documentation/webkit/wkwebviewconfiguration/1614793-
 
 ### 关于播放路数超过16路之后，播放画面直接变成白色的问题。
 
-这是由于触发了WebGL的上限问题。
+这是由于触发了WebGL路数的上限问题。同下面的问题是一样的。
 
 ### 关于报“Too many active WebGL contexts. Oldest context will be lost” 错误
 

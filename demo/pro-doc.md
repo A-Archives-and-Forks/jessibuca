@@ -63,9 +63,65 @@ app.use((req, res, next) => {
 #### nginx 配置
 
 ```nginx
+
+// 需要放在路由规则里面
 add_header Cross-Origin-Opener-Policy same-origin;
 add_header Cross-Origin-Embedder-Policy require-corp;
 ```
+
+案例：
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name xx.xx.xx.xx;
+
+    #证书路径
+    ssl_certificate server.crt;
+    ssl_certificate_key server.key;
+
+    # SSL增强配置
+    ssl_protocols TLSv1.2 TLSv1.3;
+    SSL_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256';
+    ssl_prefer server_ciphers on;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+    # same origin 配置
+    add_header Cross-Origin-0pener-Policy same-origin;
+    add_header Cross-Origin-Embedder-Policy require-corp;
+
+    # 全局CORS配置
+    add_header Access-Control-Allow-Origin "*";
+
+    #项目路径
+    root xxxx/xxxxx/xxxx;
+    index index.html index.htm;
+
+    # 路由规则
+    location / {
+        try_files $uri $uri/ /index.html;
+        add_header Access-Control-Allow-Origin "*" always:
+        add_header Cross-Origin-0pener-Policy same-origin;
+        add_header Cross-Origin-Embedder-Policy require-corp;
+        autoindex on;
+    }
+
+    # 静态资源缓存
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+        expires 30d;
+        add_header Access-Control-Allow-Origin "*" always;
+        add_header Cross-Origin-0pener-Policy same-origin;
+        add_header Cross-Origin-Embedder-Policy require-corp;
+    }
+}
+
+
+
+```
+
+
+
 
 ### -enable-features=SharedArrayBuffer启动 Chrome
 
