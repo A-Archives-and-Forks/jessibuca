@@ -44,6 +44,9 @@ Pro版本的离线下载包：https://jessibuca.com/pro.zip
 
 https://live.nodemedia.cn:8443/live/b480_264.flv
 
+https://live.nodemedia.cn:8443/live/bbb_264.flv
+
+
 > 需要通过本地local域名访问，公网会校验域名
 
 ##### vigokit 当前时间 (1040 * 634)
@@ -54,6 +57,8 @@ wss://live.vigokit.com:8443/live/time.flv
 
 ##### vigokit 1280 * 720
 wss://live.vigokit.com:8443/live/tcl_264.flv
+
+https://live.nodemedia.cn:8443/live/tcl_264.flv
 
 > 需要通过本地local域名访问，公网会校验域名
 
@@ -77,6 +82,8 @@ https://live.nodemedia.cn:8443/live/b480_265.flv
 
 ##### vigokit 1280 * 720
 wss://live.vigokit.com:8443/live/tcl_265.flv
+
+https://live.nodemedia.cn:8443/live/tcl_265.flv
 
 > 需要通过本地local域名访问，公网会校验域名
 
