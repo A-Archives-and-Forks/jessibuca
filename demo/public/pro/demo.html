@@ -64,7 +64,14 @@
                     <input
                         type="checkbox"
                         id="useWCS"
-                    /><span>Webcodec</span>
+                    /><span>Webcodec</span> |
+                    <input
+                        checked
+                        onchange="replay()"
+                        type="checkbox"
+                        id="audioDecodeUseHardware"
+                    />
+                    <span>硬解码音频</span>
                 </div>
                 <div>
                   <span>软解码：</span>
@@ -202,6 +209,7 @@
     var $replayShowLoadingIcon = document.getElementById('replayShowLoadingIcon');
     var $mseDecoderUseWorker = document.getElementById('mseDecoderUseWorker');
     var $controlAutoHide = document.getElementById('controlAutoHide');
+    var $audioDecodeUseHardware = document.getElementById('audioDecodeUseHardware');
 
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
@@ -221,10 +229,12 @@
             debug: true,
             debugLevel: "debug",
             useMSE: $useMSE.checked === true,
+            useWCS: $useWCS.checked === true,
+            mseDecodeAudio:$audioDecodeUseHardware.checked === true,
+            wcsDecodeAudio: $audioDecodeUseHardware.checked === true,
             decoderErrorAutoWasm: false,
             useSIMD: $useSIMD.checked === true,
             isFFmpegSIMD: $isFFmpegSIMD.checked === true,
-            useWCS: $useWCS.checked === true,
             useMThreading: $useSIMDMThreading.checked === true,
             showBandwidth: showOperateBtns, // 显示网速
             showPerformance: showOperateBtns, // 显示性能

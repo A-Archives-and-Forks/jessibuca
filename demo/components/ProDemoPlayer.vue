@@ -83,7 +83,7 @@
 
             </div>
             <div class="input">
-                <span>解码器：</span>
+                <span>硬解码：</span>
                 <input
                     type="checkbox"
                     v-model="useMSE"
@@ -93,7 +93,17 @@
                     type="checkbox"
                     v-model="useWCS"
                     @change="restartPlay('wcs')"
-                /><span>webcodecs</span>
+                /><span>webcodecs</span> |
+                <input
+                    checked
+                    @change="restartPlay()"
+                    type="checkbox"
+                    v-model="audioDecodeUseHardware"
+                />
+                <span>硬解码音频</span>
+            </div>
+            <div class="input">
+                <span>软解码：</span>
                 <input
                     type="checkbox"
                     v-model="useSIMD"
@@ -571,6 +581,7 @@ export default {
             useWCS: false,
             useMSE: false,
             useSIMD: true,
+            audioDecodeUseHardware: true,
             isFFmpegSIMD: true,
             useMT: true,
             useOffscreen: false,
@@ -660,6 +671,8 @@ export default {
                         isResize: false,
                         useWCS: this.useWCS,
                         decoderErrorAutoWasm: this.decoderErrorAutoWasm,
+                        mseDecodeAudio: this.audioDecodeUseHardware,
+                        wcsDecodeAudio: this.audioDecodeUseHardware,
                         useMSE: this.useMSE,
                         useSIMD: this.useSIMD,
                         isFFmpegSIMD: this.isFFmpegSIMD,
