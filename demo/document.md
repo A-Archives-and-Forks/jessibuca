@@ -866,12 +866,13 @@ pro
 
 具体研究可看：https://github.com/chokcoco/iCSS/issues/24
 
-### decoder.js 报 Unexpected token '<'错误
+### decoder.js 报 Unexpected token '<'错误 或者报：[decoderWorker] onerror and decoder url is xxxxx and filename:message
 
 > 对于 pro 的 decoder-xxx.js 也是会有同样的问题，需要配置正确的路径。
 
-1.查看控制台的`network` 面板下面的 `decoder.wasm`文件有没有被正确返回。返回个格式是不是 `application/wasm`格式的。
+> 这主要是由于decoder.js 解码器或者对应的wasm加载异常导致的，根本原因还是decoder参数配置的有问题，导致加载js以及wasm资源异常了。
 
+1.查看控制台的`network` 面板下面的 `decoder.wasm`文件有没有被正确返回。返回个格式是不是 `application/wasm`格式的。
 
 2.查看控制台的`network` 面板下面的 decoder.js 文件有没有被正确返回。返回个格式是不是 `application/javascript`
 格式的。（因为配置的路径不对，会存在vue 或者react 项目 直接被返回了index.html 内容了）
