@@ -2182,8 +2182,8 @@ https://www.dyxmq.cn/network/err_cert_common_name_invalid.html
 
 修改启动快捷方式: 右击Chrome的启动快捷方式，选择“属性”。
 
-添加参数: 在“目标”字段中，Chrome.exe后添加参数 `--disable-web-security --user-data-dir=[某个文件夹路径]。`例如: "C:
-\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir=C:\ChromeDevSession。
+添加参数: 在“目标”字段中，Chrome.exe后添加参数 `--disable-web-security --user-data-dir=[某个文件夹路径]。`例如: `"C:
+\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir=C:\ChromeDevSession`。
 
 重启Chrome: 使用修改后的快捷方式启动Chrome。
 
