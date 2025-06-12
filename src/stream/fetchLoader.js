@@ -32,6 +32,9 @@ export default class FetchLoader extends Emitter {
         const {demux} = this.player;
         this.player.debug.log('FetchStream', 'fetchStream', url, JSON.stringify(options));
         this.player._times.streamStart = now();
+        if (!this.abortController) {
+            this.abortController = new AbortController();
+        }
         const fetchOptions = Object.assign({
             signal: this.abortController.signal,
         }, {
@@ -91,6 +94,4 @@ export default class FetchLoader extends Emitter {
             this.abortController = null
         }
     }
-
-
 }
