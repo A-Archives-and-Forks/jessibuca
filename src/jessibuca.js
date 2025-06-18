@@ -36,6 +36,7 @@ class Jessibuca extends Emitter {
         super()
         let _opt = options;
         let $container = options.container;
+        this.TAG_NAME = 'Jessibuca';
         if (typeof options.container === 'string') {
             $container = document.querySelector(options.container);
         }
@@ -180,6 +181,7 @@ class Jessibuca extends Emitter {
      * @param value {Boolean}
      */
     setDebug(value) {
+        this.debug.log(this.TAG_NAME, 'setDebug()', value);
         this.player.updateOption({
             debug: !!value
         })
@@ -189,6 +191,7 @@ class Jessibuca extends Emitter {
      *
      */
     mute() {
+        this.debug.log(this.TAG_NAME, 'mute()');
         this.player.mute(true);
     }
 
@@ -196,6 +199,7 @@ class Jessibuca extends Emitter {
      *
      */
     cancelMute() {
+        this.debug.log(this.TAG_NAME, 'cancelMute()');
         this.player.mute(false);
     }
 
@@ -204,6 +208,7 @@ class Jessibuca extends Emitter {
      * @param value {number}
      */
     setVolume(value) {
+        this.debug.log(this.TAG_NAME, 'setVolume()', value);
         this.player.volume = value;
     }
 
@@ -211,6 +216,7 @@ class Jessibuca extends Emitter {
      *
      */
     audioResume() {
+        this.debug.log(this.TAG_NAME, 'audioResume()');
         this.player.audio && this.player.audio.audioEnabled(true);
     }
 
@@ -219,6 +225,7 @@ class Jessibuca extends Emitter {
      * @param value {number}
      */
     setTimeout(time) {
+        this.debug.log(this.TAG_NAME, 'setTimeout()', time);
         time = Number(time);
         this.player.updateOption({
             timeout: time,
@@ -233,6 +240,7 @@ class Jessibuca extends Emitter {
      */
     setScaleMode(type) {
         type = Number(type);
+        this.debug.log(this.TAG_NAME, 'setScaleMode()', type);
         let options = {
             isFullResize: false,
             isResize: false
@@ -262,6 +270,7 @@ class Jessibuca extends Emitter {
      */
     pause() {
         return new Promise((resolve, reject) => {
+            this.debug.log(this.TAG_NAME, 'pause()');
             if (this.player) {
                 this.player.pause().then(() => {
                     resolve();
@@ -278,6 +287,7 @@ class Jessibuca extends Emitter {
      *
      */
     async close() {
+        this.debug.log(this.TAG_NAME, 'close()');
         await this.destroy();
         return true;
     }
@@ -287,6 +297,7 @@ class Jessibuca extends Emitter {
      *
      */
     clearView() {
+        this.debug.log(this.TAG_NAME, 'clearView()');
         this.player.video.clearView()
     }
 
@@ -298,6 +309,12 @@ class Jessibuca extends Emitter {
      */
     play(url, options = {}) {
         return new Promise((resolve, reject) => {
+            try {
+                this.debug.log(this.TAG_NAME, `play() ${url}`, JSON.stringify(options));
+            } catch (e) {
+                // ignore
+                this.debug.log(this.TAG_NAME, `play() ${url}`, options);
+            }
             if (this.isDestroyed()) {
                 reject('Jessibuca is destroyed')
                 return;
@@ -608,7 +625,7 @@ class Jessibuca extends Emitter {
                 }
             })
             // fetch error
-            this.player.once(EVENTS_ERROR.fetchError, () => {
+            this.player.once(EVENTS_ERROR.fetchError, (e) => {
                 this.pause().then(() => {
                     this.debug.log('Jessibuca', 'fetch error and pause play')
                 }).catch((e) => {
@@ -710,6 +727,7 @@ class Jessibuca extends Emitter {
      */
     setBufferTime(time) {
         time = Number(time)
+        this.debug.log(this.TAG_NAME, 'setBufferTime()', time);
         // s -> ms
         this.player.updateOption({
             videoBuffer: time * 1000
@@ -727,6 +745,7 @@ class Jessibuca extends Emitter {
      */
     setRotate(deg) {
         deg = parseInt(deg, 10)
+        this.debug.log(this.TAG_NAME, 'setRotate()', deg);
         const list = [0, 90, 180, 270];
         if (this.player._opt.rotate === deg || list.indexOf(deg) === -1) {
             return;
@@ -749,6 +768,7 @@ class Jessibuca extends Emitter {
      *
      */
     setKeepScreenOn() {
+        this.debug.log(this.TAG_NAME, 'setKeepScreenOn()');
         this.player.updateOption({
             keepScreenOn: true
         })
@@ -759,6 +779,7 @@ class Jessibuca extends Emitter {
      * @param flag {Boolean}
      */
     setFullscreen(flag) {
+        this.debug.log(this.TAG_NAME, 'setFullscreen()');
         const fullscreen = !!flag;
         if (this.player.fullscreen !== fullscreen) {
             this.player.fullscreen = fullscreen;
@@ -773,6 +794,7 @@ class Jessibuca extends Emitter {
      * @param type {string} download,base64,blob
      */
     screenshot(filename, format, quality, type) {
+        this.debug.log(this.TAG_NAME, 'screenshot()', filename, format, quality, type);
 
         if (!this.player.video) {
             return ''
@@ -789,6 +811,7 @@ class Jessibuca extends Emitter {
      */
     startRecord(fileName, fileType) {
         return new Promise((resolve, reject) => {
+            this.debug.log(this.TAG_NAME, 'startRecord()', fileName, fileType);
             if (this.player.playing) {
                 this.player.startRecord(fileName, fileType)
                 resolve();
@@ -799,6 +822,7 @@ class Jessibuca extends Emitter {
     }
 
     stopRecordAndSave() {
+        this.debug.log(this.TAG_NAME, 'stopRecordAndSave()');
         if (this.player.recording) {
             this.player.stopRecordAndSave();
         }
@@ -842,6 +866,8 @@ class Jessibuca extends Emitter {
         if (this.isDestroyed()) {
             return;
         }
+        this.debug.log(this.TAG_NAME, 'toggleControlBar()', isShow);
+
 
         if (this.player) {
             this.player.toggleControlBar(isShow);

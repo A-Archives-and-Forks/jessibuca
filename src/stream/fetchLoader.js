@@ -1,6 +1,6 @@
 import Emitter from "../utils/emitter";
 import {EVENTS, EVENTS_ERROR, FETCH_ERROR, JESSIBUCA_EVENTS} from "../constant";
-import {calculationRate, now} from "../utils";
+import {calculationRate, isFalse, isFetchSuccess, now} from "../utils";
 
 export default class FetchLoader extends Emitter {
     constructor(player) {
@@ -41,6 +41,14 @@ export default class FetchLoader extends Emitter {
             headers: options.headers || {}
         });
         fetch(url, fetchOptions).then((res) => {
+            if(isFalse(isFetchSuccess(res))){
+                this.player.debug.log('FetchStream', `fetch response status is ${res.status} and ok is ${res.ok} and emit error and next abort()`);
+                this.abort();
+                this.emit(EVENTS_ERROR.fetchError, `fetch response status is ${res.status} and ok is ${res.ok}`);
+                this.player.emit(EVENTS.error, EVENTS_ERROR.fetchError);
+                return;
+            }
+
             const reader = res.body.getReader();
             this.emit(EVENTS.streamSuccess);
             const fetchNext = () => {

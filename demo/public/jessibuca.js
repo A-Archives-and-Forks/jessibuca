@@ -93,7 +93,7 @@
 	  webm: 'webm'
 	};
 	const CONTAINER_DATA_SET_KEY = 'jessibuca';
-	const VERSION = '"3.3.19"';
+	const VERSION = '"3.3.20"';
 
 	// default player options
 	const DEFAULT_PLAYER_OPTIONS = {
@@ -1010,6 +1010,9 @@
 	  } else {
 	    element.removeAttribute('data-' + key);
 	  }
+	}
+	function isFetchSuccess(res) {
+	  return res.ok && res.status >= 200 && res.status <= 299;
 	}
 
 	var events$1 = (player => {
@@ -2242,6 +2245,13 @@
 	      headers: options.headers || {}
 	    });
 	    fetch(url, fetchOptions).then(res => {
+	      if (isFalse(isFetchSuccess(res))) {
+	        this.player.debug.log('FetchStream', `fetch response status is ${res.status} and ok is ${res.ok} and emit error and next abort()`);
+	        this.abort();
+	        this.emit(EVENTS_ERROR.fetchError, `fetch response status is ${res.status} and ok is ${res.ok}`);
+	        this.player.emit(EVENTS.error, EVENTS_ERROR.fetchError);
+	        return;
+	      }
 	      const reader = res.body.getReader();
 	      this.emit(EVENTS.streamSuccess);
 	      const fetchNext = () => {
@@ -12298,6 +12308,7 @@
 	    super();
 	    let _opt = options;
 	    let $container = options.container;
+	    this.TAG_NAME = 'Jessibuca';
 	    if (typeof options.container === 'string') {
 	      $container = document.querySelector(options.container);
 	    }
@@ -12424,6 +12435,7 @@
 	   * @param value {Boolean}
 	   */
 	  setDebug(value) {
+	    this.debug.log(this.TAG_NAME, 'setDebug()', value);
 	    this.player.updateOption({
 	      debug: !!value
 	    });
@@ -12433,6 +12445,7 @@
 	   *
 	   */
 	  mute() {
+	    this.debug.log(this.TAG_NAME, 'mute()');
 	    this.player.mute(true);
 	  }
 
@@ -12440,6 +12453,7 @@
 	   *
 	   */
 	  cancelMute() {
+	    this.debug.log(this.TAG_NAME, 'cancelMute()');
 	    this.player.mute(false);
 	  }
 
@@ -12448,6 +12462,7 @@
 	   * @param value {number}
 	   */
 	  setVolume(value) {
+	    this.debug.log(this.TAG_NAME, 'setVolume()', value);
 	    this.player.volume = value;
 	  }
 
@@ -12455,6 +12470,7 @@
 	   *
 	   */
 	  audioResume() {
+	    this.debug.log(this.TAG_NAME, 'audioResume()');
 	    this.player.audio && this.player.audio.audioEnabled(true);
 	  }
 
@@ -12463,6 +12479,7 @@
 	   * @param value {number}
 	   */
 	  setTimeout(time) {
+	    this.debug.log(this.TAG_NAME, 'setTimeout()', time);
 	    time = Number(time);
 	    this.player.updateOption({
 	      timeout: time,
@@ -12477,6 +12494,7 @@
 	   */
 	  setScaleMode(type) {
 	    type = Number(type);
+	    this.debug.log(this.TAG_NAME, 'setScaleMode()', type);
 	    let options = {
 	      isFullResize: false,
 	      isResize: false
@@ -12505,6 +12523,7 @@
 	   */
 	  pause() {
 	    return new Promise((resolve, reject) => {
+	      this.debug.log(this.TAG_NAME, 'pause()');
 	      if (this.player) {
 	        this.player.pause().then(() => {
 	          resolve();
@@ -12521,6 +12540,7 @@
 	   *
 	   */
 	  async close() {
+	    this.debug.log(this.TAG_NAME, 'close()');
 	    await this.destroy();
 	    return true;
 	  }
@@ -12529,6 +12549,7 @@
 	   *
 	   */
 	  clearView() {
+	    this.debug.log(this.TAG_NAME, 'clearView()');
 	    this.player.video.clearView();
 	  }
 
@@ -12540,6 +12561,12 @@
 	   */
 	  play(url, options = {}) {
 	    return new Promise((resolve, reject) => {
+	      try {
+	        this.debug.log(this.TAG_NAME, `play() ${url}`, JSON.stringify(options));
+	      } catch (e) {
+	        // ignore
+	        this.debug.log(this.TAG_NAME, `play() ${url}`, options);
+	      }
 	      if (this.isDestroyed()) {
 	        reject('Jessibuca is destroyed');
 	        return;
@@ -12858,7 +12885,7 @@
 	        }
 	      });
 	      // fetch error
-	      this.player.once(EVENTS_ERROR.fetchError, () => {
+	      this.player.once(EVENTS_ERROR.fetchError, e => {
 	        this.pause().then(() => {
 	          this.debug.log('Jessibuca', 'fetch error and pause play');
 	        }).catch(e => {
@@ -12955,6 +12982,7 @@
 	   */
 	  setBufferTime(time) {
 	    time = Number(time);
+	    this.debug.log(this.TAG_NAME, 'setBufferTime()', time);
 	    // s -> ms
 	    this.player.updateOption({
 	      videoBuffer: time * 1000
@@ -12972,6 +13000,7 @@
 	   */
 	  setRotate(deg) {
 	    deg = parseInt(deg, 10);
+	    this.debug.log(this.TAG_NAME, 'setRotate()', deg);
 	    const list = [0, 90, 180, 270];
 	    if (this.player._opt.rotate === deg || list.indexOf(deg) === -1) {
 	      return;
@@ -12994,6 +13023,7 @@
 	   *
 	   */
 	  setKeepScreenOn() {
+	    this.debug.log(this.TAG_NAME, 'setKeepScreenOn()');
 	    this.player.updateOption({
 	      keepScreenOn: true
 	    });
@@ -13004,6 +13034,7 @@
 	   * @param flag {Boolean}
 	   */
 	  setFullscreen(flag) {
+	    this.debug.log(this.TAG_NAME, 'setFullscreen()');
 	    const fullscreen = !!flag;
 	    if (this.player.fullscreen !== fullscreen) {
 	      this.player.fullscreen = fullscreen;
@@ -13018,6 +13049,7 @@
 	   * @param type {string} download,base64,blob
 	   */
 	  screenshot(filename, format, quality, type) {
+	    this.debug.log(this.TAG_NAME, 'screenshot()', filename, format, quality, type);
 	    if (!this.player.video) {
 	      return '';
 	    }
@@ -13032,6 +13064,7 @@
 	   */
 	  startRecord(fileName, fileType) {
 	    return new Promise((resolve, reject) => {
+	      this.debug.log(this.TAG_NAME, 'startRecord()', fileName, fileType);
 	      if (this.player.playing) {
 	        this.player.startRecord(fileName, fileType);
 	        resolve();
@@ -13041,6 +13074,7 @@
 	    });
 	  }
 	  stopRecordAndSave() {
+	    this.debug.log(this.TAG_NAME, 'stopRecordAndSave()');
 	    if (this.player.recording) {
 	      this.player.stopRecordAndSave();
 	    }
@@ -13081,6 +13115,7 @@
 	    if (this.isDestroyed()) {
 	      return;
 	    }
+	    this.debug.log(this.TAG_NAME, 'toggleControlBar()', isShow);
 	    if (this.player) {
 	      this.player.toggleControlBar(isShow);
 	    }

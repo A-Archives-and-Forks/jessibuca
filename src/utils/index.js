@@ -324,7 +324,6 @@ export function bpsSize$2(value) {
 }
 
 
-
 export function fpsStatus(fps) {
     let result = 0;
     if (fps >= 24) {
@@ -676,4 +675,8 @@ export function removeElementDataset(element, key) {
     } else {
         element.removeAttribute('data-' + key);
     }
+}
+
+export function isFetchSuccess(res) {
+    return (res.ok && (res.status >= 200 && res.status <= 299))
 }
