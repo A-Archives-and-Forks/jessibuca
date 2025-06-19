@@ -75,6 +75,7 @@ class Jessibuca extends Emitter {
         setElementDataset($container, CONTAINER_DATA_SET_KEY, uuid16());
 
         delete _opt.container;
+        delete _opt.url; // url is empty, will set in play method
 
         // 禁用离屏渲染
         _opt.forceNoOffscreen = true;
