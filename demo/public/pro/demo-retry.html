@@ -172,6 +172,12 @@
                 <input
                     checked
                     type="checkbox"
+                    id="404ErrorReplay"
+                />
+                <span>地址 404 重试</span>
+                <input
+                    checked
+                    type="checkbox"
                     id="websocket1006ErrorReplay"
                 />
                 <span>websocket 1006 错误内部重播</span>
@@ -274,6 +280,7 @@
     var $streamErrorReplay = document.getElementById('streamErrorReplay');
     var $streamEndReplay = document.getElementById('streamEndReplay');
     var $networkDisconnectReplay = document.getElementById('networkDisconnectReplay');
+    var $404ErrorReplay = document.getElementById('404ErrorReplay');
 
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
@@ -323,7 +330,7 @@
             controlHtml: '<div>我是 <span style="color: red">test</span>文案</div>',
             websocket1006ErrorReplay: $websocket1006ErrorReplay.checked === true,
             streamErrorReplay: $streamErrorReplay.checked === true,
-            streamEndReplay:$streamEndReplay.checked === true,
+            streamEndReplay: $streamEndReplay.checked === true,
             streamErrorReplayDelayTime: 5, // 延迟1s去触发播放。
             streamEndReplayDelayTime: 5, // 延迟1s去触发播放。
             networkDisconnectReplay: $networkDisconnectReplay.checked === true,
@@ -375,7 +382,7 @@
             jessibuca.play(href).then(() => {
                 console.log('play success')
             }).catch((error) => {
-                jessibuca.showErrorMessageTips(error.toString());
+                // ignore error
             });
             $player.style.display = 'none';
             $pause.style.display = 'inline-block';

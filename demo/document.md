@@ -693,8 +693,9 @@ http://jessibuca.monibuca.com/pro/audio-player-demo.html
 2. 增大videoBuffer大小，一般1s，2s，3s都是可以的
 3. 设置hasAudio 为false，不demux和decode音频数据。
 4. ~~条件允许(支持OffscreenCanvas)也可以配合设置 forceNoOffscreen 为 false 开启离屏渲染模式，提升性能。~~
-5. pro版本支持360 或者edge浏览器 H265硬解码。 http://jessibuca.monibuca.com/player-pro.html
+5. pro版本支持H265硬解码(需要显卡支持)。 http://jessibuca.monibuca.com/player-pro.html
 6. pro版本支持SIMD解码，尤其是1080p及以上的分辨率，会有很强的效果。http://jessibuca.monibuca.com/player-pro.html
+7. pro版本支持多线程(wasm/simd)，可以开启多线程解码，提升性能。http://jessibuca.monibuca.com/player-pro.html
 7. 如果是服务器端出口带宽跟不上的情况，增大服务器端出口带宽。
 
 > 某些显卡在支持OffscreenCanvas上面会存在问题，所以谨慎使用。
