@@ -28,7 +28,7 @@ sidebar: false
 
 [Pro 文档](/pro.html)
 
-# 支持19种直播格式：(live/test为streamPath)
+# 支持21种直播格式：(live/test为streamPath)
 
 1. ws(s)-raw 即ws(s)://host-name:port/jessica/`live/test` (该协议只对接了[monibuca服务器](https://monibuca.com),其他服务器需要额外对接)
 2. ws(s)-flv 即ws(s)://host-name:port/jessica/`live/test`.flv（chrome下ip会报安全错误，建议域名形式访问，检查下端口范围chrome浏览器是否允许，chrome会默认禁用很多端口）
@@ -38,17 +38,19 @@ sidebar: false
 6. Webrtc 即 webrtc://host-name:port/webrtc/play/`live/test` (支持H264/H265, 仅支持https://或者http://localhost环境)
 7. Webrtc-zlmediakit 即 webrtc://host-name:port/index/api/webrtc?app=live&stream=`stream-name`&type=play  (支持H264, 仅支持https://或者http://localhost环境)
 8. Webrtc-srs 即 webrtc://host-name:port/rtc/v1/play/`live/test`  (支持H264, 仅支持https://或者http://localhost环境)
-9. Webrtc-others 即 webrtc://host-name:port/`live/test` (支持H264, 仅支持https://或者http://localhost环境)
-10. http(s)-fmp4 即http(s)://host-name:port/your-path/`live/test`.(f)mp4
-11. ws(s)-fmp4 即ws(s)://host-name:port/your-path/`live/test`.(f)mp4
-12. http(s)-h264 即http(s)://host-name:port/jessica/`live/test`.h264
-13. ws(s)-h264 即ws(s)://host-name:port/jessica/`live/test`.h264
-14. http(s)-h265 即http(s)://host-name:port/jessica/`live/test`.h265
-15. ws(s)-h265 即ws(s)://host-name:port/jessica/`live/test`.h265
-16. ws(s)-mpeg4 即ws(s)://host-name:port/your-path/`live/test`.mpeg4
-17. http(s)-mpeg4 即http(s)://host-name:port/your-path/`live/test`.mpeg4
-18. artc-aliyun Web Rtc 即artc://host-name:port/xxxx(根据阿里云的播放地址来)
-19. http(s)-ts 即http(s)://host-name:port/your-path/`live/test`.ts (mpeg-ts 支持H264/H265)
+9. webrtc-qiniu 即 webrtc://host-name:port/`live/test` (支持H264, 仅支持https://或者http://localhost环境)
+10. Webrtc-others 即 webrtc://host-name:port/`live/test` (支持H264, 仅支持https://或者http://localhost环境)
+11. http(s)-fmp4 即http(s)://host-name:port/your-path/`live/test`.(f)mp4
+12. ws(s)-fmp4 即ws(s)://host-name:port/your-path/`live/test`.(f)mp4
+13. http(s)-h264 即http(s)://host-name:port/jessica/`live/test`.h264
+14. ws(s)-h264 即ws(s)://host-name:port/jessica/`live/test`.h264
+15. http(s)-h265 即http(s)://host-name:port/jessica/`live/test`.h265
+16. ws(s)-h265 即ws(s)://host-name:port/jessica/`live/test`.h265
+17. ws(s)-mpeg4 即ws(s)://host-name:port/your-path/`live/test`.mpeg4
+18. http(s)-mpeg4 即http(s)://host-name:port/your-path/`live/test`.mpeg4
+19. artc-aliyun Web Rtc 即artc://host-name:port/xxxx(根据阿里云的播放地址来)
+20. http(s)-ts 即http(s)://host-name:port/your-path/`live/test`.ts (mpeg-ts 支持H264/H265)
+21. http(s)-ps 即http(s)://host-name:port/your-path/`live/test`.ps (mpeg-ps 支持`H264`/`H265`)
 - 注意http协议会有跨域问题，需要设置cors头
 - 协议同时支持https、wss
 - 同时支持H264和H265编码格式
@@ -59,10 +61,13 @@ sidebar: false
 - 支持`zlmediakit` webrtc(H264)
 - 支持`srs` webrtc(H264)
 - 支持`others` webrtc(H264)
+- 支持`qiniu(七牛云)` webrtc(H264)[七牛云直播WEB端播放DEMO](https://pili-player-demo.qiniu.com/)
 - 支持加密流(国标SM4、XOR加密、m7s加密流)
 - 支持裸流(H264+H265)
 - 支持Fmp4格式(H264+H265)
 - 支持mpeg-ts格式(H264+H265)
+- 支持mpeg(ps)格式(H264+H265)
+- 支持海康NVR点播文件播放[海康nvr点播文件-支持倍率播放，不支持seek](/pro-demo.html#海康nvr点播文件-支持倍率播放，不支持seek)
 - 支持阿里云Web Rtc播放 [阿里云Web Rtc](https://help.aliyun.com/zh/live/user-guide/web-rts-sdk-overview?spm=a2c4g.11186623.0.i1)
 
 <Rice/>
