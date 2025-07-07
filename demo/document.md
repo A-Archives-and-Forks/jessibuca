@@ -3140,6 +3140,19 @@ const jessibuca = new JessibucaPro({
 ```
 
 
+### 轮训业务推荐配置
+
+如果业务上面有轮训的业务需求，比如 30秒轮训一次，为了尽可能的减少资源开销，可以优化如下配置
+
+
+```
+{
+    hasAudio: false, // 关闭音频解码
+}
+
+```
+
+
 ### Uncaught SyntaxError: Invalid or unexpected token 报错。
 
 
