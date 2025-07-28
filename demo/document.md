@@ -3183,6 +3183,16 @@ const jessibuca = new JessibucaPro({
 
 1. 如果有播放地址，可以通过Jessibuca官网来测试播放，官网里面都已经配置了vconsole
 
+
+### 浏览器的兼容性
+
+目前播放器打包的`browserslist`配置参数是：`defaults`
+
+[browserslist.dev](https://browsersl.ist/)
+
+
+如果需要修改浏览器的兼容性，可以直接修改`browserslist`配置就行了。
+
 ## 支持作者
 
 ### 第一作者
