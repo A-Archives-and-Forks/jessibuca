@@ -121,7 +121,11 @@
         </div>
         <div class="input">
             <button id="playVodForward">快进10s</button>
+            <span>|</span>
             <button id="playVodBackword">快退10s</button>
+            <span>|</span>
+
+            切换倍率
             <select id="forward" onchange="changeForward()">
                 <option value="1" selected>1</option>
                 <option value="2">2</option>
@@ -140,6 +144,8 @@
                 <option value="15">15</option>
                 <option value="16">16</option>
             </select>
+            <span>|</span>
+
             <button onclick="getPlayVodIsPause()">当前状态</button>
         </div>
         <div class="input" style="line-height: 30px">
