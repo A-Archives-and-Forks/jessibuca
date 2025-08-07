@@ -85,6 +85,16 @@
             <div>
                 <input
                     type="checkbox"
+                    id="isWebrtcForDJI"
+                /><span>强制大疆服务器</span>
+                <span>大疆服务器：</span><span style="color: green">webrtc://xxx.xxx.xxx.xxx/xxxxxx</span> <br>
+                播放器是不会根据url上面的路径来检测的的。
+            </div>
+        </div>
+        <div class="input" style="border-bottom: 1px solid">
+            <div>
+                <input
+                    type="checkbox"
                     id="isForOthers"
                 /><span>强制其他Webrtc服务器</span>
                 <span>其他的webrtc地址：</span><span style="color: green">webrtc://xxx.xxx.xxx.xxx/test/sdp</span> <br>
@@ -130,6 +140,7 @@
     var $webrtcForSRSByWhipWhep = document.getElementById('webrtcForSRSByWhipWhep');
     var $isWebrtcForZLM = document.getElementById('isWebrtcForZLM');
     var $isWebrtcForQiNiu = document.getElementById('isWebrtcForQiNiu');
+    var $isWebrtcForDJI = document.getElementById('isWebrtcForDJI');
     var $checkWebrtcLowFps = document.getElementById('checkWebrtcLowFps');
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
@@ -159,9 +170,11 @@
             heartTimeoutReplayUseLastFrameShow: true,
             audioEngine: "worklet",
             isNotMute: false,
-            heartTimeout: 1000,
+            heartTimeout: 3,
+            loadingTimeout: 10,
             useMSE: true,
             useWCS: true,
+            // hasAudio:false,
             isWebrtcForOthers: $isForOthers.checked === true,
             isWebrtcForZLM: $isWebrtcForZLM.checked === true,
             isEmitSEI: true,
@@ -169,6 +182,7 @@
             webrtcForSRSBySDK: $webrtcForSRSBySDK.checked === true,
             webrtcForSRSByWhipWhep: $webrtcForSRSByWhipWhep.checked === true,
             isWebrtcForQiNiu: $isWebrtcForQiNiu.checked === true,
+            isWebrtcForDJI: $isWebrtcForDJI.checked === true,
             checkWebrtcLowFps: $checkWebrtcLowFps.checked === true,
             // videoRenderType:'canvas'
         },);
@@ -261,6 +275,8 @@
 
             $isWebrtcForZLM.checked = false;
             $isForOthers.checked = false;
+            $isWebrtcForQiNiu.checked = false;
+            $isWebrtcForDJI.checked = false;
         }
     })
     $isWebrtcForSRS.addEventListener('click', function () {
@@ -270,6 +286,8 @@
         if ($isWebrtcForSRS.checked === true) {
             $isWebrtcForZLM.checked = false;
             $isForOthers.checked = false;
+            $isWebrtcForQiNiu.checked = false;
+            $isWebrtcForDJI.checked = false;
         }
     })
 
@@ -278,6 +296,8 @@
             $isWebrtcForSRS.checked = false;
             $webrtcForSRSBySDK.checked = false;
             $isForOthers.checked = false;
+            $isWebrtcForDJI.checked = false;
+            $isWebrtcForQiNiu.checked = false;
         }
     })
 
@@ -286,9 +306,29 @@
             $isWebrtcForSRS.checked = false;
             $webrtcForSRSBySDK.checked = false;
             $isWebrtcForZLM.checked = false;
+            $isWebrtcForDJI.checked = false;
         }
     })
 
+    $isWebrtcForQiNiu.addEventListener('click', function () {
+        if ($isWebrtcForQiNiu.checked === true) {
+            $isWebrtcForSRS.checked = false;
+            $webrtcForSRSBySDK.checked = false;
+            $isWebrtcForZLM.checked = false;
+            $isForOthers.checked = false;
+            $isWebrtcForDJI.checked = false;
+        }
+    })
+
+    $isWebrtcForDJI.addEventListener('click', function () {
+        if ($isWebrtcForDJI.checked === true) {
+            $isWebrtcForSRS.checked = false;
+            $webrtcForSRSBySDK.checked = false;
+            $isWebrtcForZLM.checked = false;
+            $isForOthers.checked = false;
+            $isWebrtcForQiNiu.checked = false;
+        }
+    })
 
 </script>
 

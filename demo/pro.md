@@ -348,8 +348,8 @@ H265硬解码，对于电脑硬件支持情况：
 | Wasm 多线程         | 2k | 1倍   |
 | Wasm SIMD        | 2k | 1倍   |
 | Wasm SIMD 多线程    | 2k | 2倍   |
-| MediaSource   | 4k  | 看chrome://gpu/ 查看 |
-| Webcodec      | 4k  |看chrome://gpu/ 查看|
+| MediaSource   | 2k  | 看chrome://gpu/ 查看 |
+| Webcodec      | 2k  |看chrome://gpu/ 查看|
 
 
 ### 1080p 视频倍率支持
@@ -360,8 +360,8 @@ H265硬解码，对于电脑硬件支持情况：
 | Wasm 多线程         | 1080P | 4倍   |
 | Wasm SIMD        | 1080P | 3倍   |
 | Wasm SIMD 多线程    | 1080P | 4倍   |
-| MediaSource   | 4k  | 看chrome://gpu/ 查看 |
-| Webcodec      | 4k  |看chrome://gpu/ 查看|
+| MediaSource   | 1080P  | 看chrome://gpu/ 查看 |
+| Webcodec      | 1080P  |看chrome://gpu/ 查看|
 
 ### 720p 视频倍率支持
 
@@ -371,8 +371,8 @@ H265硬解码，对于电脑硬件支持情况：
 | Wasm 多线程         | 720p | 16倍  |
 | Wasm SIMD        | 720p | 4倍   |
 | Wasm SIMD 多线程    | 720p | 16倍    |
-| MediaSource   | 4k  | 看chrome://gpu/ 查看 |
-| Webcodec      | 4k  |看chrome://gpu/ 查看|
+| MediaSource   | 720p  | 看chrome://gpu/ 查看 |
+| Webcodec      | 720p  |看chrome://gpu/ 查看|
 
 ## 视频录制支持
 
