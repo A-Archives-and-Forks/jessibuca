@@ -24,7 +24,7 @@
                     <span v-if="!supportMSE" style="color: red;">不支持MSE H264解码；</span>
                     <span v-if="supportMSEHevc" style="color: green;margin-right: 10px">支持MSE H265解码;</span>
                     <span v-if="!supportMSEHevc" style="color: red;margin-right: 10px;">不支持MSE H265解码,会自动切换成wasm(simd)解码</span>
-                    <span v-if="!isEdgeSupportHevc"><a
+                    <span v-if="!isEdgeSupportHevc"><a style="color:blue"
                         href="https://jessibuca.com/zip/Microsoft.HEVCVideoExtension_2.1.1803.0_neutra.zip"
                         target="_blank">下载window Edge Hevc扩展插件</a></span>
                 </div>
@@ -50,7 +50,7 @@
                 <span v-else style="color: red;">不支持SIMD解码,会自动切换成wasm解码；</span>
 
                 <span v-if="supportMT" style="color: green;">支持wasm,wasm(SIMD)多线程解码；</span>
-                <span v-else style="color: red;">不支持wasm,wasm(SIMD)多线程解码；</span>
+                <span v-else style="color: red;">不支持wasm,wasm(SIMD)多线程解码； <a style="color: blue" href="/pro-doc.html#localhost">多线程开启方式</a> </span>
             </div>
             <div class="input">
                 当前浏览器：
