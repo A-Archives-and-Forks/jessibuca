@@ -186,3 +186,13 @@ https://artplayer.org/assets/sample/video.mp4
 920 * 400  ------- videojs使用的测试文件
 
 https://vjs.zencdn.net/v/oceans.mp4
+
+
+
+## vr 点播测试地址
+
+### http
+http://jessibuca.monibuca.com/video/vr.mp4
+
+### https
+https://jessibuca.com/video/vr.mp4

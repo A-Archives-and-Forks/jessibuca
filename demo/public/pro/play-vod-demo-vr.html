@@ -297,6 +297,11 @@
         if (isPlayVodPause) {
             jessibuca.playVodResume()
         } else {
+
+            jessibuca.once('start',()=>{
+                enterVr();
+            })
+
             jessibuca.playVod(href, {
                 // startTime: 10,
                 // forwardRate: 4

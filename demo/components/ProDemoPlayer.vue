@@ -25,8 +25,8 @@
                     <span v-if="supportMSEHevc" style="color: green;margin-right: 10px">支持MSE H265解码;</span>
                     <span v-if="!supportMSEHevc" style="color: red;margin-right: 10px;">不支持MSE H265解码,会自动切换成wasm(simd)解码</span>
                     <span v-if="!isEdgeSupportHevc"><a style="color:blue"
-                        href="https://jessibuca.com/zip/Microsoft.HEVCVideoExtension_2.1.1803.0_neutra.zip"
-                        target="_blank">下载window Edge Hevc扩展插件</a></span>
+                                                       href="https://jessibuca.com/zip/Microsoft.HEVCVideoExtension_2.1.1803.0_neutra.zip"
+                                                       target="_blank">下载window Edge Hevc扩展插件</a></span>
                 </div>
                 <div>
                     <div v-if="playing && decodeType">
@@ -50,7 +50,8 @@
                 <span v-else style="color: red;">不支持SIMD解码,会自动切换成wasm解码；</span>
 
                 <span v-if="supportMT" style="color: green;">支持wasm,wasm(SIMD)多线程解码；</span>
-                <span v-else style="color: red;">不支持wasm,wasm(SIMD)多线程解码； <a style="color: blue" href="/pro-doc.html#localhost">多线程开启方式</a> </span>
+                <span v-else style="color: red;">不支持wasm,wasm(SIMD)多线程解码； <a style="color: blue"
+                                                                                     href="/pro-doc.html#localhost">多线程开启方式</a> </span>
             </div>
             <div class="input">
                 当前浏览器：
@@ -293,7 +294,7 @@
             <div class="input">
                 <div>
                     <button @click="toggleControlBar">toggle控制条</button>
-                    <a href="/test-url.html" target="_blank" style="color: red;margin-left: 10px">测试地址</a>
+                    <a href="/test-url.html" target="_blank" style="color: red;margin-left: 10px">测试地址(包含VR测试地址)</a>
                 </div>
             </div>
             <div class="input">
@@ -304,61 +305,69 @@
                     autocomplete="on"
                     v-model="playUrl"
                 />
-                <template v-if="!playing">
-                    <button v-if="playType === '' || playType === 'play'" @click="play">播放直播流</button>
-                    <button v-if="playType === '' || playType === 'playback'" @click="playback">播放录像流</button>
-                    <button v-if="playType === '' || playType === 'playVod'" @click="playVod">播放点播文件</button>
-                </template>
-                <template v-if="loading || playing">
-                    <template v-if="playType === 'play'">
-                        <button @click="()=> pause()">停止</button>
-                        <button @click="()=> pause(true)">停止(清屏)</button>
+
+            </div>
+            <div class="input">
+                <div>
+                    <template v-if="!playing">
+                        <button v-if="playType === '' || playType === 'play'" @click="play">播放直播流</button>
+                        <button v-if="playType === '' || playType === 'playback'" @click="playback">播放录像流</button>
+                        <button v-if="playType === '' || playType === 'playVod'" @click="playVod">播放点播文件</button>
+                        <button v-if="playType === '' || playType === 'playVR'" @click="playVR">播放VR文件</button>
                     </template>
-                    <button v-if="playType === 'playback'" @click="pause">停止录像流</button>
-                </template>
+                    <template v-if="loading || playing">
+                        <template v-if="playType === 'play'">
+                            <button @click="()=> pause()">停止</button>
+                            <button @click="()=> pause(true)">停止(清屏)</button>
+                        </template>
+                        <button v-if="playType === 'playback'" @click="pause">停止录像流</button>
+                    </template>
+                </div>
             </div>
 
 
-            <div class="input" v-if="loaded" style="line-height: 30px">
+            <div class="input" style="line-height: 30px">
                 <button @click="destroyPlayer">销毁</button>
-                <button v-if="quieting" @click="cancelMute">取消静音</button>
-                <template v-else>
-                    <button @click="mute">静音</button>
-                    <span>音量：</span>
-                    <select v-model="volume" @change="volumeChange">
-                        <option value="1">100</option>
-                        <option value="0.75">75</option>
-                        <option value="0.5">50</option>
-                        <option value="0.25">25</option>
+                <template v-if="loaded">
+                    <button v-if="quieting" @click="cancelMute">取消静音</button>
+                    <template v-else>
+                        <button @click="mute">静音</button>
+                        <span>音量：</span>
+                        <select v-model="volume" @change="volumeChange">
+                            <option value="1">100</option>
+                            <option value="0.75">75</option>
+                            <option value="0.5">50</option>
+                            <option value="0.25">25</option>
+                        </select>
+                    </template>
+                    <span>旋转：</span>
+                    <select v-model="rotate" @change="rotateChange">
+                        <option value="0">0</option>
+                        <option value="90">90</option>
+                        <option value="18">180</option>
+                        <option value="270">270</option>
                     </select>
-                </template>
-                <span>旋转：</span>
-                <select v-model="rotate" @change="rotateChange">
-                    <option value="0">0</option>
-                    <option value="90">90</option>
-                    <option value="18">180</option>
-                    <option value="270">270</option>
-                </select>
-                <span>镜像旋转:</span>
-                <select v-model="mirrorRotate" @change="mirrorRotateChange">
-                    <option value="none">无</option>
-                    <option value="level">水平</option>
-                    <option value="vertical">垂直</option>
-                </select>
-
-                <button @click="fullscreen">全屏</button>
-                <button @click="screenShot">截图</button>
-                <button @click="screenshotWatermark1">截图(水印文字)</button>
-                <button @click="screenshotWatermark2">截图(水印图片)</button>
-                <template v-if="playType === 'playback'">
-                    <span>切换播放倍率:</span>
-                    <select v-model="playbackRate" @change="playbackRateChange">
-                        <option value="1">1倍</option>
-                        <option value="2">2倍</option>
-                        <option value="3">3倍</option>
-                        <option value="4">4倍</option>
+                    <span>镜像旋转:</span>
+                    <select v-model="mirrorRotate" @change="mirrorRotateChange">
+                        <option value="none">无</option>
+                        <option value="level">水平</option>
+                        <option value="vertical">垂直</option>
                     </select>
 
+                    <button @click="fullscreen">全屏</button>
+                    <button @click="screenShot">截图</button>
+                    <button @click="screenshotWatermark1">截图(水印文字)</button>
+                    <button @click="screenshotWatermark2">截图(水印图片)</button>
+                    <template v-if="playType === 'playback'">
+                        <span>切换播放倍率:</span>
+                        <select v-model="playbackRate" @change="playbackRateChange">
+                            <option value="1">1倍</option>
+                            <option value="2">2倍</option>
+                            <option value="3">3倍</option>
+                            <option value="4">4倍</option>
+                        </select>
+
+                    </template>
                 </template>
             </div>
             <div class="input" v-if="loaded">
@@ -924,7 +933,7 @@ export default {
                 setTimeout(() => {
                     this.initPlayer();
                     this.playType = '';
-                }, 10)
+                }, 1000)
 
 
             })
@@ -1037,6 +1046,36 @@ export default {
                 }
             }
         },
+
+
+        playVR() {
+            if (this.jessibuca.isPlayVodPaused()) {
+                this.jessibuca.playVodResume()
+            } else {
+                if (this.playUrl) {
+                    // 重置下
+                    this.jessibuca.once('start', () => {
+                        this.jessibuca.enterVr();
+                    })
+
+                    this.jessibuca.playVod(this.playUrl, {
+                        useMSE: this.useMSE,
+                        useWCS: this.useWCS,
+                        useWasm: this.useWasm,
+                        useSIMD: this.useSIMD,
+                        playVodMp4UseSrc:false,
+                    }).then(() => {
+                        ElMessage.success('playVR success');
+                    }).catch((e) => {
+                        ElMessage.error(`playVR error : ${toString(e)}`);
+                    })
+                    this.playType = 'playVR'
+                } else {
+                    ElMessage.error('play url is empty')
+                }
+            }
+        },
+
         mute() {
             this.jessibuca.mute();
         },
@@ -1054,7 +1093,7 @@ export default {
                 }).catch((err) => {
                     console.log('playbackPause error', err);
                 })
-            } else if (this.playType === 'playVod') {
+            } else if (this.playType === 'playVod' || this.playType === 'playVR') {
                 this.jessibuca.playVodPause(isClear).then(() => {
                     console.log('playVodPause success');
                     this.playing = false;
@@ -1255,6 +1294,8 @@ export default {
                     this.playback();
                 } else if (this.playType === 'playVod') {
                     this.playVod();
+                } else if (this.playType === 'playVR') {
+                    this.playVR()
                 } else {
                     this.play();
                 }

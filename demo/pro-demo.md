@@ -583,7 +583,6 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 #### http
 [http://jessibuca.monibuca.com/pro/demo-page-visibility-change.html](http://jessibuca.monibuca.com/pro/demo-page-visibility-change.html)
 
-
 ### 支持File://协议播放音视频
 
 > 需要通过离线版demo进行测试，通过浏览器直接打开html文件进行测试。
@@ -661,6 +660,26 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 
 #### http
 [http://jessibuca.monibuca.com/pro/demo-record-player.html](http://jessibuca.monibuca.com/pro/demo-record-player.html)
+
+
+### VR全景视频播放(点播文件)
+------
+#### https
+
+[https://jessibuca.com/pro/play-vod-demo-vr.html](https://jessibuca.com/pro/play-vod-demo-vr.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/play-vod-demo-vr.html](http://jessibuca.monibuca.com/pro/play-vod-demo-vr.html)
+
+### VR全景视频播放(直播流)
+------
+
+#### https
+[https://jessibuca.com/pro/demo-vr.html](https://jessibuca.com/pro/demo-vr.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/demo-vr.html](http://jessibuca.monibuca.com/pro/demo-vr.html)
+
 
 
 

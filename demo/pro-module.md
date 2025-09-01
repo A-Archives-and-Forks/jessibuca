@@ -72,6 +72,33 @@ jessibuca pro 扩展模块
 
 
 
+## VR 全景播放器(直播流、点播文件)
+
+可以支持VR 360全景视频播放
+
+
+> 体验demo 只能最多录制10分钟，超过10分钟会自动停止渲染（刷新下页面即可再次体验）
+
+
+### 点播文件
+#### https
+[https://jessibuca.com/pro/play-vod-demo-vr.html](https://jessibuca.com/pro/play-vod-demo-vr.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/play-vod-demo-vr.html](http://jessibuca.monibuca.com/pro/play-vod-demo-vr.html)
+
+
+### 直播流
+#### https
+[https://jessibuca.com/pro/demo-vr.html](https://jessibuca.com/pro/demo-vr.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/demo-vr.html](http://jessibuca.monibuca.com/pro/demo-vr.html)
+
+### 定价
+
+添加微信：bosswancheng 咨询
+
 
 ## 群
 
