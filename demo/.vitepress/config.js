@@ -13,6 +13,7 @@ module.exports = {
                     {text: '文档', link: '/document'},
                     {text: 'Demo', link: '/demo'},
                     {text: '测试地址', link: '/test-url'},
+                    {text: '文章分享系列', link: 'https://juejin.cn/user/1345457961842126/posts'},
                 ]
             },
             {text: '播放器(Pro)', link: '/player-pro'},
