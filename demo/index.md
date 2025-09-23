@@ -69,6 +69,10 @@ features:
   details: 支持播放（H.264/H.265）
 - title: 支持音频播放器(Pro)
   details: 支持音频播放器（支持手机端息屏和后台播放）
+- title: 支持GB28181 国标回放流逻辑(Pro)
+  details: 支持GB28181 国标回放流逻辑，支持暂停、播放、倍速、seek等功能
+- title: 支持GA/T 1078 回放流逻辑(Pro)
+  details: 支持GA/T 1078 回放流逻辑，支持暂停、播放、倍速、seek等功能
 - title: 支持不规则多屏显示(Pro)
   details: 支持1*1，2*2，3*3外加不规则多屏显示
 - title: 支持语音通讯(Pro)
