@@ -89,7 +89,6 @@
                         onclick="replay()"
                     /><span>isSIMD(V2)</span>
                     <span style="color: green">默认使用wasm解码器</span>
-
                 </div>
                 <div class="input">
                     <span>软解码模式：</span>
@@ -105,6 +104,17 @@
                         onclick="replay()"
                     /><span>启动多线程（WASM,WASM(SIMD)解码支持）</span><span style="color: green">默认使用音视频同一个线程</span>
 
+                </div>
+                <div class="input">
+                    <div>
+                        软解码音视频同步：
+                        <input
+                            checked
+                            type="checkbox"
+                            id="syncAudioAndVideo"
+                            onclick="replay()"
+                        /><span>是否开启</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -221,6 +231,7 @@
     var $controlAutoHide = document.getElementById('controlAutoHide');
     var $audioDecodeUseHardware = document.getElementById('audioDecodeUseHardware');
     var $useSThreading = document.getElementById('useSThreading');
+    var $syncAudioAndVideo = document.getElementById('syncAudioAndVideo');
 
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
@@ -243,6 +254,7 @@
             useWCS: $useWCS.checked === true,
             mseDecodeAudio:$audioDecodeUseHardware.checked === true,
             wcsDecodeAudio: $audioDecodeUseHardware.checked === true,
+            syncAudioAndVideo:$syncAudioAndVideo.checked === true,
             decoderErrorAutoWasm: false,
             useSIMD: $useSIMD.checked === true,
             isFFmpegSIMD: $isFFmpegSIMD.checked === true,
