@@ -3522,6 +3522,14 @@ webView.getSettings().setMediaPlaybackRequiresUserGesture(false)
 
 ```
 
+### 走MSE/Webcodec硬解码的时候，浏览器video标签抛出：PIPELINE_ERROR_DECODE: Error Domain=NSOSStatusErrorDomain Code=-12909 "(null)" (-12909): VTDecompressionOutputCallback
+
+错误分析：
+1. NSOSStatusErrorDomain 表示 macOS/iOS 底层的系统框架（CoreMedia / VideoToolbox）返回的错误。
+2. Code=-12909 对应的错误码是 kVTVideoDecoderBadDataErr，表示解码器遇到了坏数据，无法继续解码。
+
+> 解码器遇到坏数据（Bad Data）。
+
 ## 支持作者
 
 ### 第一作者
