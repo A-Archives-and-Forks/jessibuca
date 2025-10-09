@@ -946,7 +946,76 @@ https://github.com/bosscheng/jessibuca-vue-demo/blob/v3/preview/preview.js
 
 #### nginx 配置(解决方案)
 
-待补充
+下载好pro.zip 解压后，
+
+假设：
+
+你的 HTML 文件路径是：
+/home/www/myapp/pro/index.html
+
+你希望通过浏览器访问：
+http://localhost:8080/
+
+打开 Nginx 配置文件(`/etc/nginx/nginx.conf`)
+
+
+直接添加配置信息
+
+
+> 在 http { } 里面添加
+
+```nginx
+
+
+user  nginx;
+worker_processes  auto;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    keepalive_timeout  65;
+
+    include /etc/nginx/conf.d/*.conf;   # 默认会加载 conf.d 下的所有配置文件
+
+    # 你可以在这里直接加一个 server 块👇
+    server {
+        listen 8080;                      # 监听端口
+        server_name localhost;            # 域名（可改成你的 IP 或域名）
+
+        root /home/www/myapp/pro;         # 你的 HTML 文件所在目录
+        index index.html;                 # 默认首页文件
+
+        location / {
+            try_files $uri $uri/ =404;    # 如果文件不存在则返回404
+        }
+    }
+}
+
+```
+
+然后重新加载nginx
+
+```shell
+sudo nginx -s reload
+
+```
+
+然后打开浏览器`http://localhost:8080/` 访问即可
 
 ### Failed to construct 'Worker': Script at 'https://a.com' cannot be accessed from origin 'https://b.com'
 
