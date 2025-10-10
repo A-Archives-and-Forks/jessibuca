@@ -81,16 +81,28 @@
                         id="isFFmpegSIMD"
                         onclick="replay()"
                     /><span>isSIMD(V2)</span>
-                    <input
-                        type="checkbox"
-                        checked
-                        id="useSIMDMThreading"
-                        onclick="replay()"
-                    /><span>启动多线程（WASM,WASM(SIMD)解码支持）</span>
-                    <span style="color: green">默认使用wasm解码器</span>
                 </div>
             </div>
         </div>
+        <div class="input">
+            <div>
+                <span>软解码模式：</span>
+                <input
+                    checked
+                    type="checkbox"
+                    id="useSThreading"
+                    onclick="replayBySThreading()"
+                /><span>启动单独音视频线程</span>
+                <input
+                    type="checkbox"
+                    id="useSIMDMThreading"
+                    onclick="replay()"
+                /><span>启动多线程（WASM,WASM(SIMD)解码支持）</span><span style="color: green">默认使用音视频同一个线程</span>
+            </div>
+
+
+        </div>
+
         <div class="input">
             <div>
                 <input
@@ -125,6 +137,10 @@
             <button id="playVodPause">停止</button>
         </div>
         <div class="input">
+            <button onclick="playVodNextFrame()">逐帧播放</button>
+            <button onclick="playVodExitNextFrameAndPlay()">退出逐帧播放</button>
+        </div>
+        <div class="input">
             <button id="playVodForward">快进10s</button>
             <span>|</span>
             <button id="playVodBackword">快退10s</button>
@@ -152,6 +168,7 @@
             <span>|</span>
 
             <button onclick="getPlayVodIsPause()">当前状态</button>
+            <button onclick="toggleControlBar()">隐藏/显示控制栏</button>
         </div>
         <div class="input" style="line-height: 30px">
             <button id="destroy">销毁</button>
@@ -177,6 +194,7 @@
     var $isMP4 = document.getElementById('isMP4');
     var $useSIMDMThreading = document.getElementById('useSIMDMThreading');
     var $playVodMp4UseSrc = document.getElementById('playVodMp4UseSrc');
+    var $useSThreading = document.getElementById('useSThreading');
 
     var forceNoOffscreen = true; //
     var jessibuca = null;
@@ -197,6 +215,7 @@
             debugLevel: 'debug',
             isFFmpegSIMD: $isFFmpegSIMD.checked === true,
             useMThreading: $useSIMDMThreading.checked === true,
+            useSThreading: $useSThreading.checked === true,
             decoderErrorAutoWasm: false,
             timeout: 10000,
             // showPerformance: true,
@@ -255,6 +274,11 @@
 
 
     create();
+
+    function replayBySThreading() {
+        $useSIMDMThreading.checked = false;
+        replay();
+    }
 
     function replay() {
         if (jessibuca) {
@@ -390,10 +414,28 @@
         }
     }
 
+    function toggleControlBar() {
+        if (jessibuca) {
+            jessibuca.toggleControlBar();
+        }
+    }
+
     function changeForward() {
         const forward = document.getElementById('forward').value;
         if (jessibuca) {
             jessibuca.playVodForward(forward);
+        }
+    }
+
+    function playVodNextFrame() {
+        if (jessibuca) {
+            jessibuca.playVodNextFrame();
+        }
+    }
+
+    function playVodExitNextFrameAndPlay() {
+        if (jessibuca) {
+            jessibuca.playVodExitNextFrameAndPlay();
         }
     }
 

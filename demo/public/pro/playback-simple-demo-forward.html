@@ -121,6 +121,10 @@
             <button id="play">播放</button>
             <button id="playbackPause">停止</button>
         </div>
+        <div class="input">
+            <button onclick="playVodNextFrame()">逐帧播放</button>
+            <button onclick="playVodExitNextFrameAndPlay()">退出逐帧播放</button>
+        </div>
         <div class="input" style="line-height: 30px">
             <button id="destroy">销毁</button>
         </div>
@@ -311,6 +315,18 @@
         }
         replay();
     })
+
+    function playVodNextFrame(){
+        if (jessibuca) {
+            jessibuca.playbackNextFrame();
+        }
+    }
+
+    function playVodExitNextFrameAndPlay(){
+        if (jessibuca) {
+            jessibuca.playbackExitNextFrameAndPlay();
+        }
+    }
 
 
 </script>
