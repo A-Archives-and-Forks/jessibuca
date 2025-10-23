@@ -208,7 +208,7 @@
                     type="checkbox"
                     v-model="checkFirstIFrame"
                     @change="restartPlay()"
-                /><span>检查首帧是否I帧</span>
+                /><span>检查首帧是否I帧（wasm软解码支持）</span>
             </div>
             <div class="input">
                 <span>渲染标签：</span>
