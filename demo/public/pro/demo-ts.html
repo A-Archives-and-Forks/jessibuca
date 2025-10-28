@@ -10,7 +10,7 @@
     <script src="./js/jessibuca-pro-demo.js"></script>
     <style>
         .container-shell:before {
-            content: "jessibuca pro demo player";
+            content: "jessibuca pro ts demo player";
         }
     </style>
 </head>
@@ -106,6 +106,15 @@
                 <input
                     onclick="replay()"
                     type="checkbox"
+                    id="isEmitTsPrivateData"
+                /><span>是否检测TS流特有的私有数据(非sei数据)(PES_private_data_flag == 1逻辑判断得到的)</span>
+            </div>
+        </div>
+        <div class="input">
+            <div>
+                <input
+                    onclick="replay()"
+                    type="checkbox"
                     id="isTs"
                 /><span>强制识别成ts <span style="color: red">(播放路径不是以.ts结尾的，建议勾选上)</span> </span>
             </div>
@@ -147,6 +156,7 @@
     var $isUseWebGPU = document.getElementById('isUseWebGPU');
     var $demuxUseWorker = document.getElementById('demuxUseWorker');
     var $isTs = document.getElementById('isTs');
+    var $isEmitTsPrivateData = document.getElementById('isEmitTsPrivateData');
 
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
@@ -195,6 +205,7 @@
             controlHtml: '<div>我是 <span style="color: red">test</span>文案</div>',
             // audioEngine:"worklet",
             isTs: $isTs.checked === true,
+            isEmitTsPrivateData: $isEmitTsPrivateData.checked === true,
         },);
 
         jessibuca.on(JessibucaPro.EVENTS.playFailedAndPaused, (error) => {
@@ -217,9 +228,15 @@
             $fps.textContent = `FPS: ${stats.fps} DFPS: ${stats.dfps}`
         })
 
-        jessibuca.on(JessibucaPro.EVENTS.crashLog,(log)=>{
-            console.error('crashLog',log)
+        jessibuca.on(JessibucaPro.EVENTS.crashLog, (log) => {
+            console.error('crashLog', log)
         })
+
+        if ($isEmitTsPrivateData.checked === true) {
+            jessibuca.on('tsPrivateData', (arrayBuffer) => {
+                console.log('ts 私有格式数据：', arrayBuffer);
+            })
+        }
 
 
         $player.style.display = 'inline-block';
@@ -242,8 +259,7 @@
             }).catch((error) => {
                 jessibuca.showErrorMessageTips(error.toString());
             });
-        }
-        else{
+        } else {
             jessibuca.showErrorMessageTips('播放地址不能为空');
         }
     }
