@@ -87,7 +87,7 @@
 	  webm: 'webm'
 	};
 	const CONTAINER_DATA_SET_KEY = 'jessibuca';
-	const VERSION = '"3.3.21"';
+	const VERSION = '"3.3.22"';
 
 	// default player options
 	const DEFAULT_PLAYER_OPTIONS = {
@@ -386,17 +386,26 @@
 
 	class Debug {
 	  constructor(master) {
-	    this.log = (name, ...args) => {
+	    this.log = function (name) {
 	      if (master._opt && master._opt.debug) {
+	        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	          args[_key - 1] = arguments[_key];
+	        }
 	        console.log(`Jb: [${name}]`, ...args);
 	      }
 	    };
-	    this.warn = (name, ...args) => {
+	    this.warn = function (name) {
 	      if (master._opt && master._opt.debug) {
+	        for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+	          args[_key2 - 1] = arguments[_key2];
+	        }
 	        console.warn(`Jb: [${name}]`, ...args);
 	      }
 	    };
-	    this.error = (name, ...args) => {
+	    this.error = function (name) {
+	      for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+	        args[_key3 - 1] = arguments[_key3];
+	      }
 	      console.error(`Jb: [${name}]`, ...args);
 	    };
 	  }
@@ -408,7 +417,8 @@
 	    this.proxy = this.proxy.bind(this);
 	    this.master = master;
 	  }
-	  proxy(target, name, callback, option = {}) {
+	  proxy(target, name, callback) {
+	    let option = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 	    if (!target) {
 	      return;
 	    }
@@ -659,7 +669,8 @@
 	  }
 	  return gl;
 	}
-	function dataURLToFile(dataURL = '') {
+	function dataURLToFile() {
+	  let dataURL = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 	  const arr = dataURL.split(",");
 	  const bstr = atob(arr[1]);
 	  const type = arr[0].replace("data:", "").replace(";base64", "");
@@ -699,7 +710,8 @@
 	  element.style[key] = value;
 	  return element;
 	}
-	function getStyle(element, key, numberType = true) {
+	function getStyle(element, key) {
+	  let numberType = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 	  if (!element) {
 	    return 0;
 	  }
@@ -1115,15 +1127,21 @@
 	  }
 	  once(name, fn, ctx) {
 	    const self = this;
-	    function listener(...args) {
+	    function listener() {
 	      self.off(name, listener);
+	      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+	        args[_key] = arguments[_key];
+	      }
 	      fn.apply(ctx, args);
 	    }
 	    listener._ = fn;
 	    return this.on(name, listener, ctx);
 	  }
-	  emit(name, ...data) {
+	  emit(name) {
 	    const evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+	    for (var _len2 = arguments.length, data = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+	      data[_key2 - 1] = arguments[_key2];
+	    }
 	    for (let i = 0; i < evtArr.length; i += 1) {
 	      evtArr[i].fn.apply(evtArr[i].ctx, data);
 	    }
@@ -2217,7 +2235,8 @@
 	   * @param url
 	   * @param options
 	   */
-	  fetchStream(url, options = {}) {
+	  fetchStream(url) {
+	    let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	    const {
 	      demux
 	    } = this.player;
@@ -2242,10 +2261,11 @@
 	      const reader = res.body.getReader();
 	      this.emit(EVENTS.streamSuccess);
 	      const fetchNext = () => {
-	        reader.read().then(({
-	          done,
-	          value
-	        }) => {
+	        reader.read().then(_ref => {
+	          let {
+	            done,
+	            value
+	          } = _ref;
 	          if (done) {
 	            demux.close();
 	          } else {
@@ -2314,7 +2334,8 @@
 	    this.off();
 	    this.player.debug.log('websocketLoader', 'destroy');
 	  }
-	  _createWebSocket(options = {}) {
+	  _createWebSocket() {
+	    let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	    const player = this.player;
 	    const {
 	      debug,
@@ -12011,7 +12032,8 @@
 	   * @param flag {boolean} 是否清除画面
 	   * @returns {Promise<unknown>}
 	   */
-	  pause(flag = false) {
+	  pause() {
+	    let flag = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 	    if (flag) {
 	      return this.close();
 	    } else {
@@ -12163,7 +12185,8 @@
 	  }
 
 	  //
-	  updateStats(options = {}) {
+	  updateStats() {
+	    let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	    if (this.isDestroyedOrClosed()) {
 	      return;
 	    }
@@ -12235,7 +12258,8 @@
 	  getOption() {
 	    return this._opt;
 	  }
-	  emitError(errorType, message = '') {
+	  emitError(errorType) {
+	    let message = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 	    this.emit(EVENTS.error, errorType, message);
 	    this.emit(errorType, message);
 	  }
@@ -12378,7 +12402,8 @@
 	    }
 	    this._bindEvents();
 	  }
-	  _resetPlayer(options = {}) {
+	  _resetPlayer() {
+	    let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	    this.player.destroy();
 	    this.player = null;
 	    this._opt = Object.assign(this._opt, options);
@@ -12531,7 +12556,8 @@
 	   * @param options {object}
 	   * @returns {Promise<unknown>}
 	   */
-	  play(url, options = {}) {
+	  play(url) {
+	    let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	    return new Promise((resolve, reject) => {
 	      try {
 	        this.debug.log(this.TAG_NAME, `play() ${url}`, JSON.stringify(options));
@@ -12618,7 +12644,8 @@
 	   * @returns {Promise<unknown>}
 	   * @private
 	   */
-	  _play(url, options = {}) {
+	  _play(url) {
+	    let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	    return new Promise((resolve, reject) => {
 	      this._opt.url = url;
 	      this._opt.playOptions = options;

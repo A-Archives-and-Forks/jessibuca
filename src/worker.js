@@ -302,7 +302,9 @@ Module.postRun = function () {
             clearInterval(this.stopId);
             this.stopId = null;
             audioDecoder.clear && audioDecoder.clear();
+            audioDecoder.delete && audioDecoder.delete();
             videoDecoder.clear && videoDecoder.clear();
+            videoDecoder.delete && videoDecoder.delete();
             wcsVideoDecoder.reset && wcsVideoDecoder.reset();
             this.firstTimestamp = null;
             this.startTimestamp = null;

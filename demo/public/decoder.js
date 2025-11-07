@@ -1552,7 +1552,8 @@
 	    genericErrors: {},
 	    filesystems: null,
 	    syncFSRequests: 0,
-	    lookupPath: (path, opts = {}) => {
+	    lookupPath: function (path) {
+	      let opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      path = PATH_FS.resolve(FS.cwd(), path);
 	      if (!path) return {
 	        path: "",
@@ -1777,7 +1778,9 @@
 	      return FS.nodePermissions(node, FS.flagsToPermissionString(flags));
 	    },
 	    MAX_OPEN_FDS: 4096,
-	    nextfd: (fd_start = 0, fd_end = FS.MAX_OPEN_FDS) => {
+	    nextfd: function () {
+	      let fd_start = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	      let fd_end = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : FS.MAX_OPEN_FDS;
 	      for (var fd = fd_start; fd <= fd_end; fd++) {
 	        if (!FS.streams[fd]) {
 	          return fd;
@@ -2503,7 +2506,8 @@
 	      }
 	      return stream.stream_ops.ioctl(stream, cmd, arg);
 	    },
-	    readFile: (path, opts = {}) => {
+	    readFile: function (path) {
+	      let opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      opts.flags = opts.flags || 0;
 	      opts.encoding = opts.encoding || "binary";
 	      if (opts.encoding !== "utf8" && opts.encoding !== "binary") {
@@ -2523,7 +2527,8 @@
 	      FS.close(stream);
 	      return ret;
 	    },
-	    writeFile: (path, data, opts = {}) => {
+	    writeFile: function (path, data) {
+	      let opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 	      opts.flags = opts.flags || 577;
 	      var stream = FS.open(path, opts.flags, opts.mode);
 	      if (typeof data == "string") {
@@ -3447,7 +3452,8 @@
 	      onComplete(typeConverters);
 	    }
 	  }
-	  function registerType(rawType, registeredInstance, options = {}) {
+	  function registerType(rawType, registeredInstance) {
+	    let options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 	    if (!("argPackAdvance" in registeredInstance)) {
 	      throw new TypeError("registerType registeredInstance requires argPackAdvance");
 	    }
@@ -6909,7 +6915,9 @@
 	      clearInterval(this.stopId);
 	      this.stopId = null;
 	      audioDecoder.clear && audioDecoder.clear();
+	      audioDecoder.delete && audioDecoder.delete();
 	      videoDecoder.clear && videoDecoder.clear();
+	      videoDecoder.delete && videoDecoder.delete();
 	      wcsVideoDecoder.reset && wcsVideoDecoder.reset();
 	      this.firstTimestamp = null;
 	      this.startTimestamp = null;
