@@ -187,8 +187,9 @@ https://artplayer.org/assets/sample/video.mp4
 
 https://vjs.zencdn.net/v/oceans.mp4
 
+测试地址
 
-
+https://raw.githubusercontent.com/nickdesaulniers/netfix/gh-pages/demo/frag_bunny.mp4
 ## vr 点播测试地址
 
 ### http
