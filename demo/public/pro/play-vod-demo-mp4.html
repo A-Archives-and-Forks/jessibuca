@@ -139,21 +139,16 @@
 
             切换倍率
             <select id="forward" onchange="changeForward()">
+                <option value="0.1">0.1</option>
+                <option value="0.5">0.5</option>
                 <option value="1" selected>1</option>
                 <option value="2">2</option>
-                <option value="3">3</option>
                 <option value="4">4</option>
-                <option value="5">5</option>
                 <option value="6">6</option>
-                <option value="7">7</option>
                 <option value="8">8</option>
-                <option value="9">9</option>
                 <option value="10">10</option>
-                <option value="11">11</option>
                 <option value="12">12</option>
-                <option value="13">13</option>
                 <option value="14">14</option>
-                <option value="15">15</option>
                 <option value="16">16</option>
             </select>
             <span>|</span>
@@ -219,21 +214,16 @@
             playVodConfig: {
                 showRateBtn: true,
                 rateConfig: [
+                    {label: '0.1倍', value: 0.1},
+                    {label: '0.5倍', value: 0.5},
                     {label: '正常', value: 1},
                     {label: '2倍', value: 2},
-                    {label: '3倍', value: 3},
                     {label: '4倍', value: 4},
-                    {label: '5倍', value: 5},
                     {label: '6倍', value: 6},
-                    {label: '7倍', value: 7},
                     {label: '8倍', value: 8},
-                    {label: '9倍', value: 9},
                     {label: '10倍', value: 10},
-                    {label: '11倍', value: 11},
                     {label: '12倍', value: 12},
-                    {label: '13倍', value: 13},
                     {label: '14倍', value: 14},
-                    {label: '15倍', value: 15},
                     {label: '16倍', value: 16},
                 ],
                 useWCS: $useWCS.checked,
