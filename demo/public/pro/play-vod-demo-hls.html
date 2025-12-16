@@ -186,6 +186,8 @@
 <script src="./demo.js"></script>
 
 <script>
+    ;
+
     var $player = document.getElementById('play');
     var $playVodPause = document.getElementById('playVodPause');
     var $playHref = document.getElementById('playUrl');
@@ -303,6 +305,11 @@
         if (isPlayVodPause) {
             jessibuca.playVodResume()
         } else {
+            const validResult = checkUrlIsValid(href)
+            if (!validResult.result) {
+                notifyError(validResult.msg);
+                return;
+            }
             jessibuca.playVod(href).then(() => {
                 notifySuccess('播放成功');
             }).catch((error) => {

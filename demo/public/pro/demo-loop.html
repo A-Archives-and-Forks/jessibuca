@@ -154,6 +154,8 @@
 
 <script src="./demo.js"></script>
 <script>
+    ;
+
     var $player = document.getElementById('play');
     var $pause = document.getElementById('pause');
     var $playHref1 = document.getElementById('playUrl1');
@@ -279,6 +281,11 @@
         const href = playList[index++ % playList.length];
 
         if (href) {
+            const validResult = checkUrlIsValid(href)
+            if (!validResult.result) {
+                notifyError(validResult.msg);
+                return;
+            }
             jessibuca.play(href).then(() => {
                 $player.style.display = 'none';
                 $pause.style.display = 'inline-block';

@@ -137,6 +137,7 @@
 <script src="./demo.js"></script>
 
 <script>
+
     var $player = document.getElementById('play');
     var $pause = document.getElementById('pause');
     var $playHref = document.getElementById('playUrl');
@@ -244,6 +245,12 @@
             if ($m7sKey.value) {
                 jessibuca.setM7sCryptoKey($m7sKey.value);
             }
+            const validResult = checkUrlIsValid(href)
+            if (!validResult.result) {
+                notifyError(validResult.msg);
+                return;
+            }
+
 
             jessibuca.play(href).then(() => {
                 $player.style.display = 'none';

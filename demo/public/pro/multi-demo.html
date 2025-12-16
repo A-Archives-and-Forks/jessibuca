@@ -121,6 +121,8 @@
 </div>
 <script src="./demo.js"></script>
 <script>
+    ;
+
     var $container = document.getElementById('container');
     var $player = document.getElementById('play');
     var $pause = document.getElementById('pause');
@@ -232,6 +234,11 @@
     function play() {
         var href = $playHref.value;
         if (href) {
+            const validResult = checkUrlIsValid(href)
+            if (!validResult.result) {
+                notifyError(validResult.msg);
+                return;
+            }
             jessibucaMulti.play(href);
         } else {
             handleErrorMessage('播放地址不能为空')

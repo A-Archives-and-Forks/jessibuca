@@ -141,6 +141,7 @@
 </template>
 <script>
 import {VERSION} from "./version";
+import {ElNotification, ElMessage} from 'element-plus'
 
 function isMobile() {
     return (/iphone|ipad|android.*mobile|windows.*phone|blackberry.*mobile/i.test(window.navigator.userAgent.toLowerCase()));
@@ -148,6 +149,47 @@ function isMobile() {
 
 function isPad() {
     return (/ipad|android(?!.*mobile)|tablet|kindle|silk/i.test(window.navigator.userAgent.toLowerCase()));
+}
+
+function checkUrlIsValid(url) {
+    // 必须是http(s) 或者 ws(s) 打头的
+    const pattern = /^(https?:\/\/|wss?:\/\/)[^\s/$.?#].[^\s]*$/i;
+    let isValid = pattern.test(url);
+
+    if (!isValid) {
+        return {
+            result: false,
+            msg: `URL:${url}格式不正确，请输入正确的URL地址`
+        };
+    }
+
+    // 如果当前页面是127.0.0.1 或者 localhost 则不做协议限制
+    const host = window.location.hostname;
+    if (host === '127.0.0.1' || host === 'localhost') {
+        return {
+            result: true,
+        };
+    }
+
+
+    // 检查当前页面是https的情况下，url不能是http/ws的
+    if (window.location.protocol === 'https:' && (url.startsWith('http://') || url.startsWith('ws://'))) {
+        return {
+            result: false,
+            msg: `当前页面为HTTPS协议，URL:${url}不能使用HTTP或WS协议，请使用HTTPS或WSS协议`
+        };
+    }
+    // 检查当前页面是http的情况下，url不能是wss/https的
+    if (window.location.protocol === 'http:' && (url.startsWith('wss://') || url.startsWith('https://'))) {
+        return {
+            result: false,
+            msg: `当前页面为HTTP协议，URL:${url}不能使用HTTPS或WSS协议，请使用HTTP或WS协议`
+        };
+    }
+
+    return {
+        result: true,
+    };
 }
 
 export default {
@@ -287,6 +329,7 @@ export default {
 
             jessibuca.on("error", function (error) {
                 console.log("error", error);
+                ElMessage.error(`播放错误：${error}`);
             });
 
             jessibuca.on("timeout", function () {
@@ -341,6 +384,12 @@ export default {
 
 
             if (this.$refs.playUrl.value) {
+                const checkResult = checkUrlIsValid(this.$refs.playUrl.value);
+                if (!checkResult.result) {
+                    ElMessage.error(checkResult.msg);
+                    return;
+                }
+
                 this.$options.jessibuca.play(this.$refs.playUrl.value).then(() => {
                     console.log('play success');
                     this.playing = true;

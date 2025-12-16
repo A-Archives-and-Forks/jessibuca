@@ -551,6 +551,38 @@ function isPad() {
     return (/ipad|android(?!.*mobile)|tablet|kindle|silk/i.test(window.navigator.userAgent.toLowerCase()));
 }
 
+
+function checkUrlIsValid(url) {
+
+    // 如果当前页面是127.0.0.1 或者 localhost 则不做协议限制
+    const host = window.location.hostname;
+    if (host === '127.0.0.1' || host === 'localhost') {
+        return {
+            result: true,
+        };
+    }
+
+    // 检查当前页面是https的情况下，url不能是http/ws的
+    if (window.location.protocol === 'https:' && (url.startsWith('http://') || url.startsWith('ws://'))) {
+        return {
+            result: false,
+            msg: `当前页面为HTTPS协议，URL:${url}不能使用HTTP或WS协议，请使用HTTPS或WSS协议`
+        };
+    }
+    // 检查当前页面是http的情况下，url不能是wss/https的
+    if (window.location.protocol === 'http:' && (url.startsWith('wss://') || url.startsWith('https://'))) {
+        return {
+            result: false,
+            msg: `当前页面为HTTP协议，URL:${url}不能使用HTTPS或WSS协议，请使用HTTP或WS协议`
+        };
+    }
+
+    return {
+        result: true,
+    };
+}
+
+
 export default {
     name: "ProDemoPlayer",
     jessibuca: null,
@@ -946,6 +978,11 @@ export default {
 
 
             if (this.playUrl) {
+                const checkResult = checkUrlIsValid(this.playUrl);
+                if (!checkResult.result) {
+                    ElMessage.error(checkResult.msg);
+                    return;
+                }
                 this.jessibuca.play(this.playUrl).then(() => {
                     ElMessage.success('play success');
                 }).catch((err) => {

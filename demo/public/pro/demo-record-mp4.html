@@ -139,6 +139,8 @@
     window.JESSIBUCA_PRO_MP4_RECORDER_WASM_URL = './js/jessibuca-pro-mp4-recorder-decoder.wasm'
 </script>
 <script>
+    ;
+
     var $player = document.getElementById('play');
     var $pause = document.getElementById('pause');
     var $playHref = document.getElementById('playUrl');
@@ -240,6 +242,11 @@
     function play() {
         var href = $playHref.value;
         if (href) {
+            const validResult = checkUrlIsValid(href)
+            if (!validResult.result) {
+                notifyError(validResult.msg);
+                return;
+            }
             jessibuca.play(href).then(() => {
                 $player.style.display = 'none';
                 $pause.style.display = 'inline-block';

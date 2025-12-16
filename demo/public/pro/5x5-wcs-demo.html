@@ -383,6 +383,7 @@
 </div>
 
 <script>
+
     var $player = document.getElementById('play');
     var $pause = document.getElementById('pause');
     var $destroy = document.getElementById('destroy');
@@ -466,6 +467,12 @@
             if ($playHref.value) {
                 setTimeout((url) => {
                     console.log(url);
+                    const validResult = checkUrlIsValid(url)
+                    if (!validResult.result) {
+                        notifyError(validResult.msg);
+                        return;
+                    }
+
                     player && player.play(url).then(() => {
 
                     }).catch((e) => {

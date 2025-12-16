@@ -314,6 +314,7 @@
             if ($playHref.value) {
                 setTimeout((url) => {
                     console.log(url);
+
                     player && player.play(url).then(() => {
 
                     }).catch((e) => {
