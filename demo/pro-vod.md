@@ -92,3 +92,45 @@ ffmpeg -i input.mp4 -vcodec copy -acodec copy -movflags faststart -y output.mp4
 正确的返回格式：
 
 <img src="/public/img/range-success.png">
+
+
+
+
+## MP4 播放报错：`cannot parse segments`
+
+一般这种情况，就是缺少web播放的核心mp4box 盒子。
+
+主要是缺少：
+
+1. stsd
+2. stts
+2. stsc
+3. stsz
+4. stco
+5. stss
+
+
+| box 名称     | 全称                         | 解决的问题               | 里面存的核心信息                             | 缺失后的真实影响（Web 端）                    | 重要级别  |
+|------------| -------------------------- | ------------------- | ------------------------------------ |------------------------------------| ----- |
+| **stsd**   | Sample Description Box     | sample 用什么编码        | codec、profile、extradata（avcC / hvcC） | **完全无法解码**                         | ⭐⭐⭐⭐⭐ |
+| **stts**   | Decoding Time to Sample    | 一帧播多久（DTS）          | sample_delta 时间表                     | **时间轴不存在，几乎不播**                    | ⭐⭐⭐⭐⭐ |
+| **stsc**   | Sample to Chunk            | 一个 chunk 有几个 sample | chunk → sample 数                     | **结构级损坏，无法拆帧**                     | ⭐⭐⭐⭐⭐ |
+| **stsz**   | Sample Size                | 每个 sample 多大        | sample_size / size[]                 | **帧边界丢失，必挂**                       | ⭐⭐⭐⭐⭐ |
+| **stco**   | Chunk Offset               | chunk 在文件哪          | chunk 偏移字节数                          | **读不到数据，必挂**                       | ⭐⭐⭐⭐⭐ |
+| **stss**   | Sync Sample                | 哪些是关键帧              | I / IDR sample 编号                    | 点播业务不能播，没法seek，video标签需要完整下载才能seek | ⭐⭐☆☆☆ |
+
+
+#### 如何自查缺少哪些盒子
+
+可以通过`mp4box.js` 来解析mp4文件，查看报错信息。
+
+访问地址：https://gpac.github.io/mp4box.js/test/filereader.html
+
+正常能播的mp4文件：
+<img src="/public/img/mp4box-1.png">
+
+缺少关键盒子的mp4文件：
+
+> 缺少stss 盒子
+
+<img src="/public/img/mp4box-2.png">
