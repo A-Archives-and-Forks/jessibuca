@@ -939,8 +939,12 @@ export default {
                 console.error('crashLog', log)
             })
 
-            jessibuca.on(JessibucaPro.EVENTS.playFailedAndPaused, (error) => {
-                jessibuca.showErrorMessageTips('播放异常：' + error);
+            jessibuca.on(JessibucaPro.EVENTS.playFailedAndPaused, (error,{},msg) => {
+                let tips = '播放异常：' + error;
+                if(msg){
+                    tips += '，详情：' + msg;
+                }
+                jessibuca.showErrorMessageTips(tips);
             })
 
 
