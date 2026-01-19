@@ -32,12 +32,23 @@
         </div>
         <div class="input" style="border-bottom: 1px solid">
             <div>
-                <input
-                    type="checkbox"
-                    id="isWebrtcForZLM"
-                /><span>强制ZLM服务器</span>
+                <div>
+                    <input
+                        type="checkbox"
+                        id="isWebrtcForZLM"
+                    /><span>强制ZLM服务器</span>
+                    <span style="color: green">webrtc://127.0.0.1/index/api/webrtc?app=live&stream=test&type=play</span>
+                </div>
+                <div>
+                    <input
+                        type="checkbox"
+                        id="webrtcForZLMByWhipWhep"
+                    /><span>ZLM服务器（Whip-Whep)格式</span>
+                    <span
+                        style="color: green">url 格式：webrtc://127.0.0.1/index/api/whep?app=live&stream={livestream}</span>
+                </div>
             </div>
-            <span style="color: green">webrtc://127.0.0.1/index/api/webrtc?app=live&stream=test&type=play</span>
+
 
         </div>
         <div class="input">
@@ -60,7 +71,8 @@
                         type="checkbox"
                         id="webrtcForSRSBySDK"
                     /><span>SRS服务器(v4+)</span>
-                    <span style="color: green">url 格式：webrtc://127.0.0.1/index/api/webrtc?app=live&stream={livestream}</span>
+                    <span
+                        style="color: green">url 格式：webrtc://127.0.0.1/index/api/webrtc?app=live&stream={livestream}</span>
                 </div>
                 <div>
                     <input
@@ -102,31 +114,47 @@
         </div>
         <div class="input" style="border-bottom: 1px solid">
             <div>
+                <div>
+                    <input
+                        type="checkbox"
+                        id="isForOthers"
+                    /><span>强制其他Webrtc服务器</span>
+                    <span>其他的webrtc地址：</span><span style="color: green">webrtc://xxx.xxx.xxx.xxx/test/sdp</span>
+                    <br>
+                    播放器是不会根据url上面的路径来检测的的。
+                </div>
+                <div>
+                    <input
+                        type="checkbox"
+                        id="webrtcForOthersByWhipWhep"
+                    /><span>其他服务器（Whip-Whep)格式</span>
+                    <span
+                        style="color: green">url 格式：webrtc://xxx.xxx.xxx.xxx/test/whep</span>
+                </div>
+            </div>
+
+        </div>
+        <div class="input" style="border-bottom: 1px solid">
+            <div>
                 <input
+                    checked
                     type="checkbox"
-                    id="isForOthers"
-                /><span>强制其他Webrtc服务器</span>
-                <span>其他的webrtc地址：</span><span style="color: green">webrtc://xxx.xxx.xxx.xxx/test/sdp</span> <br>
-                播放器是不会根据url上面的路径来检测的的。
+                    id="checkWebrtcLowFps"
+                /><span>是否检测低FPS，触发重播逻辑(在5s内平均FPS低于3)</span>
             </div>
         </div>
         <div class="input" style="border-bottom: 1px solid">
             <div>
                 <input
                     type="checkbox"
-                    id="checkWebrtcLowFps"
-                /><span>是否检测低FPS，触发重播逻辑(在5s内平均FPS低于3)</span>
-
-                <input
-                    type="checkbox"
                     id="isEmitSEI"
-                /><span>是否采集SEI数据</span>
+                /><span>是否检测SEI数据并抛出(控制台会打印SEI日志)</span>
             </div>
         </div>
         <div class="input">
             <div>
                 直播模式：
-                <select id="webrtcPlayType">
+                <select id="webrtcPlayType" onchange="replay()">
                     <option value="" selected>实时直播(低延迟)</option>
                     <option value="lowNetwork">弱网直播(中等延迟)</option>
                     <option value="highQuality">纯观看端(高延迟)</option>
@@ -162,11 +190,13 @@
     var $webrtcForSRSBySDK = document.getElementById('webrtcForSRSBySDK');
     var $webrtcForSRSByWhipWhep = document.getElementById('webrtcForSRSByWhipWhep');
     var $webrtcForSRSByWhipWhepOldVersion = document.getElementById('webrtcForSRSByWhipWhepOldVersion');
+    var $webrtcForZLMByWhipWhep = document.getElementById('webrtcForZLMByWhipWhep');
     var $isWebrtcForZLM = document.getElementById('isWebrtcForZLM');
     var $isWebrtcForQiNiu = document.getElementById('isWebrtcForQiNiu');
     var $isWebrtcForDJI = document.getElementById('isWebrtcForDJI');
     var $checkWebrtcLowFps = document.getElementById('checkWebrtcLowFps');
     var $webrtcPlayType = document.getElementById('webrtcPlayType');
+    var $webrtcForOthersByWhipWhep = document.getElementById('webrtcForOthersByWhipWhep');
     var $isEmitSEI = document.getElementById('isEmitSEI');
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
@@ -197,12 +227,14 @@
             audioEngine: "worklet",
             isNotMute: false,
             heartTimeout: 3,
-            loadingTimeout: 10,
+            loadingTimeout: 1000,
             useMSE: true,
             useWCS: true,
             // hasAudio:false,
             isWebrtcForOthers: $isForOthers.checked === true,
+            webrtcForOthersByWhipWhep: $webrtcForOthersByWhipWhep.checked === true,
             isWebrtcForZLM: $isWebrtcForZLM.checked === true,
+            webrtcForZLMByWhipWhep: $webrtcForZLMByWhipWhep.checked === true,
             isEmitSEI: $isEmitSEI.checked === true,
             isWebrtcForSRS: $isWebrtcForSRS.checked === true,
             webrtcForSRSBySDK: $webrtcForSRSBySDK.checked === true,
@@ -232,12 +264,11 @@
         })
 
         jessibuca.on('videoSEISyncPts', (value) => {
+            console.log('videoSEISyncPts', value);
             // const decoder = new TextDecoder(); // 创建一个 TextDecoder 对象
             // let str = decoder.decode(value.data);
 
             // console.log(`videoSEISyncPts pts is ${value.pts} ,ts is ${value.ts}, data is`, value.data, str);
-
-
         })
 
 
@@ -299,62 +330,100 @@
 
     $webrtcForSRSBySDK.addEventListener('click', function () {
         if ($webrtcForSRSBySDK.checked === true) {
-            $isWebrtcForSRS.checked = true;
-
-            $isWebrtcForZLM.checked = false;
-            $isForOthers.checked = false;
-            $isWebrtcForQiNiu.checked = false;
-            $isWebrtcForDJI.checked = false;
+            checkSrs([$webrtcForSRSBySDK, $isWebrtcForSRS])
         }
     })
+    $webrtcForSRSByWhipWhep.addEventListener('click', function () {
+        if ($webrtcForSRSByWhipWhep.checked === true) {
+            checkSrs([$webrtcForSRSByWhipWhep, $isWebrtcForSRS])
+        }
+    })
+    $webrtcForSRSByWhipWhepOldVersion.addEventListener('click', function () {
+        if ($webrtcForSRSByWhipWhepOldVersion.checked === true) {
+            checkSrs([$webrtcForSRSByWhipWhepOldVersion, $isWebrtcForSRS])
+        }
+    })
+
+    function checkSrs(checkedItems) {
+        initState(checkedItems);
+    }
+
+    function initState($checked) {
+        $isWebrtcForSRS.checked = false;
+        $webrtcForSRSBySDK.checked = false;
+        $webrtcForSRSByWhipWhep.checked = false;
+        $webrtcForSRSByWhipWhepOldVersion.checked = false;
+        $webrtcForZLMByWhipWhep.checked = false;
+        $isWebrtcForZLM.checked = false;
+        $isForOthers.checked = false;
+        $webrtcForSRSBySDK.checked = false;
+        $isWebrtcForQiNiu.checked = false;
+        $isWebrtcForDJI.checked = false;
+
+        if ($checked) {
+            if (Array.isArray($checked)) {
+                $checked.forEach(item => {
+                    item.checked = true;
+                })
+                return;
+            }
+            $checked.checked = true;
+        }
+    }
+
     $isWebrtcForSRS.addEventListener('click', function () {
         if ($isWebrtcForSRS.checked === false) {
             $webrtcForSRSBySDK.checked = false;
+            $webrtcForSRSByWhipWhep.checked = false;
+            $webrtcForSRSByWhipWhepOldVersion.checked = false;
         }
         if ($isWebrtcForSRS.checked === true) {
-            $isWebrtcForZLM.checked = false;
-            $isForOthers.checked = false;
-            $isWebrtcForQiNiu.checked = false;
-            $isWebrtcForDJI.checked = false;
+            initState($isWebrtcForSRS);
         }
     })
 
     $isWebrtcForZLM.addEventListener('click', function () {
+
+        if ($isWebrtcForZLM.checked === false) {
+            $webrtcForZLMByWhipWhep.checked = false;
+        }
+
         if ($isWebrtcForZLM.checked === true) {
-            $isWebrtcForSRS.checked = false;
-            $webrtcForSRSBySDK.checked = false;
-            $isForOthers.checked = false;
-            $isWebrtcForDJI.checked = false;
-            $isWebrtcForQiNiu.checked = false;
+            initState($isWebrtcForZLM);
+        }
+    })
+
+    $webrtcForZLMByWhipWhep.addEventListener('click', function () {
+        if ($webrtcForZLMByWhipWhep.checked === true) {
+            initState([$webrtcForZLMByWhipWhep, $isWebrtcForZLM]);
         }
     })
 
     $isForOthers.addEventListener('click', function () {
+        if( $isForOthers.checked === false) {
+            $webrtcForOthersByWhipWhep.checked = false;
+        }
+
         if ($isForOthers.checked === true) {
-            $isWebrtcForSRS.checked = false;
-            $webrtcForSRSBySDK.checked = false;
-            $isWebrtcForZLM.checked = false;
-            $isWebrtcForDJI.checked = false;
+            initState($isForOthers);
+        }
+    })
+    $webrtcForOthersByWhipWhep.addEventListener('click', function () {
+        if ($webrtcForOthersByWhipWhep.checked === true) {
+            initState([$isForOthers, $webrtcForOthersByWhipWhep]);
         }
     })
 
+
     $isWebrtcForQiNiu.addEventListener('click', function () {
         if ($isWebrtcForQiNiu.checked === true) {
-            $isWebrtcForSRS.checked = false;
-            $webrtcForSRSBySDK.checked = false;
-            $isWebrtcForZLM.checked = false;
-            $isForOthers.checked = false;
-            $isWebrtcForDJI.checked = false;
+            initState($isWebrtcForQiNiu);
         }
     })
 
     $isWebrtcForDJI.addEventListener('click', function () {
         if ($isWebrtcForDJI.checked === true) {
-            $isWebrtcForSRS.checked = false;
-            $webrtcForSRSBySDK.checked = false;
-            $isWebrtcForZLM.checked = false;
-            $isForOthers.checked = false;
-            $isWebrtcForQiNiu.checked = false;
+            initState($isWebrtcForDJI);
         }
     })
 
