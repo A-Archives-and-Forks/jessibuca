@@ -205,6 +205,17 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 #### http
 [http://jessibuca.monibuca.com/pro/play-vod-demo-flv.html](http://jessibuca.monibuca.com/pro/play-vod-demo-flv.html)
 
+### fmp4 demo（支持逐帧播放，逐关键帧(I帧)播放，4k25P(硬解码+软解码)）
+
+------
+#### https
+
+[https://jessibuca.com/pro/play-vod-demo-fmp4.html](https://jessibuca.com/pro/play-vod-demo-fmp4.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/play-vod-demo-fmp4.html](http://jessibuca.monibuca.com/pro/play-vod-demo-fmp4.html)
+
+
 ### ps demo（支持逐帧播放，逐关键帧(I帧)播放，4k25P(硬解码+软解码)）
 ------
 #### https
