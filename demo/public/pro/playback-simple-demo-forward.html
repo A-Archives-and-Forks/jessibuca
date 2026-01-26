@@ -90,6 +90,15 @@
                         id="isMute"
                     /><span>是否静音播放</span>
                 </div>
+                <div class="input">
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="isIgnoreExceptionFrame"
+                            onclick="replay()"
+                        /><span>是否跳过花屏\灰色\拖拉\半截不全的画面（wasm和webcodec支持）</span>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="input">
@@ -159,6 +168,7 @@
     var $demuxUseWorker = document.getElementById('demuxUseWorker');
     var $isFlv = document.getElementById('isFlv');
     var $isMute = document.getElementById('isMute');
+    var $isIgnoreExceptionFrame = document.getElementById('isIgnoreExceptionFrame');
 
     var forceNoOffscreen = true; //
     var jessibuca = null;
@@ -213,6 +223,7 @@
             demuxUseWorker: $demuxUseWorker.checked === true,
             isFlv: $isFlv.checked === true,
             isSpecialPlaybackVod: true,
+            isIgnoreExceptionFrame: $isIgnoreExceptionFrame.checked === true,
         },);
 
         $player.style.display = 'inline-block';

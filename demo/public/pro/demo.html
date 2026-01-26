@@ -116,6 +116,15 @@
                         /><span>是否开启</span>
                     </div>
                 </div>
+                <div class="input">
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="isIgnoreExceptionFrame"
+                            onclick="replay()"
+                        /><span>是否跳过花屏\灰色\拖拉\半截不全的画面（wasm和webcodec支持）</span>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="input">
@@ -233,6 +242,7 @@
     var $audioDecodeUseHardware = document.getElementById('audioDecodeUseHardware');
     var $useSThreading = document.getElementById('useSThreading');
     var $syncAudioAndVideo = document.getElementById('syncAudioAndVideo');
+    var $isIgnoreExceptionFrame = document.getElementById('isIgnoreExceptionFrame');
 
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
@@ -290,7 +300,7 @@
             replayShowLoadingIcon: $replayShowLoadingIcon.checked === true,// 重播显示loading
             mseDecoderUseWorker:$mseDecoderUseWorker.checked === true,
             controlAutoHide:$controlAutoHide.checked === true,
-
+            isIgnoreExceptionFrame:$isIgnoreExceptionFrame.checked === true,
         },);
 
         jessibuca.on('stats', (stats) => {

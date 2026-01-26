@@ -152,6 +152,15 @@
                 </div>
             </div>
             <div class="input">
+                <div>
+                    <input
+                        type="checkbox"
+                        v-model="isIgnoreExceptionFrame"
+                        @change="restartPlay()"
+                    /><span>是否跳过花屏\灰色\拖拉\半截不全的画面（wasm和webcodec支持）</span>
+                </div>
+            </div>
+            <div class="input">
                 <input
                     type="checkbox"
                     v-model="isFlv"
@@ -651,6 +660,7 @@ export default {
             isHls: false,
             isTs: false,
             isPs: false,
+            isIgnoreExceptionFrame:false,
             isNakedFlow: false,
             decoderErrorAutoWasm: true,
             hiddenAutoPause: false,
@@ -825,6 +835,7 @@ export default {
                         isDropSameTimestampGop: this.isDropSameTimestampGop,
                         demuxUseWorker: this.demuxUseWorker,
                         mseDecoderUseWorker: this.mseDecoderUseWorker,
+                        isIgnoreExceptionFrame: this.isIgnoreExceptionFrame,
                     },
                     options
                 )

@@ -128,6 +128,15 @@
             </div>
         </div>
         <div class="input">
+            <div>
+                <input
+                    type="checkbox"
+                    id="isIgnoreExceptionFrame"
+                    onclick="replay()"
+                /><span>是否跳过花屏\灰色\拖拉\半截不全的画面（wasm和webcodec支持）</span>
+            </div>
+        </div>
+        <div class="input">
             <a href="/test-url.html">测试地址</a>
         </div>
         <div class="input">
@@ -204,6 +213,7 @@
     var $playVodMp4UseSrc = document.getElementById('playVodMp4UseSrc');
     var $useSThreading = document.getElementById('useSThreading');
     var $startTime = document.getElementById('startTime');
+    var $isIgnoreExceptionFrame = document.getElementById('isIgnoreExceptionFrame');
 
     var forceNoOffscreen = true; //
     var jessibuca = null;
@@ -262,6 +272,7 @@
             muted: false,
             isHls: $isHls.checked,
             isFmp4: $isMP4.checked,
+            isIgnoreExceptionFrame: $isIgnoreExceptionFrame.checked === true,
         },);
 
         jessibuca.on('playVodEnded', function () {
