@@ -300,6 +300,10 @@ export function isFullScreen() {
     return screenfull.isFullscreen
 }
 
+export function isElementFullScreen(element){
+    return isFullScreen() && screenfull.element === element;
+}
+
 export function bpsSize(value) {
     if (null == value || value === '' || parseInt(value) === 0 || isNaN(parseInt(value))) {
         return "0KB/s";

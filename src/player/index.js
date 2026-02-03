@@ -7,12 +7,12 @@ import {
     fpsStatus,
     initPlayTimes,
     isEmpty, isFalse,
-    isFullScreen, isMobile, isPad,
+    isMobile, isPad,
     isNotEmpty,
     now, supportMediaStreamTrack,
     supportMSE,
     supportOffscreenV2,
-    supportWCS
+    supportWCS, isElementFullScreen
 } from "../utils";
 import Video from "../video";
 import Audio from "../audio";
@@ -284,7 +284,7 @@ export default class Player extends Emitter {
     }
 
     get fullscreen() {
-        return isFullScreen() || this.webFullscreen;
+        return isElementFullScreen(this.$container) || this.webFullscreen;
     }
 
     set webFullscreen(value) {
