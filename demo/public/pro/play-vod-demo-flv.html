@@ -147,8 +147,6 @@
 <script src="./demo.js"></script>
 
 <script>
-    ;
-
     var $player = document.getElementById('play');
     var $playbackPause = document.getElementById('playbackPause');
     var $playHref = document.getElementById('playUrl');
@@ -334,6 +332,12 @@
     function playbackExitNextFrameAndPlay(){
         if (jessibuca) {
             jessibuca.playbackExitNextFrameAndPlay();
+        }
+    }
+
+    function playbackNextIFrame() {
+        if (jessibuca) {
+            jessibuca.playbackNextIFrame();
         }
     }
 
