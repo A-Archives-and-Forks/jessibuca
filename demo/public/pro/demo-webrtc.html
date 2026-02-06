@@ -24,7 +24,7 @@
                 <span style="color: red">注意 'live/test' 是streamPath</span>
             </div>
         </div>
-        <div class="input" >
+        <div class="input">
             <div>
                 <span>ZLM的webrtc地址：</span>http://127.0.0.1/index/api/webrtc?app=live&stream={test}&type=play <br>
                 <span style="color:red;">注意：将zlm的webrtc播放地址，https:// 修改为 webrtc:// 就可以了</span>即：webrtc://127.0.0.1/index/api/webrtc?app=live&stream={test}&type=play
@@ -149,6 +149,10 @@
                     type="checkbox"
                     id="isEmitSEI"
                 /><span>是否检测SEI数据并抛出(控制台会打印SEI日志)</span>
+                <input
+                    type="checkbox"
+                    id="isEmitSEIForDJI"
+                /><span>是否是大疆无人机( <a href="https://developer.dji.com/doc/cloud-api-tutorial/cn/feature-set/dock-feature-set/ai-target-recognition.html" target="_blank">AI目标识别</a>)，并绘制sei数据在画面中 </span>
             </div>
         </div>
         <div class="input">
@@ -198,6 +202,7 @@
     var $webrtcPlayType = document.getElementById('webrtcPlayType');
     var $webrtcForOthersByWhipWhep = document.getElementById('webrtcForOthersByWhipWhep');
     var $isEmitSEI = document.getElementById('isEmitSEI');
+    var $isEmitSEIForDJI = document.getElementById('isEmitSEIForDJI');
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
     var jessibuca = null;
@@ -265,12 +270,59 @@
 
         jessibuca.on('videoSEISyncPts', (value) => {
             console.log('videoSEISyncPts', value);
-            // const decoder = new TextDecoder(); // 创建一个 TextDecoder 对象
-            // let str = decoder.decode(value.data);
 
-            // console.log(`videoSEISyncPts pts is ${value.pts} ,ts is ${value.ts}, data is`, value.data, str);
+            if ($isEmitSEIForDJI.checked === true) {
+                const result = SEIParser.parse(value.originData);
+
+                result.forEach((item) => {
+                    const parsedData = item.parsedData;
+
+                    if (parsedData && parsedData.ai_data) {
+                        const aiData = parsedData.ai_data;
+                        const contentArray = [];
+                        aiData.obj_groups.forEach((group) => {
+                            if (group.group_type === 10 && group.objects && group.objects.length > 0) {
+                                group.objects.forEach((item) => {
+                                    // 只展示类型为2、3、4的检测框（人、车、船）
+                                    if (![2, 3, 4].includes(item.type)) {
+                                        return;
+                                    }
+                                    const videoInfo = jessibuca.getVideoInfo();
+                                    const videoNaturalWidth = videoInfo.width;
+                                    const videoNaturalHeight = videoInfo.height;
+                                    const originalCenterX = (item.cx / 10000) * videoNaturalWidth;
+                                    const originalCenterY = (item.cy / 10000) * videoNaturalHeight;
+                                    const originalWidth = (item.w / 10000) * videoNaturalWidth;
+                                    const originalHeight = (item.h / 10000) * videoNaturalHeight;
+                                    // 计算矩形左上角坐标
+                                    const x = originalCenterX - originalWidth / 2;
+                                    const y = originalCenterY - originalHeight / 2;
+                                    // 框子
+                                    contentArray.push({
+                                        type: 'rect',
+                                        x: x,
+                                        y: y,
+                                        width: originalWidth,
+                                        height: originalHeight,
+                                        color: '#FF0000',
+                                    })
+                                    // 文字
+                                    contentArray.push({
+                                        type: 'text',
+                                        x: x + 5,
+                                        y: y - 18,
+                                        text: `${item.type_name} (${item.distance} mm)`,
+                                        font: '16',
+                                        color: '#00FF00',
+                                    })
+                                });
+                            }
+                        })
+                        jessibuca.addContentToCanvas(contentArray)
+                    }
+                })
+            }
         })
-
 
         $player.style.display = 'inline-block';
         $pause.style.display = 'none';
@@ -400,7 +452,7 @@
     })
 
     $isForOthers.addEventListener('click', function () {
-        if( $isForOthers.checked === false) {
+        if ($isForOthers.checked === false) {
             $webrtcForOthersByWhipWhep.checked = false;
         }
 

@@ -470,6 +470,16 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 #### http
 [http://jessibuca.monibuca.com/pro/demo-sei.html](http://jessibuca.monibuca.com/pro/demo-sei.html)
 
+### 收集SEI(大疆无人机AI目标识别)信息并画框显示
+------
+[大疆无人机AI目标识别介绍](https://developer.dji.com/doc/cloud-api-tutorial/cn/feature-set/dock-feature-set/ai-target-recognition.html)
+
+#### https
+[https://jessibuca.com/pro/demo-sei-dj.html](https://jessibuca.com/pro/demo-sei-dj.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/demo-sei-dj.html](http://jessibuca.monibuca.com/pro/demo-sei-dj.html)
+
 
 ### 电子放大
 ------
