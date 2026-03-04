@@ -18,6 +18,14 @@
 <div class="root">
     <div class="container-shell">
         <div id="container"></div>
+        <div class="input">
+            <div>
+                当前浏览器：
+                <span id="supportWebrtcH265" style="color: green;display: none">支持Webrtc H265；</span>
+                <span id="notSupportWebrtcH265"
+                      style="color: red;display: none">不支持MSE H265解码</span>
+            </div>
+        </div>
         <div class="input" style="border-bottom: 1px solid">
             <div>
                 <span>M7S的webrtc地址：</span>webrtc://localhost:8080/webrtc/play/{live/test} <br>
@@ -152,7 +160,9 @@
                 <input
                     type="checkbox"
                     id="isEmitSEIForDJI"
-                /><span>是否是大疆无人机( <a href="https://developer.dji.com/doc/cloud-api-tutorial/cn/feature-set/dock-feature-set/ai-target-recognition.html" target="_blank">AI目标识别</a>)，并绘制sei数据在画面中 </span>
+                /><span>是否是大疆无人机( <a
+                href="https://developer.dji.com/doc/cloud-api-tutorial/cn/feature-set/dock-feature-set/ai-target-recognition.html"
+                target="_blank">AI目标识别</a>)，并绘制sei数据在画面中 </span>
             </div>
         </div>
         <div class="input">
@@ -203,9 +213,26 @@
     var $webrtcForOthersByWhipWhep = document.getElementById('webrtcForOthersByWhipWhep');
     var $isEmitSEI = document.getElementById('isEmitSEI');
     var $isEmitSEIForDJI = document.getElementById('isEmitSEIForDJI');
+    var $supportWebrtcH265 = document.getElementById('supportWebrtcH265');
+    var $notSupportWebrtcH265 = document.getElementById('notSupportWebrtcH265');
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
     var jessibuca = null;
+
+    function supportWebrtcH265() {
+        var result = false;
+        if (window.RTCRtpReceiver && RTCRtpReceiver.getCapabilities) {
+            const capabilities = RTCRtpReceiver.getCapabilities("video");
+            if (capabilities && capabilities.codecs) {
+                result = capabilities.codecs.some(codec =>
+                    codec.mimeType.toLowerCase().includes("h265") ||
+                    codec.mimeType.toLowerCase().includes("hevc")
+                );
+            }
+        }
+
+        return result;
+    }
 
 
     function create() {
@@ -478,6 +505,14 @@
             initState($isWebrtcForDJI);
         }
     })
+
+    if(supportWebrtcH265()) {
+        $supportWebrtcH265.style.display = 'inline-block';
+        $notSupportWebrtcH265.style.display = 'none';
+    } else {
+        $supportWebrtcH265.style.display = 'none';
+        $notSupportWebrtcH265.style.display = 'inline-block';
+    }
 
 </script>
 
