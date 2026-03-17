@@ -128,6 +128,16 @@
 因为原生的ts里面是不支持g711a/u音频格式，所以需要定制化支持。都得编码类型是自定义格式的。
 
 
+## 支持解析大疆sei结构化数据
+
+支持解析大疆sei结构化数据
+
+[大疆AI目标识别](https://developer.dji.com/doc/cloud-api-tutorial/cn/feature-set/dock-feature-set/ai-target-recognition.html) 介绍。
+
+### 定价
+
+添加微信：bosswancheng 咨询
+
 
 ## 支持亮度、对比度、饱和度调节、色调偏移(角度) 调节
 

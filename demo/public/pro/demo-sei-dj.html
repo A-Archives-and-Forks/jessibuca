@@ -271,7 +271,8 @@
                     const aiData = parsedData.ai_data;
                     const contentArray = [];
                     aiData.obj_groups.forEach((group) => {
-                        if (group.group_type === 10 && group.objects && group.objects.length > 0) {
+                        if (group.group_type === 10 &&  //
+                            group.objects && group.objects.length > 0) {
                             group.objects.forEach((item) => {
                                 // 只展示类型为2、3、4的检测框（人、车、船）
                                 if (![2, 3, 4].includes(item.type)) {
