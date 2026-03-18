@@ -181,7 +181,9 @@ jessibuca pro 是在开源版本的基础上额外支持的深入业务解决方
 | 播放过程中超时，重新加载的时候，显示最后一帧画面                                                                                                                                                                                                                                                         | 不支持 | 支持  |
 | pause() 到 play()的时候，显示暂停的时候的最后一帧画面                                                                                                                                                                                                                                               | 不支持 | 支持  |
 | 支持分析视频流(flv,hls-ts,hls-mp4,TS,fmp4，裸流，webrtc)里面SEI数据，并提取出来，通过事件回调给业务层使用                                                                                                                                                                                                          | 不支持 | 支持  |
+| 支持分析大疆机场AI识别数据[AI目标识别](https://developer.dji.com/doc/cloud-api-tutorial/cn/feature-set/dock-feature-set/ai-target-recognition.html)（大疆机场AI识别数据是通过SEI数据封装在视频流里面的）                                                                                                                 | 不支持 | 支持  |
 | 支持分析视频流(hls-ts,TS)里面的私有数据(PES_private_data_flag == 1逻辑判断得到的)                                                                                                                                                                                                                     |不支持|支持|
+| 支持视频流(hls-ts,TS)选择播放通道（音频+视频）                                                                                                                                                                                                                                                    |不支持|支持|
 | 支持监听播放器是否在可视区域，获取焦点，失去焦点事件                                                                                                                                                                                                                                                       | 不支持 | 支持  |
 | NxN路UI多屏播放(支持1x1,2x2,3x3,4x4)                                                                                                                                                                                                                                                    | 不支持 | 支持  |
 | NxN路UI多屏播放支持不规则多屏播放(3-1，4-1)                                                                                                                                                                                                                                                     | 不支持 | 支持  |
@@ -211,7 +213,6 @@ jessibuca pro 是在开源版本的基础上额外支持的深入业务解决方
 [升级文档](https://jessibuca.com/pro-upgrade.html)
 
 ## 直播协议支持(封装格式)
-
 支持20种直播格式
 
 | 协议                         | 支持情况 |

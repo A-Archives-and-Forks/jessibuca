@@ -48,10 +48,16 @@ module.exports = {
             {
                 text: '不卡系列',
                 items: [
-                    {text: 'Monibuca', link: 'https://monibuca.com/'},
-                    {text: 'Rebebuca', link: 'https://rebebuca.com/'}
+                    {text: 'Monibuca(纯 Go 开源一站式流媒体服务器开发框架)', link: 'https://monibuca.com/'},
+                    {text: 'Rebebuca(强大的运行配置管理工具)', link: 'https://rebebuca.com/'}
                 ]
             },
+            {
+                text: '友情链接',
+                items: [
+                    {text: 'Mediainsight(媒体格式在线分析)', link: 'https://mediainsight360.com/'},
+                ]
+            }
         ],
         logo: 'logo.png',
     },
