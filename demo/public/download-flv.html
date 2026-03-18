@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>HTTP(ws)-FLV 下载器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            padding: 32px;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #1a1a1a;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #1890ff;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-start {
+            background: #1890ff;
+            color: #fff;
+        }
+
+        .btn-stop {
+            background: #ff4d4f;
+            color: #fff;
+        }
+
+        .btn-export {
+            background: #52c41a;
+            color: #fff;
+        }
+
+        .status-bar {
+            background: #fafafa;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .status-bar .row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #333;
+            line-height: 2;
+        }
+
+        .status-bar .label {
+            color: #888;
+        }
+
+        .status-bar .value {
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-bar .value.downloading {
+            color: #1890ff;
+        }
+
+        .status-bar .value.stopped {
+            color: #ff4d4f;
+        }
+
+        .status-bar .value.idle {
+            color: #999;
+        }
+
+        .log-panel {
+            margin-top: 20px;
+        }
+
+        .log-panel h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .log-list {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 8px;
+            padding: 12px 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Menlo', 'Consolas', monospace;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .log-list .log-item {
+            white-space: nowrap;
+        }
+
+        .log-list .log-time {
+            color: #6a9955;
+            margin-right: 8px;
+        }
+
+        .log-list .log-size {
+            color: #569cd6;
+        }
+
+        .log-list .log-speed {
+            color: #ce9178;
+        }
+
+        .log-list .log-info {
+            color: #dcdcaa;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📥 HTTP-FLV 下载器</h1>
+
+    <div class="form-group">
+        <label for="urlInput">FLV 播放地址（支持 http-flv / ws-flv）</label>
+        <input id="urlInput" type="text" placeholder="http(s)://host/live/stream.flv 或 ws(s)://host/live/stream.flv" />
+    </div>
+
+    <div class="form-group">
+        <label for="filenameInput">导出文件名</label>
+        <input id="filenameInput" type="text" placeholder="record.flv" value="record.flv" />
+    </div>
+
+    <div class="btn-group">
+        <button class="btn btn-start" id="btnStart">开始下载</button>
+        <button class="btn btn-stop" id="btnStop" disabled>停止下载</button>
+        <button class="btn btn-export" id="btnExport" disabled>导出文件</button>
+    </div>
+
+    <div class="status-bar">
+        <div class="row">
+            <span class="label">状态</span>
+            <span class="value idle" id="statusText">未开始</span>
+        </div>
+        <div class="row">
+            <span class="label">已下载大小</span>
+            <span class="value" id="sizeText">0 B</span>
+        </div>
+        <div class="row">
+            <span class="label">当前速率</span>
+            <span class="value" id="speedText">-</span>
+        </div>
+        <div class="row">
+            <span class="label">已持续时间</span>
+            <span class="value" id="durationText">00:00:00</span>
+        </div>
+    </div>
+
+    <div class="log-panel">
+        <h3>下载日志</h3>
+        <div class="log-list" id="logList"></div>
+    </div>
+</div>
+
+<script>
+    const urlInput = document.getElementById('urlInput');
+    const filenameInput = document.getElementById('filenameInput');
+    const btnStart = document.getElementById('btnStart');
+    const btnStop = document.getElementById('btnStop');
+    const btnExport = document.getElementById('btnExport');
+    const statusText = document.getElementById('statusText');
+    const sizeText = document.getElementById('sizeText');
+    const speedText = document.getElementById('speedText');
+    const durationText = document.getElementById('durationText');
+    const logList = document.getElementById('logList');
+
+    let chunks = [];
+    let totalBytes = 0;
+    let lastBytes = 0;
+    let reader = null;
+    let abortController = null;
+    let wsInstance = null;
+    let timerInterval = null;
+    let startTime = null;
+    let downloading = false;
+
+    // 判断是否是 WebSocket 地址
+    function isWebSocketURL(url) {
+        return /^wss?:\/\//i.test(url);
+    }
+
+    // 格式化文件大小
+    function formatSize(bytes) {
+        if (bytes === 0) return '0 B';
+        const units = ['B', 'KB', 'MB', 'GB'];
+        const k = 1024;
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        const size = (bytes / Math.pow(k, i)).toFixed(2);
+        return `${size} ${units[i]}`;
+    }
+
+    // 格式化时长
+    function formatDuration(ms) {
+        const totalSec = Math.floor(ms / 1000);
+        const h = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+        const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+        const s = String(totalSec % 60).padStart(2, '0');
+        return `${h}:${m}:${s}`;
+    }
+
+    // 获取当前时间字符串
+    function nowStr() {
+        return new Date().toLocaleTimeString('zh-CN', { hour12: false });
+    }
+
+    // 追加日志
+    function addLog(text, type = 'info') {
+        const item = document.createElement('div');
+        item.className = 'log-item';
+        const timeSpan = `<span class="log-time">[${nowStr()}]</span>`;
+        const textSpan = `<span class="log-${type}">${text}</span>`;
+        item.innerHTML = timeSpan + textSpan;
+        logList.appendChild(item);
+        logList.scrollTop = logList.scrollHeight;
+    }
+
+    // 更新 UI 状态
+    function setUIState(state) {
+        if (state === 'downloading') {
+            btnStart.disabled = true;
+            btnStop.disabled = false;
+            btnExport.disabled = true;
+            urlInput.disabled = true;
+            statusText.textContent = '下载中...';
+            statusText.className = 'value downloading';
+        } else if (state === 'stopped') {
+            btnStart.disabled = false;
+            btnStop.disabled = true;
+            btnExport.disabled = chunks.length === 0;
+            urlInput.disabled = false;
+            statusText.textContent = '已停止';
+            statusText.className = 'value stopped';
+        } else {
+            btnStart.disabled = false;
+            btnStop.disabled = true;
+            btnExport.disabled = true;
+            urlInput.disabled = false;
+            statusText.textContent = '未开始';
+            statusText.className = 'value idle';
+        }
+    }
+
+    // 开始定时记录（每秒）
+    function startTimer() {
+        lastBytes = totalBytes;
+        timerInterval = setInterval(() => {
+            const speed = totalBytes - lastBytes; // bytes per second
+            lastBytes = totalBytes;
+            const elapsed = Date.now() - startTime;
+
+            sizeText.textContent = formatSize(totalBytes);
+            speedText.textContent = formatSize(speed) + '/s';
+            durationText.textContent = formatDuration(elapsed);
+
+            addLog(`已下载: ${formatSize(totalBytes)}，速率: ${formatSize(speed)}/s`, 'size');
+        }, 1000);
+    }
+
+    function stopTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+    }
+
+    // 下载结束统一收尾
+    function finishDownload() {
+        downloading = false;
+        stopTimer();
+        sizeText.textContent = formatSize(totalBytes);
+        speedText.textContent = '-';
+        if (startTime) {
+            durationText.textContent = formatDuration(Date.now() - startTime);
+        }
+        setUIState('stopped');
+        addLog(`下载结束，总大小: ${formatSize(totalBytes)}`, 'info');
+    }
+
+    // ========== HTTP-FLV 下载（fetch + ReadableStream） ==========
+    async function startHttpFlv(url) {
+        abortController = new AbortController();
+        try {
+            const res = await fetch(url, { signal: abortController.signal });
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status} ${res.statusText}`);
+            }
+            addLog(`连接成功，HTTP ${res.status}`, 'info');
+            reader = res.body.getReader();
+            startTimer();
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) {
+                    addLog('流已结束（服务端关闭）', 'info');
+                    break;
+                }
+                chunks.push(value);
+                totalBytes += value.byteLength;
+            }
+        } catch (err) {
+            if (err.name === 'AbortError') {
+                addLog('下载已被用户中止', 'info');
+            } else {
+                addLog(`下载出错: ${err.message}`, 'info');
+            }
+        } finally {
+            finishDownload();
+        }
+    }
+
+    // ========== WS-FLV 下载（WebSocket） ==========
+    function startWsFlv(url) {
+        return new Promise((resolve) => {
+            const ws = new WebSocket(url);
+            ws.binaryType = 'arraybuffer';
+            wsInstance = ws;
+
+            ws.onopen = () => {
+                addLog(`WebSocket 连接成功`, 'info');
+                startTimer();
+            };
+
+            ws.onmessage = (e) => {
+                if (e.data instanceof ArrayBuffer) {
+                    const uint8 = new Uint8Array(e.data);
+                    chunks.push(uint8);
+                    totalBytes += uint8.byteLength;
+                } else if (e.data instanceof Blob) {
+                    // 兼容：某些实现可能返回 Blob
+                    e.data.arrayBuffer().then((buf) => {
+                        const uint8 = new Uint8Array(buf);
+                        chunks.push(uint8);
+                        totalBytes += uint8.byteLength;
+                    });
+                }
+            };
+
+            ws.onerror = (e) => {
+                addLog(`WebSocket 出错`, 'info');
+            };
+
+            ws.onclose = (e) => {
+                const reason = e.reason || (e.code === 1000 ? '正常关闭' : `code=${e.code}`);
+                if (downloading) {
+                    addLog(`WebSocket 已关闭（${reason}）`, 'info');
+                } else {
+                    addLog('下载已被用户中止', 'info');
+                }
+                wsInstance = null;
+                finishDownload();
+                resolve();
+            };
+        });
+    }
+
+    // 开始下载（自动判断协议）
+    async function startDownload() {
+        const url = urlInput.value.trim();
+        if (!url) {
+            alert('请输入 FLV 地址');
+            return;
+        }
+
+        // 重置
+        chunks = [];
+        totalBytes = 0;
+        lastBytes = 0;
+        downloading = true;
+        startTime = Date.now();
+
+        sizeText.textContent = '0 B';
+        speedText.textContent = '-';
+        durationText.textContent = '00:00:00';
+        logList.innerHTML = '';
+
+        setUIState('downloading');
+
+        if (isWebSocketURL(url)) {
+            addLog(`开始下载 (WS-FLV): ${url}`, 'info');
+            await startWsFlv(url);
+        } else {
+            addLog(`开始下载 (HTTP-FLV): ${url}`, 'info');
+            await startHttpFlv(url);
+        }
+    }
+
+    // 停止下载
+    function stopDownload() {
+        downloading = false;
+        // HTTP-FLV
+        if (abortController) {
+            abortController.abort();
+            abortController = null;
+        }
+        // WS-FLV
+        if (wsInstance) {
+            wsInstance.close();
+            wsInstance = null;
+        }
+    }
+
+    // 导出文件
+    function exportFile() {
+        if (chunks.length === 0) {
+            alert('没有数据可导出');
+            return;
+        }
+
+        const filename = filenameInput.value.trim() || 'record.flv';
+        const blob = new Blob(chunks, { type: 'video/x-flv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        addLog(`文件已导出: ${filename}（${formatSize(blob.size)}）`, 'info');
+    }
+
+    btnStart.addEventListener('click', startDownload);
+    btnStop.addEventListener('click', stopDownload);
+    btnExport.addEventListener('click', exportFile);
+</script>
+</body>
+</html>
