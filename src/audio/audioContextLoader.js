@@ -125,7 +125,7 @@ export default class AudioContextLoader extends Emitter {
     }
 
     get isMute() {
-        return this.gainNode.gain.value === 0;
+        return this.gainNode.gain.value === 0 || this.isStateSuspended();
     }
 
     get volume() {
@@ -258,15 +258,21 @@ export default class AudioContextLoader extends Emitter {
     // 是否播放。。。
     audioEnabled(flag) {
         if (flag) {
-            if (this.audioContext.state === 'suspended') {
+            if (this.isStateSuspended()) {
                 // resume
-                this.audioContext.resume();
+                this.audioContext.resume().then(() => {
+                    this.player.debug.log('AudioContext','audioEnabled() audio enabled');
+                }).catch((e) => {
+                    this.player.debug.warn('AudioContext', `audioEnabled() and audio detected`, e);
+                });
             }
         } else {
-            if (this.audioContext.state === 'running') {
-                // suspend
-                this.audioContext.suspend();
-            }
+            // if (this.isStateRunning()) {
+            //     // suspend
+            //     this.audioContext.suspend().then(()=>{
+            //
+            //     });
+            // }
         }
     }
 
