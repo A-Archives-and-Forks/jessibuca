@@ -2294,6 +2294,23 @@ https://www.dyxmq.cn/network/err_cert_common_name_invalid.html
 
 配置扩展程序: 根据需要配置扩展程序的设置，以允许特定的跨域请求。
 
+### 公网访问内网地址(websocket/http) 的时候直接pending不通了
+
+> Chrome 147 开始，把“公网页面 → 局域网 IP 的 WebSocket”也纳入了 Local Network Access（LNA）限制，默认是会被拦/挂起的。
+
+https://support.google.com/chrome/a/answer/7679408?hl=eN
+
+原文：Chrome 147 expands Local Network Access restrictions to include WebSocket and WebTransport connections.
+
+> Chrome 147 on Android, ChromeOS, Linux, macOS, Windows: Local Network Access restrictions expanded to include WebSocket and WebTransport connections.
+
+
+解决方案：
+
+1. 开启 `chrome://flags/#local-network-access-check`
+
+
+
 ### 关于播放器地址不带协议后缀的判断逻辑
 
 播放地址带协议后缀的：`https://test.com/play/xxxx.flv`
