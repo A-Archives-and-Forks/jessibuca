@@ -185,7 +185,7 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 [http://jessibuca.monibuca.com/pro/play-vod-demo-mp4.html](http://jessibuca.monibuca.com/pro/play-vod-demo-mp4.html)
 
 
-### hls demo（支持逐帧播放，逐关键帧(I帧)播放，4k25P(硬解码+软解码)，支持seek）
+### hls demo（支持逐帧播放，逐关键帧(I帧)播放，4k25P(硬解码+软解码)，AES-128 加密，支持seek）
 
 ------
 #### https
@@ -195,7 +195,7 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 #### http
 [http://jessibuca.monibuca.com/pro/play-vod-demo-hls.html](http://jessibuca.monibuca.com/pro/play-vod-demo-hls.html)
 
-### hls-ts demo（支持逐帧播放，逐关键帧(I帧)播放，切换通道, 4k25P(硬解码+软解码)，支持seek）
+### hls-ts demo（支持逐帧播放，逐关键帧(I帧)播放，切换通道, 4k25P(硬解码+软解码)，AES-128 加密，支持seek）
 
 ------
 #### https
@@ -452,13 +452,15 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 
 
 
-### HLS(h265)
+### HLS(h265)(支持 AES-128 加密)
 ------
 #### https
 [https://jessibuca.com/pro/demo-hls-H265.html](https://jessibuca.com/pro/demo-hls-H265.html)
 
 #### http
 [http://jessibuca.monibuca.com/pro/demo-hls-H265.html](http://jessibuca.monibuca.com/pro/demo-hls-H265.html)
+
+
 
 
 ### webrtc（m7s支持H264/H265、ZLM支持H264、SRS支持H264、七牛云支持H264、其他流媒体支持H264）

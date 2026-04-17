@@ -144,6 +144,9 @@ https://live-mikudemo.cloudvdn.com/mikudemo/timestamps.m3u8
 #### h264
 https://vod.lyhuicheng.com/20230719/oc5MCoON/index.m3u8
 
+##### AES-128 加密
+https://playertest.longtailvideo.com/adaptive/aes-with-tracks/master.m3u8
+
 ##### （1280,720）m3u8 + ts
 https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
 

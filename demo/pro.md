@@ -515,6 +515,20 @@ H265硬解码，对于电脑硬件支持情况：
 
 > 目前播放器的编译支持的浏览器版本是基于：`browserslist 的default`配置，即支持大部分浏览器，如有特殊浏览器支持要求，可修改browserslist配置即可。
 
+目前的支持程度如下：
+
+|平台| 最低支持版本（约） |
+|:--------|:-----|
+|iOS Safari| ~15.x - 16.x|
+|Android Chrome| ~近2个大版本|
+|Android WebView| ~近2个大版本|
+|Chrome 桌面| ~近2个大版本|
+|Edge 桌面| ~近2个大版本|
+|Firefox 桌面| ~近2个大版本|
+|Safari 桌面 | ~15.x+|
+
+> 如果有ios safari版本过低的需求，可以通过修改browserslist配置，来支持更低版本的ios safari浏览器。
+
 ### 对于hevc(265)支持情况
 
 <img src="/public/hevc-support.png">
