@@ -32,7 +32,7 @@ export const DEFAULT_PLAYER_OPTIONS = {
     debug: false,
     hotKey: false, // 快捷键
     loadingTimeout: 10, // loading timeout
-    heartTimeout: 5,  // heart timeout
+    heartTimeout: 10,  // heart timeout
     timeout: 10, // second
     loadingTimeoutReplay: true, // loading timeout replay. default is true
     heartTimeoutReplay: true,// heart timeout replay.
