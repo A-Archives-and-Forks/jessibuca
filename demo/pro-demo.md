@@ -215,7 +215,7 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 
 
 
-### flv demo（支持逐帧播放，逐关键帧(I帧)播放，4k25P(硬解码+软解码)，不支持支持seek）
+### flv demo（支持逐帧播放，逐关键帧(I帧)播放，4k25P(硬解码+软解码)，支持本地seek）
 
 ------
 #### https
@@ -225,7 +225,7 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 #### http
 [http://jessibuca.monibuca.com/pro/play-vod-demo-flv.html](http://jessibuca.monibuca.com/pro/play-vod-demo-flv.html)
 
-### fmp4 demo（支持逐帧播放，逐关键帧(I帧)播放，4k25P(硬解码+软解码)，不支持支持seek）
+### fmp4 demo（支持逐帧播放，逐关键帧(I帧)播放，4k25P(硬解码+软解码)，支持本地seek）
 
 ------
 #### https
@@ -236,7 +236,7 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 [http://jessibuca.monibuca.com/pro/play-vod-demo-fmp4.html](http://jessibuca.monibuca.com/pro/play-vod-demo-fmp4.html)
 
 
-### ps demo（支持逐帧播放，逐关键帧(I帧)播放，4k25P(硬解码+软解码)，不支持支持seek）
+### ps demo（支持逐帧播放，逐关键帧(I帧)播放，4k25P(硬解码+软解码)，支持本地seek）
 ------
 #### https
 
@@ -246,7 +246,7 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 [http://jessibuca.monibuca.com/pro/play-vod-demo-ps.html](http://jessibuca.monibuca.com/pro/play-vod-demo-ps.html)
 
 
-### ts demo （支持逐帧播放，逐关键帧(I帧)播放，切换通道，4k25P(硬解码+软解码)，不支持支持seek）
+### ts demo （支持逐帧播放，逐关键帧(I帧)播放，切换通道，4k25P(硬解码+软解码)，支持本地seek）
 ------
 #### https
 
@@ -282,7 +282,7 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 #### http
 [http://jessibuca.monibuca.com/pro/play-vod-demo-crypto-xor.html](http://jessibuca.monibuca.com/pro/play-vod-demo-crypto-xor.html)
 
-## 海康NVR点播文件(支持倍率播放，不支持seek)
+## 海康NVR点播文件(支持倍率播放，支持本地seek)
 
 ### demo
 ------

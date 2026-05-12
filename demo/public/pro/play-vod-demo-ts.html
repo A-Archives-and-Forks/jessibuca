@@ -53,7 +53,7 @@
         </div>
         <div class="input">
             <div>
-                <span style="color: red">Tips:</span> ts点播仅支持倍率播放，不支持seek逻辑
+                <span style="color: red">Tips:</span> ts点播仅支持倍率播放，<del>不支持seek逻辑</del> <span style="color: red">支持seek逻辑</span>
             </div>
         </div>
 
@@ -94,6 +94,13 @@
                         type="checkbox"
                         id="isMute"
                     /><span>是否静音播放</span>
+                </div>
+                <div>
+                    <input
+                        onclick="replay()"
+                        type="checkbox"
+                        id="isCacheData"
+                    /><span style="color: blue;">是否支持本地前后任意seek(会缓存全量解码前数据)</span>
                 </div>
             </div>
         </div>
@@ -165,6 +172,7 @@
     var $isTs = document.getElementById('isTs');
     var $isMute = document.getElementById('isMute');
     var $changeTrack = document.getElementById('changeTrack');
+    var $isCacheData = document.getElementById('isCacheData');
 
     var forceNoOffscreen = true; //
     var jessibuca = null;
@@ -222,6 +230,7 @@
             demuxUseWorker: $demuxUseWorker.checked === true,
             isTs: $isTs.checked === true,
             isSpecialPlaybackVod: true,
+            specialPlaybackVodCacheStream: $isCacheData.checked === true,
             tsVideoTrackIndex: tsVideoTrackIndex,
         },);
 
