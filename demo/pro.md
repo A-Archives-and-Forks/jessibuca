@@ -380,6 +380,8 @@ GA/T 1078 TF卡（录像流）流播放 [介绍](https://jessibuca.com/pro-playb
 | http(s)-hls(mp4) | 支持     | 支持     | 支持    | 不支持   | 支持（需定制）     | 支持（需定制）      |
 | http(s)-hls(ts)  | 支持     | 支持     | 支持    | 支持    | 支持（需定制）      | 支持（需定制）      |
 
+> 支持 mp4点播文件的 moov 在文件头或者文件尾。
+
 > G711A、G711U音频编码格式 不支持MSE解码。支持WCS/WASM/WASM(SIMD)解码。
 
 > G711A、G711U音频编码格式 ，如定制请咨询作者bosswancheng。

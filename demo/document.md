@@ -2399,13 +2399,25 @@ window.addEventListener('orientationchange', function () {
 
 > 记得需要清除下浏览器缓存（f12-> Network Tab（网络） -> 勾选 Disable cache(禁用缓存) 选项 ），然后刷新页面
 
-### WebRTC
+### WebRTC 原生H265支持情况
 
-> WebRTC标准是不支持h265的。
+> ~~WebRTC标准是不支持h265的。~~
+
+> Windows10/11 的Google(138+) 、MacOS的 Google(138+)/Safari(26.5) 已经支持原生WebRTC H265
 
 > jessibuca pro 版本结合M7S已经支持了。欢迎测试使用。 http://jessibuca.monibuca.com/player-pro.html
 
-#### 关于播放webrtc 的 H265格式的视频
+#### 相关资料
+
+[is-webrtc-hevc-supported](https://chris.hiszpanski.name/posts/is-webrtc-hevc-supported/)
+
+[vdo.ninja/h265](https://vdo.ninja/h265)
+
+#### 小结
+
+[document-webrtc-h265](https://jessibuca.com/document-webrtc-h265.html)
+
+#### 关于播放webrtc 的 H265格式的视频（原生浏览器不支持的情况下）
 
 目前 `pro版本` 是支持`[M7S流媒体服务器](https://m7s.live/)`来播放 webrtc 的 H265格式的视频。
 
