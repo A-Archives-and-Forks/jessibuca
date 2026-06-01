@@ -1,215 +1,22 @@
 # Document (常见问题)
 
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
 <Rice/>
 
 > 本文档汇总了 Jessibuca 使用过程中的常见问题（FAQ），并按主题分类整理。可通过下方目录快速跳转到对应分类与问题。
 
-## 目录
-
-- **[快速接入与配置](#快速接入与配置)**
-  - [推荐配置](#推荐配置)
-  - [vue、react 推荐](#vue、react-推荐)
-  - [是否支持npm（yarn） install 安装](#是否支持npm（yarn）-install-安装)
-  - [vue-cli-plugin-jessibuca](#vue-cli-plugin-jessibuca)
-  - [vue3 下面使用Typescript](#vue3-下面使用typescript)
-  - [播放器内部的样式发生变形或者class 丢失](#播放器内部的样式发生变形或者class-丢失)
-- **[播放器使用与实例管理](#播放器使用与实例管理)**
-  - [destroy释放内存](#destroy释放内存)
-  - [关于切换 url 播放地址](#关于切换-url-播放地址)
-  - [关于播放器内部自定义DOM（废弃）](#关于播放器内部自定义dom（废弃）)
-  - [关于播放器自定义DOM（新）](#关于播放器自定义dom（新）)
-  - [直播流播放完了，能监听到吗？](#直播流播放完了，能监听到吗？)
-  - [关于当前直播流正在播的时间点，想要获取画面中的时间点](#关于当前直播流正在播的时间点，想要获取画面中的时间点)
-  - [关于更新播放窗口大小](#关于更新播放窗口大小)
-  - [关于在H5中实现横竖屏自适应](#关于在h5中实现横竖屏自适应)
-  - [当container窗口发生变化的时候，播放器如何自适应](#当container窗口发生变化的时候，播放器如何自适应)
-  - [关于切换分辨率](#关于切换分辨率)
-- **[解码渲染与播放能力](#解码渲染与播放能力)**
-  - [关于硬解码和软解码](#关于硬解码和软解码)
-  - [关于解码（useMSE、useWCS、wasm）优先级](#关于解码（usemse、usewcs、wasm）优先级)
-  - [关于是否可以播放rtsp、rtmp协议](#关于是否可以播放rtsp、rtmp协议)
-  - [对于渲染元素](#对于渲染元素)
-  - [OffscreenCanvas这个特性需要特殊的环境和硬件支持吗](#offscreencanvas这个特性需要特殊的环境和硬件支持吗)
-  - [关于初始化webgl失败的可能性](#关于初始化webgl失败的可能性)
-- **[HEVC H265 与硬件解码](#hevc-h265-与硬件解码)**
-  - [Media Source Extensions 硬解码H265](#media-source-extensions-硬解码h265)
-  - [webcodecs 硬解码H265](#webcodecs-硬解码h265)
-  - [对于hevc(265)支持情况](#对于hevc-265-支持情况)
-  - [关于PRO提示MSE不支持265解码可能得原因](#关于pro提示mse不支持265解码可能得原因)
-  - [chrome 如何开启HEVC硬件解码](#chrome-如何开启hevc硬件解码)
-  - [关于window Hevc是否支持](#关于window-hevc是否支持)
-  - [如何开启electron硬解码Hevc（H265）](#如何开启electron硬解码hevc（h265）)
-  - [如何验证视频播放是否走硬解？](#如何验证视频播放是否走硬解？)
-  - [为什么我的显卡支持，但仍无法使用硬解？](#为什么我的显卡支持，但仍无法使用硬解？)
-  - [chrome/edge 等浏览器如何使用独立显卡](#chrome-edge-等浏览器如何使用独立显卡)
-  - [如何设置chrome浏览器优先使用独立显卡的硬件解码器](#如何设置chrome浏览器优先使用独立显卡的硬件解码器)
-- **[文件部署与加载](#文件部署与加载)**
-  - [jessibuca.js decoder.js decoder.wasm文件想存放特定地址](#jessibuca-js-decoder-js-decoder-wasm文件想存放特定地址)
-  - [jessibuca.js decoder.js decoder.wasm文件想通过CDN加载](#jessibuca-js-decoder-js-decoder-wasm文件想通过cdn加载)
-  - [IIS下wasm返回404错误](#iis下wasm返回404错误)
-  - [wasm 格式返回错误  Incorrect response MIME type. Expected 'application/wasm'. falling back to arraybuffer instantiation 错误](#wasm-格式返回错误-incorrect-response-mime-type-expected-application-wasm-falling-back-to-arraybuffer-instantiation-错误)
-  - [优化加载速度](#优化加载速度)
-  - [gzip压缩jessibuca.js 和decoder.js 和decoder.wasm 文件](#gzip压缩jessibuca-js-和decoder-js-和decoder-wasm-文件)
-  - [Brotli压缩jessibuca.js 和decoder.js 和decoder.wasm 文件](#brotli压缩jessibuca-js-和decoder-js-和decoder-wasm-文件)
-  - [关于WASM压缩优化](#关于wasm压缩优化)
-  - [关于如何集成到qiankun这类的微前端中去](#关于如何集成到qiankun这类的微前端中去)
-  - [decoder.js 报 Unexpected token '<'错误 或者报：[decoderWorker] onerror and decoder url is xxxxx and filename:message](#decoder-js-报-unexpected-token-错误-或者报：-decoderworker-onerror-and-decoder-url-is-xxxxx-and-filename-message)
-  - [Failed to constructor 'Worker': Script at 'file://xxxxxxx'](#failed-to-constructor-worker-script-at-file-xxxxxxx)
-  - [如何在electron中使用 jessibuca 播放视频](#如何在electron中使用-jessibuca-播放视频)
-  - [如何结合m7s流媒体服务器，obs推流，然后使用播放器播放](#如何结合m7s流媒体服务器，obs推流，然后使用播放器播放)
-  - [Pro播放器出现“初始化解码Worker超时，initDecoderWorkerTimeout”异常](#pro播放器出现“初始化解码worker超时，initdecoderworkertimeout”异常)
-  - [使用jessibuca 多级路由嵌套时 报错window.Jessibuca is not a constructor  在1级路由下播放器是正常运行的  多级路由就不行了](#使用jessibuca-多级路由嵌套时-报错window-jessibuca-is-not-a-constructor-在1级路由下播放器是正常运行的-多级路由就不行了)
-- **[延迟卡顿与性能优化](#延迟卡顿与性能优化)**
-  - [关于延迟丢帧（排除网络延迟）](#关于延迟丢帧（排除网络延迟）)
-  - [对于播放过程中延迟慢慢越来越大的问题](#对于播放过程中延迟慢慢越来越大的问题)
-  - [播放器的延迟时间](#播放器的延迟时间)
-  - [多分屏超过 6 路不能播放](#多分屏超过-6-路不能播放)
-  - [多个视频一起播放，如果有一个视频地址播放不了会导致其他地址也无法播放](#多个视频一起播放，如果有一个视频地址播放不了会导致其他地址也无法播放)
-  - [创建单个视频播放卡顿](#创建单个视频播放卡顿)
-  - [创建多个以上播放实例会非常卡顿，还会导致页面黑屏](#创建多个以上播放实例会非常卡顿，还会导致页面黑屏)
-  - [播放过程中出现了延迟](#播放过程中出现了延迟)
-  - [关于延迟造成的原因](#关于延迟造成的原因)
-  - [关于超低延迟(300ms)以内](#关于超低延迟-300ms-以内)
-  - [首屏打开慢](#首屏打开慢)
-  - [理解loadingTimeout 和 delayTimeout](#理解loadingtimeout-和-delaytimeout)
-  - [多屏需求](#多屏需求)
-  - [页面首次加载超时检测](#页面首次加载超时检测)
-  - [页面播放过程中超时检测](#页面播放过程中超时检测)
-  - [加载视频等待画面时长过长](#加载视频等待画面时长过长)
-  - [在已经使用硬解码基础上，播放多路视频，会出现卡顿，内存开始飙升](#在已经使用硬解码基础上，播放多路视频，会出现卡顿，内存开始飙升)
-  - [关于使用window电脑，在使用显卡解码(H264/H265)的时候，会出现显卡解码器不稳定的情况，造成画面卡顿](#关于使用window电脑，在使用显卡解码-h264-h265-的时候，会出现显卡解码器不稳定的情况，造成画面卡顿)
-  - [轮训业务推荐配置](#轮训业务推荐配置)
-  - [播放直播流的时候，一上来会出现卡顿，丢帧，画面突然快进的情况](#播放直播流的时候，一上来会出现卡顿，丢帧，画面突然快进的情况)
-- **[音频问题](#音频问题)**
-  - [如果只需要播放音频数据](#如果只需要播放音频数据)
-  - [g711系列的音频，听起来为啥都是杂音。](#g711系列的音频，听起来为啥都是杂音。)
-  - [播放过程中，音频会出现卡顿的情况](#播放过程中，音频会出现卡顿的情况)
-- **[录制与截图](#录制与截图)**
-  - [将录制的视频保存在安卓手机相册中，显示的时长为0，并且无法播放。](#将录制的视频保存在安卓手机相册中，显示的时长为0，并且无法播放。)
-  - [无音频的flv视频流，无法录制，录制的文件大小都是0](#无音频的flv视频流，无法录制，录制的文件大小都是0)
-  - [如果没有音频数据](#如果没有音频数据)
-  - [UniApp 或者内嵌其他App（XX小程序） 里面webview，需要截图下载或者录制视频下载。](#uniapp-或者内嵌其他app（xx小程序）-里面webview，需要截图下载或者录制视频下载。)
-  - [飞书/微信/其他 webview h5 环境下实现截图下载或者录制视频下载。](#飞书-微信-其他-webview-h5-环境下实现截图下载或者录制视频下载。)
-- **[自动播放与声音策略](#自动播放与声音策略)**
-  - [关于 play() failed because the user didn't interact with the document first. 错误](#关于-play-failed-because-the-user-didn-t-interact-with-the-document-first-错误)
-  - [关于浏览器报：The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. 错误](#关于浏览器报：the-audiocontext-was-not-allowed-to-start-it-must-be-resumed-or-created-after-a-user-gesture-on-the-page-错误)
-  - [支持浏览器打开连接立即播放视频](#支持浏览器打开连接立即播放视频)
-  - [The play() request was interrupted because video-only background media was paused to save power 错误](#the-play-request-was-interrupted-because-video-only-background-media-was-paused-to-save-power-错误)
-  - [关于：The play() request was interrupted by a call to pause() 报错](#关于：the-play-request-was-interrupted-by-a-call-to-pause-报错)
-  - [video 抛出 Unmuting failed and the element was paused instead because the user didn't interact with the document before](#video-抛出-unmuting-failed-and-the-element-was-paused-instead-because-the-user-didn-t-interact-with-the-document-before)
-  - [浏览器抛出 Unmuting failed and the element was paused instead because the user didn't interact with the document before](#浏览器抛出-unmuting-failed-and-the-element-was-paused-instead-because-the-user-didn-t-interact-with-the-document-before)
-  - [关于硬解码或者video标签渲染自动播放](#关于硬解码或者video标签渲染自动播放)
-  - [播放的时候就有声音](#播放的时候就有声音)
-  - [在 Hybrid App 的 WebView 中自动播放失败](#在-hybrid-app-的-webview-中自动播放失败)
-- **[全屏与显示模式](#全屏与显示模式)**
-  - [H5 全屏的时候，视频区域并没有全屏的问题](#h5-全屏的时候，视频区域并没有全屏的问题)
-  - [关于iframe 页面里面有jessibuca 播放器，点击全屏按钮报：fullscreen request error TypeError Disallowed by permissions policy 错误](#关于iframe-页面里面有jessibuca-播放器，点击全屏按钮报：fullscreen-request-error-typeerror-disallowed-by-permissions-policy-错误)
-  - [关于IOS不能系统全屏](#关于ios不能系统全屏)
-  - [Android端webview全屏调用无效问题](#android端webview全屏调用无效问题)
-  - [IOS端无法内联播放（行内播放）](#ios端无法内联播放（行内播放）)
-  - [Failed to execute 'requestfullscreen' on 'Element': APl can only be initiated by a user gesture.](#failed-to-execute-requestfullscreen-on-element-apl-can-only-be-initiated-by-a-user-gesture)
-  - [在 iOS Hybrid App 的 WebView 中默认全屏播放](#在-ios-hybrid-app-的-webview-中默认全屏播放)
-  - [视频激活播放后强制全屏](#视频激活播放后强制全屏)
-  - [视频无法被其他元素覆盖](#视频无法被其他元素覆盖)
-  - [播放器出现广告、下载、推荐视频等内容](#播放器出现广告、下载、推荐视频等内容)
-  - [全屏相关问题](#全屏相关问题)
-- **[画面异常与渲染问题](#画面异常与渲染问题)**
-  - [视频颜色变灰色（软解码）](#视频颜色变灰色（软解码）)
-  - [视频渲染发绿（软解码）](#视频渲染发绿（软解码）)
-  - [有数据,但是没有画面出来](#有数据-但是没有画面出来)
-  - [对于出现渲染页面直接倒过来180度的解决方案](#对于出现渲染页面直接倒过来180度的解决方案)
-  - [关于绿屏和花屏](#关于绿屏和花屏)
-  - [黑屏，但是网速一直有数据](#黑屏，但是网速一直有数据)
-  - [PC电脑端播放视频，整个显示器会突然白屏一下](#pc电脑端播放视频，整个显示器会突然白屏一下)
-  - [浏览器播放视频过程中，整个显示器会突然的白屏下](#浏览器播放视频过程中，整个显示器会突然的白屏下)
-  - [关于分辨率高的视频在设置container的宽高较小的时候，会出现锯齿状的画面效果。](#关于分辨率高的视频在设置container的宽高较小的时候，会出现锯齿状的画面效果。)
-  - [关于一些特殊分辨率的视频播放不了](#关于一些特殊分辨率的视频播放不了)
-  - [播放4k的视频源，发现有一半/三分之一的画面是绿屏/花屏/马赛克的效果](#播放4k的视频源，发现有一半-三分之一的画面是绿屏-花屏-马赛克的效果)
-  - [硬解码MediaSource/WebCodecs花屏,软解码可以正常解码且渲染正常](#硬解码mediasource-webcodecs花屏-软解码可以正常解码且渲染正常)
-  - [播放器出现黑边](#播放器出现黑边)
-- **[WebRTC](#webrtc)**
-  - [WebRTC 原生H265支持情况](#webrtc-原生h265支持情况)
-  - [关于播放webrtc 报： Failed to execute 'setRemoteDescription' on 'RTCPeerConnection': Failed to parse SessionDescription. Duplicate a=msid lines detected](#关于播放webrtc-报：-failed-to-execute-setremotedescription-on-rtcpeerconnection-failed-to-parse-sessiondescription-duplicate-a-msid-lines-detected)
-- **[跨域网络与安全策略](#跨域网络与安全策略)**
-  - [http vs https](#http-vs-https)
-  - [chrome无法访问更私有的地址](#chrome无法访问更私有的地址)
-  - [监听请求流的失效(404)或者500报错](#监听请求流的失效-404-或者500报错)
-  - [关于移动端（H5）切换网络的时候，播放器会触发什么事件。](#关于移动端（h5）切换网络的时候，播放器会触发什么事件。)
-  - [Websocket 1006 异常断连](#websocket-1006-异常断连)
-  - [火狐(firefox)，chrome，等浏览器报ws地址连接不上](#火狐-firefox-，chrome，等浏览器报ws地址连接不上)
-  - [播放内网https地址报错(ERR_CERT_COMMON_NAME_INVALID 错误)](#播放内网https地址报错-err-cert-common-name-invalid-错误)
-  - [测试的时候遇到请求的连接（播放地址）跨域报错](#测试的时候遇到请求的连接（播放地址）跨域报错)
-  - [公网访问内网地址的时候报跨域错误](#公网访问内网地址的时候报跨域错误)
-  - [公网访问内网地址(websocket/http) 的时候直接pending不通了](#公网访问内网地址-websocket-http-的时候直接pending不通了)
-  - [Mixed Content: The page at 'https://jessibuca.com' was loaded over HTTPS, but requested an insecure resource 'http://xxx.com/xxx.flv'. This request has been blocked; the content must be served over HTTPS.](#mixed-content-the-page-at-https-jessibuca-com-was-loaded-over-https-but-requested-an-insecure-resource-http-xxx-com-xxx-flv-this-request-has-been-blocked-the-content-must-be-served-over-https)
-  - [https的播放地址，播放报错，ffplay可以正常播放。](#https的播放地址，播放报错，ffplay可以正常播放。)
-- **[移动端与 WebView](#移动端与-webview)**
-  - [是否支持原生、小程序（UniApp,小程序）等](#是否支持原生、小程序（uniapp-小程序）等)
-  - [就是在webview中使用写好的网页，ios工程会找不到Jessibuca这个对象](#就是在webview中使用写好的网页，ios工程会找不到jessibuca这个对象)
-  - [Android端webView灰色按钮（默认的播放按钮）问题](#android端webview灰色按钮（默认的播放按钮）问题)
-  - [苹果IOS系统webglcontextlost问题（ios内核的bug）](#苹果ios系统webglcontextlost问题（ios内核的bug）)
-  - [安卓webview 下面的一些问题](#安卓webview-下面的一些问题)
-  - [webview环境下，PC和安卓能够正常播放，IOS环境下播放器黑屏无法播放](#webview环境下，pc和安卓能够正常播放，ios环境下播放器黑屏无法播放)
-  - [关于如何查看手机端的日志信息并保存下来](#关于如何查看手机端的日志信息并保存下来)
-  - [手机端（H5,Webview）如何定位播放器的异常问题](#手机端（h5-webview）如何定位播放器的异常问题)
-  - [移动端如何采集日志反馈问题](#移动端如何采集日志反馈问题)
-- **[点播与录像回放](#点播与录像回放)**
-  - [可以播放本地视频吗？](#可以播放本地视频吗？)
-  - [是否可支持倍速播放](#是否可支持倍速播放)
-  - [点播H264、H265需求（点播mp4、Hls）](#点播h264、h265需求（点播mp4、hls）)
-  - [同一个http的mp4视频流地址，直接在浏览器的地址输入栏中播放正常，但是在播放器中播放不了。](#同一个http的mp4视频流地址，直接在浏览器的地址输入栏中播放正常，但是在播放器中播放不了。)
-  - [在播放MP4点播文件的时候，发现只有网速变化，画面迟迟没有出现。](#在播放mp4点播文件的时候，发现只有网速变化，画面迟迟没有出现。)
-- **[常见报错与崩溃排查](#常见报错与崩溃排查)**
-  - [播放过程中页面出现崩溃](#播放过程中页面出现崩溃)
-  - [关于浏览器崩溃(sbox_fatal_memory_exceeded)](#关于浏览器崩溃-sbox-fatal-memory-exceeded)
-  - [Failed to construct 'Worker': Script at 'https://a.com' cannot be accessed from origin 'https://b.com'](#failed-to-construct-worker-script-at-https-a-com-cannot-be-accessed-from-origin-https-b-com)
-  - [报错：jessibuca need container option](#报错：jessibuca-need-container-option)
-  - [关于一直重置播放器，内存有增加的问题](#关于一直重置播放器，内存有增加的问题)
-  - [aborted(rangeError:webassembly.instance():out of memory: cannot allocate wasm memory for new instance) 错误](#aborted-rangeerror-webassembly-instance-out-of-memory-cannot-allocate-wasm-memory-for-new-instance-错误)
-  - [WebGL: CONTEXT_LOST_WEBGL 错误引发的原因](#webgl-context-lost-webgl-错误引发的原因)
-  - [video 标签报 PIPELINE_ERROR_DECODE 错误](#video-标签报-pipeline-error-decode-错误)
-  - [浏览器报：Uncaught RangeError: Array buffer allocation failed](#浏览器报：uncaught-rangeerror-array-buffer-allocation-failed)
-  - [浏览器报：PIPELINE_ERROR_DECODE: Failed to parse H.264 stream](#浏览器报：pipeline-error-decode-failed-to-parse-h-264-stream)
-  - [浏览器报：PIPELINE_ERROR_DECODE: Failed to send video packet for decoding: {timestamp=568800000 duration=40000 size=240812 is_key_frame=1 encrypted=0}](#浏览器报：pipeline-error-decode-failed-to-send-video-packet-for-decoding-timestamp-568800000-duration-40000-size-240812-is-key-frame-1-encrypted-0)
-  - [浏览器报：SBOX FATAL MEMORY EXCEEDED 错误](#浏览器报：sbox-fatal-memory-exceeded-错误)
-  - [浏览器报：Uncaught RuntimeError: memory access out of bounds](#浏览器报：uncaught-runtimeerror-memory-access-out-of-bounds)
-  - [关于 Uncaught (in promise) DOMException: BodyStreamBuffer was aborted 错误](#关于-uncaught-in-promise-domexception-bodystreambuffer-was-aborted-错误)
-  - [关于 Uncaught (in promise) DOMException: The user aborted a request. 错误](#关于-uncaught-in-promise-domexception-the-user-aborted-a-request-错误)
-  - [关于 Uncaught (in promise) RuntimeError: Aborted(CompileError: WebAssembly.instantiate(): section (code 1, "Type") extends past end of the module (length 11493359, remaining bytes 2961839) @+8). Build with -sASSERTIONS for more info. 错误](#关于-uncaught-in-promise-runtimeerror-aborted-compileerror-webassembly-instantiate-section-code-1-type-extends-past-end-of-the-module-length-11493359-remaining-bytes-2961839-8-build-with-sassertions-for-more-info-错误)
-  - [关于播放路数超过16路之后，播放画面直接变成白色的问题。](#关于播放路数超过16路之后，播放画面直接变成白色的问题。)
-  - [关于报“Too many active WebGL contexts. Oldest context will be lost” 错误](#关于报“too-many-active-webgl-contexts-oldest-context-will-be-lost”-错误)
-  - [关于报“RuntimeError: abort(OOM). Build with -s ASSERTIONS=1 for more info” 错误](#关于报“runtimeerror-abort-oom-build-with-s-assertions-1-for-more-info”-错误)
-  - [chrome chunk_demuxer_error_append_failed 错误](#chrome-chunk-demuxer-error-append-failed-错误)
-  - [failed to execute 'fetch' on 'workerGlobalScope' : failed to parse url from decoder.wasm 错误](#failed-to-execute-fetch-on-workerglobalscope-failed-to-parse-url-from-decoder-wasm-错误)
-  - [RuntimeError： Aborted(compileError:Webassembly.instantiate(): expected magic word 00 61 73 6d, found 3c 21 44 4f @+0)](#runtimeerror：-aborted-compileerror-webassembly-instantiate-expected-magic-word-00-61-73-6d-found-3c-21-44-4f-0)
-  - [出现页面崩溃之后，问题定位](#出现页面崩溃之后，问题定位)
-  - [出现页面崩溃，错误码信息：STATUS_ACCESS_VIOLATION](#出现页面崩溃，错误码信息：status-access-violation)
-  - [wasm编译打包 之后报：uncaught referenceError:module is not defined](#wasm编译打包-之后报：uncaught-referenceerror-module-is-not-defined)
-  - [video 抛出 PIPELINE_ERROR_DECODE: video decode error! 错误](#video-抛出-pipeline-error-decode-video-decode-error-错误)
-  - [video 抛出 PIPELINE_ERROR_COULD_NOT_RENDER 错误](#video-抛出-pipeline-error-could-not-render-错误)
-  - [video 抛出 PIPELINE_ERROR_DECODE: VDA Error 4 错误](#video-抛出-pipeline-error-decode-vda-error-4-错误)
-  - [video 抛出  PIPELINE_ERROR_COULD_NOT_RENDER 错误](#video-抛出-pipeline-error-could-not-render-错误-1)
-  - [window.Jessibuca is not a constructor 错误](#window-jessibuca-is-not-a-constructor-错误)
-  - [JbFro container has been created and can not be created again](#jbfro-container-has-been-created-and-can-not-be-created-again)
-  - [window.jessibuca is not a constructor](#window-jessibuca-is-not-a-constructor)
-  - [wasm 报："failed to asynchronously prepare wasm: Error: WebAssembly.Module doesn't parse at byte xxx: invalid opcode xxx, in function at index xxx" 异常](#wasm-报：-failed-to-asynchronously-prepare-wasm-error-webassembly-module-doesn-t-parse-at-byte-xxx-invalid-opcode-xxx-in-function-at-index-xxx-异常)
-  - [在使用useMSE:true 硬解码的时候video出现大量的 waiting canplay 日志](#在使用usemse-true-硬解码的时候video出现大量的-waiting-canplay-日志)
-  - [chrome 浏览器的video标签抛出异常 Error Domain=NSOSStatusErrorDomain Code=-12909](#chrome-浏览器的video标签抛出异常-error-domain-nsosstatuserrordomain-code-12909)
-  - [Uncaught SyntaxError: Invalid or unexpected token 报错。](#uncaught-syntaxerror-invalid-or-unexpected-token-报错。)
-  - [wasm解码报错：top block unavailable for requested intra mode](#wasm解码报错：top-block-unavailable-for-requested-intra-mode)
-  - [wasm报错：RuntimeError: Out of memory: Cannot allocate Wasm memory for new instance](#wasm报错：runtimeerror-out-of-memory-cannot-allocate-wasm-memory-for-new-instance)
-  - [走MSE/Webcodec硬解码的时候，浏览器video标签抛出：PIPELINE_ERROR_DECODE: Error Domain=NSOSStatusErrorDomain Code=-12909 "(null)" (-12909): VTDecompressionOutputCallback](#走mse-webcodec硬解码的时候，浏览器video标签抛出：pipeline-error-decode-error-domain-nsosstatuserrordomain-code-12909-null-12909-vtdecompressionoutputcallback)
-  - [wasm 报错分析](#wasm-报错分析)
-- **[其他与排查工具](#其他与排查工具)**
-  - [关于pts值](#关于pts值)
-  - [关于遇到报错的时候，如何反馈给作者去定位问题。](#关于遇到报错的时候，如何反馈给作者去定位问题。)
-  - [关于播放器地址不带协议后缀的判断逻辑](#关于播放器地址不带协议后缀的判断逻辑)
-  - [播放器是否支持IPv6 播放地址](#播放器是否支持ipv6-播放地址)
-  - [关于如何清除浏览器缓存](#关于如何清除浏览器缓存)
-  - [关于国标 GBT28181 PTZ 指令操作摄像头](#关于国标-gbt28181-ptz-指令操作摄像头)
-  - [关于国标 JTT 道路运输车辆卫星定位系统音视频通讯协议](#关于国标-jtt-道路运输车辆卫星定位系统音视频通讯协议)
-  - [浏览器的兼容性](#浏览器的兼容性)
-  - [如何清除浏览器缓存（以chrome为例）](#如何清除浏览器缓存（以chrome为例）)
 
 ## 快速接入与配置
 
@@ -478,10 +285,20 @@ jessibuca.destroy().then(()=>{
 
 因为播放器也不知道流什么时候结束，播放器是被动的接受流数据的，所以播放器也不知道流什么时候结束。
 
+
 解决方案：
 
 1. 可以通过业务层去监听流是否结束。
 2. 可以通过监听超时事件（不建议）。
+3. 监听stats里面的vbps，如果vbps为0，并且持续一段时间了，可以认为流结束了。
+4. 可以同时结合监听error事件，如果fetchError或者是websocketError 然后结合vbps为0来判断推流结束了。
+
+
+### 回放流播放完了，能监听到吗？
+
+回答：能
+
+> pro版本可以支持播放回放流，当了回放流结束，播放器会检测流的结束状态，然和结合已经缓存的流数据是否已经播放完了，来判断回放流是否结束了。
 
 ### 关于当前直播流正在播的时间点，想要获取画面中的时间点
 
@@ -570,6 +387,11 @@ const player = new window.Jessibuca({
 // 当container的宽高发生变化的时候，调用resize方法
 player.resize();
 ```
+
+
+### 如何实现窗口内全屏(非浏览器全屏)
+
+
 
 ### 关于切换分辨率
 

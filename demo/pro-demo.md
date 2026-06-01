@@ -569,6 +569,15 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 [http://jessibuca.monibuca.com/pro/demo-control-btn.html](http://jessibuca.monibuca.com/pro/demo-control-btn.html)
 
 
+### 窗口全屏（直接铺满、等比例缩放）
+------
+#### https
+[https://jessibuca.com/pro/demo-screen-fullscreen.html](https://jessibuca.com/pro/demo-screen-fullscreen.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/demo-screen-fullscreen.html](http://jessibuca.monibuca.com/pro/demo-screen-fullscreen.html)
+
+
 ### 自定义扩展DOM
 ------
 #### https

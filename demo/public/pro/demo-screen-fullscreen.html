@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="origin-trial"
+          content="AhQB+uNRI7lww30oPK+0ZcGotIvuoHJL+NkkWOhqDdooY6+xnuiYmZli2SwlH1vkrKdB5WxMpsv5KRc/q9zFswoAAAB3eyJvcmlnaW4iOiJodHRwczovL2plc3NpYnVjYS5jb206NDQzIiwiZmVhdHVyZSI6IlVucmVzdHJpY3RlZFNoYXJlZEFycmF5QnVmZmVyIiwiZXhwaXJ5IjoxNzA5ODU1OTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZX0=">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Jessica demo</title>
+    <link rel="stylesheet" href="./demo.css">
+    <script src="./vconsole.js"></script>
+    <script src="./js/jessibuca-pro-demo.js"></script>
+    <style>
+        .container-shell:before {
+            content: "jessibuca pro demo(网页全屏) player";
+        }
+    </style>
+</head>
+<body class="page">
+<div class="root">
+    <div class="container-shell">
+        <div id="container"></div>
+        <div class="input">
+            <div>
+                当前浏览器：
+                <span id="mseSupport264" style="color: green;display: none">支持MSE H264解码；</span>
+                <span id="mseSupport" style="color: green;display: none">支持MSE H265解码；</span>
+                <span id="mseNotSupport264" style="color: red;display: none">不支持MSE H264解码；</span>
+                <span id="mseNotSupport"
+                      style="color: red;display: none">不支持MSE H265解码,会自动切换成wasm解码；</span>
+            </div>
+        </div>
+        <div class="input">
+            <div>
+                当前浏览器：
+                <span id="wcsSupport264" style="color: green;display: none">支持Webcodecs H264解码；</span>
+                <span id="wcsSupport" style="color: green;display: none">支持Webcodecs H265解码（不一定准确）；</span>
+                <span id="wcsNotSupport264"
+                      style="color: red;display: none">不支持Webcodecs H264解码(https/localhost)；</span>
+                <span id="wcsNotSupport" style="color: red;display: none">不支持Webcodecs H265解码(https/localhost),会自动切换成wasm解码</span>
+            </div>
+        </div>
+        <div class="input">
+            <div>
+                当前浏览器：
+                <span id="wasmSupport" style="color: green;display: none">支持WASM解码；</span>
+                <span id="simdSupport" style="color: green;display: none">支持WASM SIMD解码；</span>
+                <span id="simdMtSupport" style="color: green;display: none">支持WASM WASM(SIMD) 多线程解码；</span>
+                <span id="wasmNotSupport" style="color: red;display: none">不支持WASM解码；</span>
+                <span id="simdNotSupport"
+                      style="color: red;display: none">不支持WASM SIMD解码,会自动切换成wasm解码；</span>
+                <span id="simdMtNotSupport" style="color: red;display: none">不支持WASM WASM(SIMD) 多线程解码；</span>
+            </div>
+        </div>
+        <div class="input">
+            <div>
+                <div>
+                    <span>硬解码：</span>
+                    <input
+                        type="checkbox"
+                        checked
+                        id="useMSE"
+                    /><span>MediaSource</span>
+                    <input
+                        type="checkbox"
+                        id="useWCS"
+                    /><span>Webcodec</span> |
+                    <input
+                        checked
+                        onchange="replay()"
+                        type="checkbox"
+                        id="audioDecodeUseHardware"
+                    />
+                    <span>硬解码音频</span>
+                </div>
+                <div>
+                  <span>软解码：</span>
+                    <input
+                        type="checkbox"
+                        id="useWASM"
+                    /><span>WASM</span>
+                    <input
+                        type="checkbox"
+                        id="useSIMD"
+                    /><span>WASM(SIMD)</span>
+                    <input
+                        type="checkbox",
+                        id="isFFmpegSIMD"
+                        onclick="replay()"
+                    /><span>isSIMD(V2)</span>
+                    <span style="color: green">默认使用wasm解码器</span>
+                </div>
+                <div class="input">
+                    <span>软解码模式：</span>
+                    <input
+                        checked
+                        type="checkbox"
+                        id="useSThreading"
+                        onclick="replayBySThreading()"
+                    /><span>启动单独音视频线程</span>
+                    <input
+                        type="checkbox"
+                        id="useSIMDMThreading"
+                        onclick="replay()"
+                    /><span>启动多线程（WASM,WASM(SIMD)解码支持）</span><span style="color: green">默认使用音视频同一个线程</span>
+
+                </div>
+                <div class="input">
+                    <div>
+                        软解码音视频同步：
+                        <input
+                            checked
+                            type="checkbox"
+                            id="syncAudioAndVideo"
+                            onclick="replay()"
+                        /><span>是否开启</span>
+                    </div>
+                </div>
+                <div class="input">
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="isIgnoreExceptionFrame"
+                            onclick="replay()"
+                        /><span>是否跳过花屏\灰色\拖拉\半截不全的画面（wasm和webcodec支持）</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="input">
+            <div>
+                <span>渲染标签：</span>
+                <select id="renderDom" onchange="replay()">
+                    <option value="video" selected>video</option>
+                    <option value="canvas">canvas</option>
+                </select>
+
+                <span>canvas渲染技术：</span>
+                <select id="isUseWebGPU" onchange="replay()">
+                    <option value="webgl" selected>webgl</option>
+                    <option value="webgpu">webgpu</option>
+                    <option value="canvas">canvas</option>
+                </select>
+                <span id="supportWebgpu"></span>
+            </div>
+        </div>
+        <div class="input">
+            <div>
+                <span>缓存时长：</span>
+                <input placeholder="单位：秒" type="text" id="videoBuffer" style="width: 50px" value="0.2">秒
+                <span>缓存延迟(延迟超过会触发丢帧)：</span>
+                <input placeholder="单位：秒" type="text" id="videoBufferDelay" style="width: 50px" value="1">秒
+                <button id="replay">重播</button>
+            </div>
+        </div>
+        <div class="input">
+            <div>
+                <input
+                    checked
+                    onclick="replay()"
+                    type="checkbox"
+                    id="demuxUseWorker"
+                /><span>硬解码(MediaSource，Webcodec)worker解封装</span>
+                <input
+                    checked
+                    onclick="replay()"
+                    type="checkbox"
+                    id="mseDecoderUseWorker"
+                /><span>硬解码(MediaSource)worker解码</span>
+            </div>
+        </div>
+        <div class="input">
+            <div>
+                <input
+                    checked
+                    onclick="replay()"
+                    type="checkbox"
+                    id="replayUseLastFrameShow"
+                /><span>暂停->播放的时候是否使用最后一帧显示</span>
+                <input
+                    onclick="replay()"
+                    type="checkbox"
+                    id="replayShowLoadingIcon"
+                /><span>暂停->播放的时候是否显示loading效果</span>
+            </div>
+        </div>
+        <div class="input">
+            <div>
+                <input
+                    checked
+                    onclick="replay()"
+                    type="checkbox"
+                    id="controlAutoHide"
+                /><span>自动隐藏控制条</span>
+            </div>
+        </div>
+        <div class="input">
+            <div>
+                <span>网页全屏模式：</span>
+                <select id="screenFullscreenType">
+                    <option value="stretch">直接铺满（拉伸）</option>
+                    <option value="scale">等比例缩放</option>
+                </select>
+            </div>
+        </div>
+        <div class="input">
+            <a href="https://jessibuca.com/test-url.html" target="_blank">测试地址</a>
+        </div>
+        <div class="input">
+            <div>输入URL：</div>
+            <input
+                autocomplete="on"
+                id="playUrl"
+                value=""
+            />
+            <button id="play">播放</button>
+            <button id="pause" style="display: none">停止</button>
+        </div>
+        <div class="input" style="line-height: 30px">
+            <button id="destroy">销毁</button>
+            <span class="fps-inner"></span>
+        </div>
+    </div>
+</div>
+
+<script src="./demo.js"></script>
+<script>
+
+    var $player = document.getElementById('play');
+    var $pause = document.getElementById('pause');
+    var $playHref = document.getElementById('playUrl');
+    var $container = document.getElementById('container');
+    var $destroy = document.getElementById('destroy');
+    var $fps = document.querySelector('.fps-inner');
+    var $useMSE = document.getElementById('useMSE');
+    var $useSIMD = document.getElementById('useSIMD');
+    var $useWASM = document.getElementById('useWASM');
+    var $isFFmpegSIMD = document.getElementById('isFFmpegSIMD');
+    var $useWCS = document.getElementById('useWCS');
+    var $videoBuffer = document.getElementById('videoBuffer');
+    var $videoBufferDelay = document.getElementById('videoBufferDelay');
+    var $replay = document.getElementById('replay');
+    var $renderDom = document.getElementById('renderDom');
+    var $isUseWebGPU = document.getElementById('isUseWebGPU');
+    var $demuxUseWorker = document.getElementById('demuxUseWorker');
+    var $useSIMDMThreading = document.getElementById('useSIMDMThreading');
+    var $replayUseLastFrameShow = document.getElementById('replayUseLastFrameShow');
+    var $replayShowLoadingIcon = document.getElementById('replayShowLoadingIcon');
+    var $mseDecoderUseWorker = document.getElementById('mseDecoderUseWorker');
+    var $controlAutoHide = document.getElementById('controlAutoHide');
+    var $audioDecodeUseHardware = document.getElementById('audioDecodeUseHardware');
+    var $useSThreading = document.getElementById('useSThreading');
+    var $syncAudioAndVideo = document.getElementById('syncAudioAndVideo');
+    var $isIgnoreExceptionFrame = document.getElementById('isIgnoreExceptionFrame');
+    var $root = document.querySelector('.root');
+    var $containerShell = document.querySelector('.container-shell');
+    var $screenFullscreenType = document.getElementById('screenFullscreenType');
+
+    var showOperateBtns = true; // 是否显示按钮
+    var forceNoOffscreen = true; //
+    var jessibuca = null;
+
+    var isInScreenFullscreen = false;
+
+    function create(options) {
+        options = options || {}
+
+        jessibuca = new JessibucaPro({
+            container: $container,
+            videoBuffer: Number($videoBuffer.value), // 缓存时长
+            videoBufferDelay: Number($videoBufferDelay.value), //
+            decoder: './js/decoder-pro.js',
+            isResize: false,
+            text: "",
+            loadingText: "加载中",
+            debug: true,
+            debugLevel: "debug",
+            useMSE: $useMSE.checked === true,
+            useWCS: $useWCS.checked === true,
+            mseDecodeAudio:$audioDecodeUseHardware.checked === true,
+            wcsDecodeAudio: $audioDecodeUseHardware.checked === true,
+            syncAudioAndVideo:$syncAudioAndVideo.checked === true,
+            decoderErrorAutoWasm: false,
+            useSIMD: $useSIMD.checked === true,
+            isFFmpegSIMD: $isFFmpegSIMD.checked === true,
+            useMThreading: $useSIMDMThreading.checked === true,
+            useSThreading: $useSThreading.checked === true,
+            showBandwidth: showOperateBtns, // 显示网速
+            showPerformance: showOperateBtns, // 显示性能
+            operateBtns: {
+                fullscreen: showOperateBtns,
+                screenshot: showOperateBtns,
+                play: showOperateBtns,
+                audio: showOperateBtns,
+                performance: showOperateBtns,
+            },
+            extendOperateBtns: [
+                {
+                    name: 'screenFullscreen',
+                    index: 4,
+                    icon: '/img/enter-screen-fullscreen.png',
+                    iconHover: '/img/enter-screen-fullscreen.png',
+                    iconTitle: '进入网页全屏',
+                    activeIcon: '/img/exit-screen-fullscreen.png',
+                    activeIconHover: '/img/exit-screen-fullscreen.png',
+                    activeIconTitle: '退出网页全屏',
+                    click: () => {
+                        isInScreenFullscreen = true;
+                        changePlayerSize();
+                    },
+                    activeClick: () => {
+                        isInScreenFullscreen = false;
+                        changePlayerSize();
+
+                    },
+                },
+            ],
+
+            timeout: 10,
+
+            // audioEngine: "worklet",
+            qualityConfig: ['普清', '高清', '超清', '4K', '8K'],
+            forceNoOffscreen: forceNoOffscreen,
+            isNotMute: false,
+            heartTimeout: 10,
+            useCanvasRender: $renderDom.value === 'canvas',
+            useWebGPU: $isUseWebGPU.value === 'webgpu',
+            useWebCanvas: $isUseWebGPU.value === 'canvas',
+            demuxUseWorker: $demuxUseWorker.checked === true,
+            controlHtml: '<div>我是 <span style="color: red">test</span>文案</div>',
+            // audioEngine:"worklet",
+            // isFlv: true
+            pauseAndNextPlayUseLastFrameShow: $replayUseLastFrameShow.checked === true,
+            heartTimeoutReplayUseLastFrameShow: $replayUseLastFrameShow.checked === true,
+            replayUseLastFrameShow: $replayUseLastFrameShow.checked === true, // 重播使用上一帧显示
+            replayShowLoadingIcon: $replayShowLoadingIcon.checked === true,// 重播显示loading
+            mseDecoderUseWorker:$mseDecoderUseWorker.checked === true,
+            controlAutoHide:$controlAutoHide.checked === true,
+            isIgnoreExceptionFrame:$isIgnoreExceptionFrame.checked === true,
+        },);
+
+        jessibuca.on('stats', (stats) => {
+            // console.log('stats', stats);
+            $fps.textContent = `FPS: ${stats.fps} DFPS: ${stats.dfps}`
+        })
+
+        jessibuca.on(JessibucaPro.EVENTS.playFailedAndPaused, (error) => {
+            jessibuca.showErrorMessageTips('播放异常：' + error);
+        })
+
+        jessibuca.on(JessibucaPro.EVENTS.crashLog,(log)=>{
+            console.error('crashLog',log)
+        })
+
+        $player.style.display = 'inline-block';
+        $pause.style.display = 'none';
+        $destroy.style.display = 'none';
+        $fps.textContent = '';
+    }
+
+
+    create();
+
+    function play() {
+        var href = $playHref.value;
+        if (href) {
+            const validResult = checkUrlIsValid(href)
+            if (!validResult.result) {
+                notifyError(validResult.msg);
+                return;
+            }
+            jessibuca.play(href).then(()=>{
+                console.log('play success');
+                $player.style.display = 'none';
+                $pause.style.display = 'inline-block';
+                $destroy.style.display = 'inline-block';
+                notifySuccess('播放成功');
+            }).catch((error)=>{
+                notifyError(`play error: ${error}`)
+                jessibuca.showErrorMessageTips(error.toString());
+            });
+
+        } else {
+            jessibuca.showErrorMessageTips('播放地址不能为空');
+        }
+    }
+
+    function replayBySThreading() {
+        $useSIMDMThreading.checked = false;
+        replay();
+    }
+
+    function replay(options) {
+        if (jessibuca) {
+            jessibuca.destroy().then(() => {
+                create(options);
+                play();
+            });
+        } else {
+            create();
+            play();
+        }
+    }
+
+    $replay.addEventListener('click', function () {
+        replay();
+    })
+
+    $player.addEventListener('click', function () {
+        play();
+    }, false)
+
+
+    $pause.addEventListener('click', function () {
+        $player.style.display = 'inline-block';
+        $pause.style.display = 'none';
+        $fps.textContent = '';
+        jessibuca.pause();
+    })
+
+    $destroy.addEventListener('click', function () {
+        if (jessibuca) {
+            jessibuca.destroy().then(() => {
+                create();
+            });
+        } else {
+            create();
+        }
+
+    })
+
+    $useMSE.addEventListener('click', function () {
+        const checked = $useMSE.checked;
+        if (checked) {
+            $useSIMD.checked = false
+            $useWCS.checked = false
+            $useWASM.checked = false
+        }
+        replay();
+    })
+
+    $useSIMD.addEventListener('click', function () {
+        const checked = $useSIMD.checked;
+        if (checked) {
+            $useMSE.checked = false
+            $useWCS.checked = false
+            $useWASM.checked = false
+        }
+        replay();
+    })
+
+    $useWCS.addEventListener('click', function () {
+        const checked = $useWCS.checked;
+        if (checked) {
+            $useMSE.checked = false
+            $useSIMD.checked = false
+            $useWASM.checked = false
+        }
+        replay();
+    })
+
+    $useWASM.addEventListener('click', function () {
+        const checked = $useWASM.checked;
+        if (checked) {
+            $useMSE.checked = false
+            $useSIMD.checked = false
+            $useWCS.checked = false
+        }
+        replay();
+    })
+
+    function changePlayerSize(){
+        if(isInScreenFullscreen){
+            // 公共样式：.root 撑满视口
+            document.body.style.overflow = 'hidden';
+            $root.style.position = 'fixed';
+            $root.style.top = '0';
+            $root.style.left = '0';
+            $root.style.width = '100vw';
+            $root.style.height = '100vh';
+            $root.style.zIndex = '9999';
+            $root.style.margin = '0';
+            $root.style.backgroundColor = '#000';
+            $root.style.display = 'flex';
+            $root.style.alignItems = 'center';
+            $root.style.justifyContent = 'center';
+            $containerShell.style.borderRadius = '0';
+            $containerShell.style.padding = '0';
+            $containerShell.style.backdropFilter = 'none';
+
+            var type = $screenFullscreenType.value;
+            if (type === 'stretch') {
+                // 直接拉伸铺满
+                $containerShell.style.width = '100%';
+                $containerShell.style.height = '100%';
+                $container.style.width = '100%';
+                $container.style.height = '100%';
+            } else {
+                // 等比例缩放：根据原始宽高比计算最大适配尺寸
+                var origW = $container.offsetWidth || 960;
+                var origH = $container.offsetHeight || 597;
+                var ratio = origW / origH;
+                var vw = window.innerWidth;
+                var vh = window.innerHeight;
+                var newW, newH;
+                if (vw / vh > ratio) {
+                    // 视口更宽，以高度为基准
+                    newH = vh;
+                    newW = Math.round(vh * ratio);
+                } else {
+                    // 视口更高，以宽度为基准
+                    newW = vw;
+                    newH = Math.round(vw / ratio);
+                }
+                // container-shell 与 container 保持一致，并裁剪掉溢出的控件
+                $containerShell.style.width = newW + 'px';
+                $containerShell.style.height = newH + 'px';
+                $containerShell.style.overflow = 'hidden';
+                $container.style.width = newW + 'px';
+                $container.style.height = newH + 'px';
+            }
+        }
+        else {
+            // 退出网页全屏：清空内联样式，恢复 CSS 定义的原始样式
+            document.body.style.overflow = '';
+            $root.style.cssText = '';
+            $containerShell.style.cssText = '';
+            $container.style.cssText = '';
+        }
+
+        jessibuca.resize();
+    }
+
+</script>
+
+</body>
+</html>
