@@ -303,7 +303,8 @@
             <div class="input">
                 <div>
                     <button @click="toggleControlBar">toggle控制条</button>
-                    <a href="/test-url.html" target="_blank" style="color: red;margin-left: 10px">测试地址(包含VR测试地址)</a>
+                    <a href="/test-url.html" target="_blank"
+                       style="color: red;margin-left: 10px">测试地址(包含VR测试地址)</a>
                 </div>
             </div>
             <div class="input">
@@ -321,6 +322,9 @@
                     <template v-if="!playing">
                         <button v-if="playType === '' || playType === 'play'" @click="play">播放直播流</button>
                         <button v-if="playType === '' || playType === 'playback'" @click="playback">播放录像流</button>
+                        <button v-if="playType === '' || playType === 'playbackSpecial'" @click="playbackSpecial">
+                            播放录像文件(流)
+                        </button>
                         <button v-if="playType === '' || playType === 'playVod'" @click="playVod">播放点播文件</button>
                         <button v-if="playType === '' || playType === 'playVR'" @click="playVR">播放VR文件</button>
                         <a href="/pro-demo.html" target="_blank" style="color: red">更多demo地址</a>
@@ -331,6 +335,7 @@
                             <button @click="()=> pause(true)">停止(清屏)</button>
                         </template>
                         <button v-if="playType === 'playback'" @click="pause">停止录像流</button>
+                        <button v-if="playType === 'playbackSpecial'" @click="pause">停止特殊录像流</button>
                     </template>
                 </div>
             </div>
@@ -368,7 +373,7 @@
                     <button @click="screenShot">截图</button>
                     <button @click="screenshotWatermark1">截图(水印文字)</button>
                     <button @click="screenshotWatermark2">截图(水印图片)</button>
-                    <template v-if="playType === 'playback'">
+                    <template v-if="playType === 'playback' || playType === 'playbackSpecial'">
                         <span>切换播放倍率:</span>
                         <select v-model="playbackRate" @change="playbackRateChange">
                             <option value="1">1倍</option>
@@ -660,7 +665,7 @@ export default {
             isHls: false,
             isTs: false,
             isPs: false,
-            isIgnoreExceptionFrame:false,
+            isIgnoreExceptionFrame: false,
             isNakedFlow: false,
             decoderErrorAutoWasm: true,
             hiddenAutoPause: false,
@@ -950,9 +955,9 @@ export default {
                 console.error('crashLog', log)
             })
 
-            jessibuca.on(JessibucaPro.EVENTS.playFailedAndPaused, (error,{},msg) => {
+            jessibuca.on(JessibucaPro.EVENTS.playFailedAndPaused, (error, {}, msg) => {
                 let tips = '播放异常：' + error;
-                if(msg){
+                if (msg) {
                     tips += '，详情：' + msg;
                 }
                 jessibuca.showErrorMessageTips(tips);
@@ -1064,10 +1069,12 @@ export default {
                     this.jessibuca.playback(this.playUrl, {
                         playList,
                         fps: 25,
-                        isUseFpsRender: true,
+                        isUseFpsRender: true, //
+                        isCacheBeforeDecodeForFpsRender: true,//
+                        isPlaybackPauseClearCache: true,
                         showControl: true,
-                        uiUsePlaybackPause: true,
-                        isUseLocalCalculateTime: true,
+                        uiUsePlaybackPause: true, //
+                        // isUseLocalCalculateTime: true, //
                         useMSE: this.useMSE,
                         useWCS: this.useWCS,
                         useWasm: this.useWasm,
@@ -1078,6 +1085,50 @@ export default {
                         ElMessage.error(`playback error : ${toString(e)}`);
                     })
                     this.playType = 'playback'
+                } else {
+                    ElMessage.error('play url is empty')
+                }
+            }
+        },
+
+
+        playbackSpecial() {
+            if (this.jessibuca.isPlaybackPaused()) {
+                this.jessibuca.playbackResume()
+            } else {
+                if (this.playUrl) {
+                    const checkResult = checkUrlIsValid(this.playUrl);
+                    if (!checkResult.result) {
+                        ElMessage.error(checkResult.msg);
+                        return;
+                    }
+
+                    this.jessibuca.playback(this.playUrl, {
+                        useWCS: this.useWCS,
+                        useWasm: this.useWasm,
+                        useSIMD: this.useSIMD,
+                        showControl: true,
+                        showRateBtn: true,
+                        rateConfig: [
+                            {label: '0.1倍', value: 0.1},
+                            {label: '0.5倍', value: 0.5},
+                            {label: '正常', value: 1},
+                            {label: '2倍', value: 2},
+                            {label: '4倍', value: 4},
+                            {label: '6倍', value: 6},
+                            {label: '8倍', value: 8},
+                            {label: '10倍', value: 10},
+                            {label: '12倍', value: 12},
+                            {label: '14倍', value: 14},
+                            {label: '16倍', value: 16},
+                        ],
+                        isSpecialPlaybackVod: true,
+                    }).then(() => {
+                        ElMessage.success('playback success');
+                    }).catch((e) => {
+                        ElMessage.error(`playback error : ${toString(e)}`);
+                    })
+                    this.playType = 'playbackSpecial'
                 } else {
                     ElMessage.error('play url is empty')
                 }
@@ -1134,7 +1185,7 @@ export default {
                         useWCS: this.useWCS,
                         useWasm: this.useWasm,
                         useSIMD: this.useSIMD,
-                        playVodMp4UseSrc:false,
+                        playVodMp4UseSrc: false,
                     }).then(() => {
                         ElMessage.success('playVR success');
                     }).catch((e) => {
@@ -1155,7 +1206,7 @@ export default {
         },
 
         pause(isClear) {
-            if (this.playType === 'playback') {
+            if (this.playType === 'playback' || this.playType === 'playbackSpecial') {
                 this.jessibuca.playbackPause(isClear).then(() => {
                     console.log('playbackPause success');
                     this.playing = false;
@@ -1367,6 +1418,8 @@ export default {
                     this.playVod();
                 } else if (this.playType === 'playVR') {
                     this.playVR()
+                } else if (this.playType === 'playbackSpecial') {
+                    this.playbackSpecial();
                 } else {
                     this.play();
                 }
