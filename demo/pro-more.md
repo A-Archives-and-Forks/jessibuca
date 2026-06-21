@@ -51,6 +51,10 @@
 1. 支持MP4格式点播文件播放（支持H264和H265编码格式）。
 2. 支持HLS格式点播文件播放（支持H264和H265编码格式）。
 
+### demo
+
+[player-pro-vod.html](https://jessibuca.com/player-pro-vod.html)
+
 ### 定价
 
 添加微信：bosswancheng 咨询
@@ -58,6 +62,10 @@
 ## 点播支持逐帧播放、逐关键帧播放
 
 点播逻辑下支持逐帧播放、逐关键帧播放。支持软解码和硬解码两种模式。
+
+### demo
+
+[点播Demo(支持mse、wcs、wasm、simd)](https://jessibuca.com/pro-demo.html#%E7%82%B9%E6%92%ADdemo-%E6%94%AF%E6%8C%81mse%E3%80%81wcs%E3%80%81wasm%E3%80%81simd)
 
 ### 定价
 
@@ -67,6 +75,8 @@
 
 特殊回放流逻辑下支持逐帧播放、逐关键帧播放。支持软解码和硬解码两种模式。
 
+### demo
+[flv demo（支持逐帧播放，逐关键帧(I帧)播放，4k25P(硬解码+软解码)，支持本地seek）](https://jessibuca.com/pro-demo.html#flv-demo%EF%BC%88%E6%94%AF%E6%8C%81%E9%80%90%E5%B8%A7%E6%92%AD%E6%94%BE%EF%BC%8C%E9%80%90%E5%85%B3%E9%94%AE%E5%B8%A7-i%E5%B8%A7-%E6%92%AD%E6%94%BE%EF%BC%8C4k25p-%E7%A1%AC%E8%A7%A3%E7%A0%81-%E8%BD%AF%E8%A7%A3%E7%A0%81-%EF%BC%8C%E6%94%AF%E6%8C%81%E6%9C%AC%E5%9C%B0seek%EF%BC%89)
 ### 定价
 
 添加微信：bosswancheng 咨询
@@ -76,6 +86,9 @@
 > 需要服务器端配合支持按照GOP倒序推流。
 
 服务器端如何推流方案：添加微信：bosswancheng 咨询
+
+### demo
+[回放流倒序播放](https://jessibuca.com/pro-demo.html#%E5%9B%9E%E6%94%BE%E6%B5%81%E5%80%92%E5%BA%8F%E6%92%AD%E6%94%BE-%E9%9C%80%E8%A6%81%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E9%85%8D%E5%90%88%E6%94%AF%E6%8C%81)
 
 ### 定价
 
@@ -145,6 +158,10 @@
 
 [大疆AI目标识别](https://developer.dji.com/doc/cloud-api-tutorial/cn/feature-set/dock-feature-set/ai-target-recognition.html) 介绍。
 
+### demo
+
+[收集SEI(大疆无人机AI目标识别)信息并画框显示](https://jessibuca.com/pro-demo.html#%E6%94%B6%E9%9B%86sei-%E5%A4%A7%E7%96%86%E6%97%A0%E4%BA%BA%E6%9C%BAai%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB-%E4%BF%A1%E6%81%AF%E5%B9%B6%E7%94%BB%E6%A1%86%E6%98%BE%E7%A4%BA)
+
 ### 定价
 
 添加微信：bosswancheng 咨询
@@ -153,6 +170,10 @@
 ## 支持亮度、对比度、饱和度调节、色调偏移(角度) 调节
 
 支持亮度、对比度、饱和度调节、色调偏移(角度) 调节
+
+### demo
+
+[亮度、对比度、饱和度调节、色调偏移(角度) 调节](https://jessibuca.com/pro-demo.html#%E4%BA%AE%E5%BA%A6%E3%80%81%E5%AF%B9%E6%AF%94%E5%BA%A6%E3%80%81%E9%A5%B1%E5%92%8C%E5%BA%A6%E8%B0%83%E8%8A%82%E3%80%81%E8%89%B2%E8%B0%83%E5%81%8F%E7%A7%BB-%E8%A7%92%E5%BA%A6-%E8%B0%83%E8%8A%82)
 
 ### 定价
 

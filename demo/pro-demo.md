@@ -596,8 +596,6 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 [http://jessibuca.monibuca.com/pro/demo-screenshot.html](http://jessibuca.monibuca.com/pro/demo-screenshot.html)
 
 
-
-
 ### PTZ云台操作(支持生成国标编码)
 ------
 #### https
@@ -668,6 +666,14 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 
 #### http
 [http://jessibuca.monibuca.com/pro/demo-hard-decode.html](http://jessibuca.monibuca.com/pro/demo-hard-decode.html)
+
+### 亮度、对比度、饱和度调节、色调偏移(角度) 调节
+------
+#### https
+[https://jessibuca.com/pro/demo-render-color.html](https://jessibuca.com/pro/demo-render-color.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/demo-render-color.html](http://jessibuca.monibuca.com/pro/demo-render-color.html)
 
 
 
