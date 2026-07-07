@@ -87,7 +87,7 @@
 	  webm: 'webm'
 	};
 	const CONTAINER_DATA_SET_KEY = 'jessibuca';
-	const VERSION = '"3.3.22"';
+	const VERSION = '"3.3.27"';
 
 	// default player options
 	const DEFAULT_PLAYER_OPTIONS = {
@@ -104,7 +104,7 @@
 	  // 快捷键
 	  loadingTimeout: 10,
 	  // loading timeout
-	  heartTimeout: 5,
+	  heartTimeout: 10,
 	  // heart timeout
 	  timeout: 10,
 	  // second
@@ -671,6 +671,7 @@
 	}
 	function dataURLToFile() {
 	  let dataURL = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	  let fileName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'file';
 	  const arr = dataURL.split(",");
 	  const bstr = atob(arr[1]);
 	  const type = arr[0].replace("data:", "").replace(";base64", "");
@@ -679,7 +680,7 @@
 	  while (n--) {
 	    u8arr[n] = bstr.charCodeAt(n);
 	  }
-	  return new File([u8arr], 'file', {
+	  return new File([u8arr], fileName, {
 	    type
 	  });
 	}
@@ -777,6 +778,9 @@
 	}
 	function isFullScreen() {
 	  return screenfull.isFullscreen;
+	}
+	function isElementFullScreen(element) {
+	  return isFullScreen() && screenfull.element === element;
 	}
 	function bpsSize(value) {
 	  if (null == value || value === '' || parseInt(value) === 0 || isNaN(parseInt(value))) {
@@ -894,7 +898,10 @@
 	}
 	function getBrowser() {
 	  const UserAgent = navigator.userAgent.toLowerCase();
-	  const browserInfo = {};
+	  const browserInfo = {
+	    type: 'unknown',
+	    version: 'unknown'
+	  };
 	  const browserArray = {
 	    IE: window.ActiveXObject || "ActiveXObject" in window,
 	    // IE
@@ -1596,12 +1603,14 @@
 	    if (type === SCREENSHOT_TYPE.base64) {
 	      return dataURL;
 	    } else {
-	      const file = dataURLToFile(dataURL);
+	      const suffix = formatType.split('/')[1];
+	      const _fileName = filename + '.' + suffix;
+	      const file = dataURLToFile(dataURL, _fileName);
 	      if (type === SCREENSHOT_TYPE.blob) {
 	        return file;
 	      } else if (type === SCREENSHOT_TYPE.download) {
 	        // downloadImg(file, filename);
-	        saveAs(file, filename);
+	        saveAs(file, _fileName);
 	      }
 	    }
 	  }
@@ -1837,12 +1846,14 @@
 	    if (type === SCREENSHOT_TYPE.base64) {
 	      return dataURL;
 	    } else {
-	      const file = dataURLToFile(dataURL);
+	      const suffix = formatType.split('/')[1];
+	      const _fileName = filename + '.' + suffix;
+	      const file = dataURLToFile(dataURL, _fileName);
 	      if (type === SCREENSHOT_TYPE.blob) {
 	        return file;
 	      } else if (type === SCREENSHOT_TYPE.download) {
 	        // downloadImg(file, filename);
-	        saveAs(file, filename);
+	        saveAs(file, _fileName);
 	      }
 	    }
 	  }
@@ -2028,7 +2039,7 @@
 	    return this.playing;
 	  }
 	  get isMute() {
-	    return this.gainNode.gain.value === 0;
+	    return this.gainNode.gain.value === 0 || this.isStateSuspended();
 	  }
 	  get volume() {
 	    return this.gainNode.gain.value;
@@ -2146,14 +2157,13 @@
 	  // 是否播放。。。
 	  audioEnabled(flag) {
 	    if (flag) {
-	      if (this.audioContext.state === 'suspended') {
+	      if (this.isStateSuspended()) {
 	        // resume
-	        this.audioContext.resume();
-	      }
-	    } else {
-	      if (this.audioContext.state === 'running') {
-	        // suspend
-	        this.audioContext.suspend();
+	        this.audioContext.resume().then(() => {
+	          this.player.debug.log('AudioContext', 'audioEnabled() audio enabled');
+	        }).catch(e => {
+	          this.player.debug.warn('AudioContext', `audioEnabled() and audio detected`, e);
+	        });
 	      }
 	    }
 	  }
@@ -11710,7 +11720,7 @@
 	    }
 	  }
 	  get fullscreen() {
-	    return isFullScreen() || this.webFullscreen;
+	    return isElementFullScreen(this.$container) || this.webFullscreen;
 	  }
 	  set webFullscreen(value) {
 	    this.emit(EVENTS.webFullscreen, value);
@@ -12344,6 +12354,11 @@
 	    // s -> ms
 	    if (isNotEmpty(_opt.videoBuffer)) {
 	      _opt.videoBuffer = Number(_opt.videoBuffer) * 1000;
+	    }
+
+	    // s -> ms
+	    if (isNotEmpty(_opt.videoBufferDelay)) {
+	      _opt.videoBufferDelay = Number(_opt.videoBufferDelay) * 1000;
 	    }
 
 	    // setting

@@ -90,6 +90,11 @@ class Jessibuca extends Emitter {
             _opt.videoBuffer = Number(_opt.videoBuffer) * 1000
         }
 
+        // s -> ms
+        if (isNotEmpty(_opt.videoBufferDelay)) {
+            _opt.videoBufferDelay = Number(_opt.videoBufferDelay) * 1000
+        }
+
         // setting
         if (isNotEmpty(_opt.timeout)) {
             if (isEmpty(_opt.loadingTimeout)) {

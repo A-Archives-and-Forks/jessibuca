@@ -6298,7 +6298,7 @@
 	  // 快捷键
 	  loadingTimeout: 10,
 	  // loading timeout
-	  heartTimeout: 5,
+	  heartTimeout: 10,
 	  // heart timeout
 	  timeout: 10,
 	  // second
