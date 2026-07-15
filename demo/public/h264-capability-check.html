@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>H264 Capability Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5
+        }
+
+        h1 {
+            margin-bottom: 10px
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .1)
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th {
+            background: #1976d2;
+            color: white;
+            padding: 8px
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center
+        }
+
+        .support {
+            color: green;
+            font-weight: bold
+        }
+
+        .unsupport {
+            color: red;
+            font-weight: bold
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-break: break-word
+        }
+    </style>
+</head>
+<body>
+<h1>H264 Capability Checker</h1>
+<div class="card"><h3>Browser Information</h3>
+    <pre id="browserInfo"></pre>
+</div>
+<div class="card"><h3>Codec Capability Detection</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Codec</th>
+            <th>Profile/Level</th>
+            <th>canPlayType</th>
+            <th>MSE</th>
+            <th>MediaCapabilities</th>
+            <th>Smooth</th>
+            <th>Power Efficient</th>
+        </tr>
+        </thead>
+        <tbody id="resultBody"></tbody>
+    </table>
+</div>
+<script>
+    const codecList = [
+        {codec: 'avc1.42E01E', desc: 'Baseline@L3.0', width: 720, height: 480, fps: 30},
+        {codec: 'avc1.4D401F', desc: 'Main@L3.1', width: 1280, height: 720, fps: 30},
+        {codec: 'avc1.640029', desc: 'High@L4.1', width: 1920, height: 1080, fps: 60},
+        {codec: 'avc1.640032', desc: 'High@L5.0', width: 3840, height: 2160, fps: 30},
+        {codec: 'avc1.640033', desc: 'High@L5.1', width: 3840, height: 2160, fps: 60},
+        {codec: 'avc1.640034', desc: 'High@L5.2', width: 3840, height: 2160, fps: 120}
+    ];
+
+    function colorText(v, s = 'Yes') {
+        if (v === true || v === 'probably' || v === 'maybe' || v === s) return `<span class="support">${v}</span>`;
+        return `<span class="unsupport">${v}</span>`;
+    }
+
+    document.getElementById('browserInfo').textContent = `UserAgent:\n${navigator.userAgent}\n\nPlatform:\n${navigator.platform}\n\nMediaSource:\n${!!window.MediaSource}\n\nMediaCapabilities:\n${!!navigator.mediaCapabilities}`;
+
+    async function runCheck() {
+        const tbody = document.getElementById('resultBody');
+        const video = document.createElement('video');
+        for (const item of codecList) {
+            const mime = `video/mp4; codecs="${item.codec}"`;
+            const canPlay = video.canPlayType(mime) || 'No';
+            const mse = window.MediaSource ? MediaSource.isTypeSupported(mime) : false;
+            let supported = 'N/A', smooth = 'N/A', power = 'N/A';
+            if (navigator.mediaCapabilities) {
+                try {
+                    const r = await navigator.mediaCapabilities.decodingInfo({
+                        type: 'file',
+                        video: {
+                            contentType: mime,
+                            width: item.width,
+                            height: item.height,
+                            bitrate: 20000000,
+                            framerate: item.fps
+                        }
+                    });
+                    supported = r.supported;
+                    smooth = r.smooth;
+                    power = r.powerEfficient;
+                } catch (e) {
+                    supported = 'Error';
+                    smooth = 'Error';
+                    power = 'Error';
+                }
+            }
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${item.codec}</td><td>${item.desc}</td><td>${colorText(canPlay)}</td><td>${colorText(mse)}</td><td>${colorText(supported)}</td><td>${colorText(smooth)}</td><td>${colorText(power)}</td>`;
+            tbody.appendChild(tr);
+        }
+    }
+
+    runCheck();
+</script>
+</body>
+</html>
