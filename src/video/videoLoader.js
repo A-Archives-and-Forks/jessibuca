@@ -180,7 +180,8 @@ export default class VideoLoader extends CommonLoader {
         canvas.width = $video.videoWidth;
         canvas.height = $video.videoHeight;
         this.canvasContext.drawImage($video, 0, 0, canvas.width, canvas.height);
-        const dataURL = canvas.toDataURL(formatType[format] || formatType.png, encoderOptions);
+        const _formatType = formatType[format] || formatType.png;
+        const dataURL = canvas.toDataURL(_formatType, encoderOptions);
         // release memory
         this.canvasContext.clearRect(0, 0, canvas.width, canvas.height);
         canvas.width = 0;
@@ -188,7 +189,7 @@ export default class VideoLoader extends CommonLoader {
         if (type === SCREENSHOT_TYPE.base64) {
             return dataURL;
         } else {
-            const suffix = formatType.split('/')[1];
+            const suffix = _formatType.split('/')[1];
             const _fileName = filename + '.' + suffix;
             const file = dataURLToFile(dataURL, _fileName);
             if (type === SCREENSHOT_TYPE.blob) {
