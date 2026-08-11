@@ -337,7 +337,7 @@ Jessibuca 是一款开源的纯H5直播流播放器，通过Emscripten将音视�
 
 ## star
 
-[![Star History Chart](https://api.star-history.com/svg?repos=langhuihui/jessibuca&type=Date)](https://star-history.com/#langhuihui/jessibuca&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=langhuihui/jessibuca&type=Date)](https://star-history.dera.page/#langhuihui/jessibuca&Date)
 
 ## 支持作者
 

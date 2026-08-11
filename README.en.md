@@ -154,7 +154,7 @@ Run `yarn build:wasm` or `npm run build:wasm`.
 
 ## star
 
-[![Star History Chart](https://api.star-history.com/svg?repos=langhuihui/jessibuca&type=Date)](https://star-history.com/#langhuihui/jessibuca&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=langhuihui/jessibuca&type=Date)](https://star-history.dera.page/#langhuihui/jessibuca&Date)
 
 ## Support
 
