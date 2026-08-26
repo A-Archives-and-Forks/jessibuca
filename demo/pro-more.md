@@ -189,7 +189,7 @@
 
 ### demo
 
-[电子放大(区域选框放大，有预览区域，交互支持PC)](https://jessibuca.com/pro-demo.html)
+[电子放大(区域选框放大，有预览区域，交互支持PC)](https://jessibuca.com/pro-demo.html#%E4%B8%BB%E7%A0%81%E6%B5%81%E5%AD%90%E7%A0%81%E6%B5%81%E6%97%A0%E9%BB%91%E5%B1%8F%E5%88%87%E6%8D%A2%EF%BC%88%E4%B8%8D%E6%98%BE%E7%A4%BA%E9%BB%91%E5%B1%8F%E5%8A%A0%E8%BD%BD%E4%B8%AD%EF%BC%89)
 
 
 ## 支持解析私有格式的视频流，例如rtp封装的ps流

@@ -22,7 +22,7 @@
         <div id="container"></div>
         <div class="input">
             <span
-                style="color: #ff6600; font-weight: bold;">提示：同时配置主码流与子码流的地址，可以在播放器的底部控制栏操作切换，实现无黑屏加载切换</span>
+                style="color: #ff6600; font-weight: bold;">提示：同时配置主码流与子码流的地址，可以在播放器的底部控制栏操作切换，支持配置是否切换的时候使用前码流最后一帧等待，配置是否显示loading的icon</span>
         </div>
         <div class="input">
             <div>
@@ -203,6 +203,19 @@
             <a href="https://jessibuca.com/test-url.html" target="_blank">测试地址</a>
         </div>
         <div class="input">
+            <div>
+                <input
+                    checked
+                    type="checkbox"
+                    id="useLastFrameShow"
+                /><span>切换码流是否保留前码流最后一帧</span>
+                <input
+                    type="checkbox"
+                    id="useLoadingIcon"
+                /><span>切换码流是否出现loading加载</span>
+            </div>
+        </div>
+        <div class="input">
             <div>备用子码流地址：</div>
             <input
                 autocomplete="on"
@@ -257,6 +270,8 @@
     var $useSThreading = document.getElementById('useSThreading');
     var $syncAudioAndVideo = document.getElementById('syncAudioAndVideo');
     var $isIgnoreExceptionFrame = document.getElementById('isIgnoreExceptionFrame');
+    var $useLastFrameShow = document.getElementById('useLastFrameShow');
+    var $useLoadingIcon = document.getElementById('useLoadingIcon');
 
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
@@ -293,6 +308,7 @@
                 screenshot: showOperateBtns,
                 play: showOperateBtns,
                 audio: showOperateBtns,
+                quality: showOperateBtns,
                 performance: showOperateBtns,
             },
             timeout: 10,
@@ -330,6 +346,10 @@
         })
 
         jessibuca.on('streamQualityChange', (value) => {
+
+            if (currentStreamQuality === value) {
+                return;
+            }
             let playHref = null;
             if (value === '主码流') {
                 if (!$playHref.value) {
@@ -354,8 +374,8 @@
             currentStreamQuality = value;
             //
             jessibuca.play(playHref, {
-                useLastFrameShow: true, // 切换时候保留最后一帧
-                loadingIcon: false, // 不现在加载中icon
+                useLastFrameShow: $useLastFrameShow.checked === true, // 切换时候保留最后一帧
+                loadingIcon: $useLoadingIcon.checked, // 现在加载中icon
             }).then((res) => {
                 notifySuccess(`切换${value}成功`);
                 // update default quality
