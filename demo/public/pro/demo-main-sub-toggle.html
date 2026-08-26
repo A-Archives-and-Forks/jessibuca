@@ -21,6 +21,10 @@
     <div class="container-shell">
         <div id="container"></div>
         <div class="input">
+            <span
+                style="color: #ff6600; font-weight: bold;">提示：同时配置主码流与子码流的地址，可以在播放器的底部控制栏操作切换，实现无黑屏加载切换</span>
+        </div>
+        <div class="input">
             <div>
                 当前浏览器：
                 <span id="mseSupport264" style="color: green;display: none">支持MSE H264解码；</span>
@@ -74,7 +78,7 @@
                     <span>硬解码音频</span>
                 </div>
                 <div>
-                  <span>软解码：</span>
+                    <span>软解码：</span>
                     <input
                         type="checkbox"
                         id="useWASM"
@@ -84,7 +88,7 @@
                         id="useSIMD"
                     /><span>WASM(SIMD)</span>
                     <input
-                        type="checkbox",
+                        type="checkbox" ,
                         id="isFFmpegSIMD"
                         onclick="replay()"
                     /><span>isSIMD(V2)</span>
@@ -102,7 +106,8 @@
                         type="checkbox"
                         id="useSIMDMThreading"
                         onclick="replay()"
-                    /><span>启动多线程（WASM,WASM(SIMD)解码支持）</span><span style="color: green">默认使用音视频同一个线程</span>
+                    /><span>启动多线程（WASM,WASM(SIMD)解码支持）</span><span
+                    style="color: green">默认使用音视频同一个线程</span>
 
                 </div>
                 <div class="input">
@@ -198,7 +203,15 @@
             <a href="https://jessibuca.com/test-url.html" target="_blank">测试地址</a>
         </div>
         <div class="input">
-            <div>输入URL：</div>
+            <div>备用子码流地址：</div>
+            <input
+                autocomplete="on"
+                id="subPlayUrl"
+                value=""
+            />
+        </div>
+        <div class="input">
+            <div>输入主码流地址：</div>
             <input
                 autocomplete="on"
                 id="playUrl"
@@ -220,6 +233,7 @@
     var $player = document.getElementById('play');
     var $pause = document.getElementById('pause');
     var $playHref = document.getElementById('playUrl');
+    var $subPlayHref = document.getElementById('subPlayUrl');
     var $container = document.getElementById('container');
     var $destroy = document.getElementById('destroy');
     var $fps = document.querySelector('.fps-inner');
@@ -247,6 +261,7 @@
     var showOperateBtns = true; // 是否显示按钮
     var forceNoOffscreen = true; //
     var jessibuca = null;
+    var currentStreamQuality = '主码流';
 
     function create(options) {
         options = options || {}
@@ -263,9 +278,9 @@
             debugLevel: "debug",
             useMSE: $useMSE.checked === true,
             useWCS: $useWCS.checked === true,
-            mseDecodeAudio:$audioDecodeUseHardware.checked === true,
+            mseDecodeAudio: $audioDecodeUseHardware.checked === true,
             wcsDecodeAudio: $audioDecodeUseHardware.checked === true,
-            syncAudioAndVideo:$syncAudioAndVideo.checked === true,
+            syncAudioAndVideo: $syncAudioAndVideo.checked === true,
             decoderErrorAutoWasm: false,
             useSIMD: $useSIMD.checked === true,
             isFFmpegSIMD: $isFFmpegSIMD.checked === true,
@@ -281,9 +296,8 @@
                 performance: showOperateBtns,
             },
             timeout: 10,
-
-            // audioEngine: "worklet",
-            qualityConfig: ['普清', '高清', '超清', '4K', '8K'],
+            qualityConfig: ['主码流', '子码流'],
+            defaultStreamQuality: currentStreamQuality,
             forceNoOffscreen: forceNoOffscreen,
             isNotMute: false,
             heartTimeout: 10,
@@ -297,9 +311,9 @@
             heartTimeoutReplayUseLastFrameShow: $replayUseLastFrameShow.checked === true,
             replayUseLastFrameShow: $replayUseLastFrameShow.checked === true, // 重播使用上一帧显示
             replayShowLoadingIcon: $replayShowLoadingIcon.checked === true,// 重播显示loading
-            mseDecoderUseWorker:$mseDecoderUseWorker.checked === true,
-            controlAutoHide:$controlAutoHide.checked === true,
-            isIgnoreExceptionFrame:$isIgnoreExceptionFrame.checked === true,
+            mseDecoderUseWorker: $mseDecoderUseWorker.checked === true,
+            controlAutoHide: $controlAutoHide.checked === true,
+            isIgnoreExceptionFrame: $isIgnoreExceptionFrame.checked === true,
         },);
 
         jessibuca.on('stats', (stats) => {
@@ -311,8 +325,48 @@
             jessibuca.showErrorMessageTips('播放异常：' + error);
         })
 
-        jessibuca.on(JessibucaPro.EVENTS.crashLog,(log)=>{
-            console.error('crashLog',log)
+        jessibuca.on(JessibucaPro.EVENTS.crashLog, (log) => {
+            console.error('crashLog', log)
+        })
+
+        jessibuca.on('streamQualityChange', (value) => {
+            let playHref = null;
+            if (value === '主码流') {
+                if (!$playHref.value) {
+                    notifyError('主码流地址不能为空');
+                    return;
+                }
+                playHref = $playHref.value;
+
+            } else if (value === '子码流') {
+                if (!$subPlayHref.value) {
+                    notifyError('子码流地址不能为空')
+                    return;
+                }
+                playHref = $subPlayHref.value;
+            }
+
+            const validResult = checkUrlIsValid(playHref)
+            if (!validResult.result) {
+                notifyError(validResult.msg);
+                return;
+            }
+            currentStreamQuality = value;
+            //
+            jessibuca.play(playHref, {
+                useLastFrameShow: true, // 切换时候保留最后一帧
+                loadingIcon: false, // 不现在加载中icon
+            }).then((res) => {
+                notifySuccess(`切换${value}成功`);
+                // update default quality
+                jessibuca.once('play', () => {
+                    jessibuca.setStreamQuality(value);
+                })
+
+            }).catch((error) => {
+                notifyError(`play error: ${error}`)
+                jessibuca.showErrorMessageTips(error.toString());
+            });
         })
 
         $player.style.display = 'inline-block';
@@ -332,13 +386,13 @@
                 notifyError(validResult.msg);
                 return;
             }
-            jessibuca.play(href).then(()=>{
+            jessibuca.play(href).then(() => {
                 console.log('play success');
                 $player.style.display = 'none';
                 $pause.style.display = 'inline-block';
                 $destroy.style.display = 'inline-block';
                 notifySuccess('播放成功');
-            }).catch((error)=>{
+            }).catch((error) => {
                 notifyError(`play error: ${error}`)
                 jessibuca.showErrorMessageTips(error.toString());
             });

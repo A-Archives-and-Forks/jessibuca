@@ -183,6 +183,15 @@
 
 添加微信：bosswancheng 咨询
 
+## 支持区域选择方式电子放大
+
+支持区域选择方式电子放大
+
+### demo
+
+[电子放大(区域选框放大，有预览区域，交互支持PC)](https://jessibuca.com/pro-demo.html)
+
+
 ## 支持解析私有格式的视频流，例如rtp封装的ps流
 
 > ws传送rtp封装的ps流，播放器解析播放

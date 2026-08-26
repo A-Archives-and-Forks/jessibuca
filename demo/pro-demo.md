@@ -507,13 +507,23 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 [http://jessibuca.monibuca.com/pro/demo-sei-dj.html](http://jessibuca.monibuca.com/pro/demo-sei-dj.html)
 
 
-### 电子放大
+### 电子放大(自由放大拖拽，交互支持PC、mobile)
 ------
 #### https
 [https://jessibuca.com/pro/demo-zoom.html](https://jessibuca.com/pro/demo-zoom.html)
 
 #### http
 [http://jessibuca.monibuca.com/pro/demo-zoom.html](http://jessibuca.monibuca.com/pro/demo-zoom.html)
+
+### 电子放大(区域选框放大，有预览区域，交互支持PC)
+------
+#### https
+[https://jessibuca.com/pro/demo-zoom-v2.html](https://jessibuca.com/pro/demo-zoom-v2.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/demo-zoom-v2.html](http://jessibuca.monibuca.com/pro/demo-zoom-v2.html)
+
+
 
 ### 区域圈选获取坐标并截图显示
 ------
@@ -619,6 +629,16 @@ vue2(单页面):[https://github.com/bosscheng/jessibuca-vue-demo/tree/pro-vue2](
 
 #### http
 [http://jessibuca.monibuca.com/pro/demo-record-mp4.html](http://jessibuca.monibuca.com/pro/demo-record-mp4.html)
+
+
+### 主码流子码流无黑屏切换（不显示黑屏加载中）
+------
+#### https
+[https://jessibuca.com/pro/demo-main-sub-toggle.html](https://jessibuca.com/pro/demo-main-sub-toggle.html)
+
+#### http
+[http://jessibuca.monibuca.com/pro/demo-main-sub-toggle.html](http://jessibuca.monibuca.com/pro/demo-main-sub-toggle.html)
+
 
 
 ### 视频轮播（支持显示上一个视频最后一帧）

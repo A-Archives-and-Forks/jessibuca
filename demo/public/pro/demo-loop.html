@@ -189,7 +189,7 @@
             videoBufferDelay: Number($videoBufferDelay.value), // 1000s
             decoder: './js/decoder-pro.js',
             isResize: false,
-            controlAutoHide:true,
+            controlAutoHide: true,
             text: "",
             loadingText: "加载中",
             debug: true,
@@ -286,7 +286,12 @@
                 notifyError(validResult.msg);
                 return;
             }
-            jessibuca.play(href).then(() => {
+
+            const showLastIframe = $showLastIframe.checked === true;
+            jessibuca.play(href, {
+                useLastFrameShow: showLastIframe,
+                loadingIcon: showLastIframe ? false : true,
+            }).then(() => {
                 $player.style.display = 'none';
                 $pause.style.display = 'inline-block';
                 $destroy.style.display = 'inline-block';
@@ -295,8 +300,7 @@
             }).catch((error) => {
                 jessibuca.showErrorMessageTips(error.toString());
             });
-        }
-        else{
+        } else {
             jessibuca.showErrorMessageTips('播放地址不能为空');
         }
     }
@@ -311,23 +315,7 @@
 
     function startLoop() {
         loopTimer = setTimeout(() => {
-            const showLastIframe = $showLastIframe.checked === true;
-            if (showLastIframe) {
-                const loadingBg = jessibuca.screenshot('', 'png', 0.92, 'base64');
-                const videoInfo = jessibuca.getVideoInfo();
-                console.log('videoInfo',videoInfo,loadingBg);
-                //  上一个流的最后一帧画面。
-                jessibuca.destroy().then(() => {
-                    create({
-                        loadingBackground: loadingBg,
-                        loadingBackgroundWidth: videoInfo.width,
-                        loadingBackgroundHeight: videoInfo.height,
-                    });
-                    play();
-                });
-            } else {
-                replay();
-            }
+            play();
         }, 30 * 1000)
     }
 
