@@ -83,11 +83,7 @@
                         type="checkbox"
                         id="useSIMD"
                     /><span>WASM(SIMD)</span>
-                    <input
-                        type="checkbox" ,
-                        id="isFFmpegSIMD"
-                        onclick="replay()"
-                    /><span>isSIMD(V2)</span>
+
                     <span style="color: green">默认使用wasm解码器</span>
                 </div>
                 <div class="input">
@@ -253,7 +249,6 @@
     var $useMSE = document.getElementById('useMSE');
     var $useSIMD = document.getElementById('useSIMD');
     var $useWASM = document.getElementById('useWASM');
-    var $isFFmpegSIMD = document.getElementById('isFFmpegSIMD');
     var $useWCS = document.getElementById('useWCS');
     var $videoBuffer = document.getElementById('videoBuffer');
     var $videoBufferDelay = document.getElementById('videoBufferDelay');
@@ -295,7 +290,6 @@
             syncAudioAndVideo: $syncAudioAndVideo.checked === true,
             decoderErrorAutoWasm: false,
             useSIMD: $useSIMD.checked === true,
-            isFFmpegSIMD: $isFFmpegSIMD.checked === true,
             useMThreading: $useSIMDMThreading.checked === true,
             useSThreading: $useSThreading.checked === true,
             showBandwidth: showOperateBtns, // 显示网速

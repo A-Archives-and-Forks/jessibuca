@@ -110,11 +110,6 @@
                     v-model="useSIMD"
                     @change="restartPlay('simd')"
                 /><span>SIMD</span>
-                <input
-                    type="checkbox"
-                    v-model="isFFmpegSIMD"
-                    @change="restartPlay('simd')"
-                /><span>isSIMD(V2)</span>
             </div>
             <div class="input">
                 <input
@@ -638,7 +633,6 @@ export default {
             useMSE: false,
             useSIMD: true,
             audioDecodeUseHardware: true,
-            isFFmpegSIMD: true,
             useMT: true,
             useOffscreen: false,
             networkDelayTimeoutReplay: false,
@@ -732,7 +726,6 @@ export default {
                         wcsDecodeAudio: this.audioDecodeUseHardware,
                         useMSE: this.useMSE,
                         useSIMD: this.useSIMD,
-                        isFFmpegSIMD: this.isFFmpegSIMD,
                         useMThreading: this.useMT,
                         wcsUseVideoRender: this.useWCS,
                         loadingIcon: true,

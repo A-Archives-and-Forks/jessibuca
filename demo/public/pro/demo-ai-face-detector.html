@@ -81,11 +81,7 @@
                         type="checkbox"
                         id="useSIMD"
                     /><span>WASM(SIMD)</span>
-                    <input
-                        type="checkbox" ,
-                        id="isFFmpegSIMD"
-                        onclick="replay()"
-                    /><span>isSIMD(V2)</span>
+
                     <span id="useSIMDMThreadingWrap">
                         <input
                             type="checkbox"
@@ -203,7 +199,6 @@
     var $useWCS = document.getElementById('useWCS');
     var $useSIMD = document.getElementById('useSIMD');
     var $useWASM = document.getElementById('useWASM');
-    var $isFFmpegSIMD = document.getElementById('isFFmpegSIMD');
     var $useSIMDMThreading = document.getElementById('useSIMDMThreading');
     var $audioDecodeUseHardware = document.getElementById('audioDecodeUseHardware');
     var $renderDom = document.getElementById('renderDom');
@@ -228,7 +223,6 @@
             useMSE: false,
             useWCS: $useWCS.checked === true,
             useSIMD: $useSIMD.checked === true,
-            isFFmpegSIMD: $isFFmpegSIMD.checked === true,
             useMThreading: $useSIMDMThreading.checked === true,
             wcsDecodeAudio: $audioDecodeUseHardware.checked === true,
             showBandwidth: showOperateBtns, // 显示网速

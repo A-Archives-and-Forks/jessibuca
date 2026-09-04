@@ -77,11 +77,6 @@
                         type="checkbox"
                         id="useSIMD"
                     /><span>WASM(SIMD)</span>
-                    <input
-                        type="checkbox",
-                        id="isFFmpegSIMD"
-                        onclick="replay()"
-                    /><span>isSIMD(V2)</span>
                 </div>
             </div>
         </div>
@@ -199,7 +194,6 @@
     var $destroy = document.getElementById('destroy');
     var $useMSE = document.getElementById('useMSE');
     var $useSIMD = document.getElementById('useSIMD');
-    var $isFFmpegSIMD = document.getElementById('isFFmpegSIMD');
     var $useWCS = document.getElementById('useWCS');
     var $useWASM = document.getElementById('useWASM');
     var $playVodForward = document.getElementById('playVodForward');
@@ -226,7 +220,6 @@
             loadingText: "加载中",
             debug: true,
             debugLevel: 'debug',
-            isFFmpegSIMD: $isFFmpegSIMD.checked === true,
             useMThreading: $useSIMDMThreading.checked === true,
             useSThreading: $useSThreading.checked === true,
             decoderErrorAutoWasm: false,
