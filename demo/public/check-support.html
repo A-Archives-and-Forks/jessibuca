@@ -2,62 +2,330 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>check support</title>
-    <script src="./vue.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f5f6fa;
+            color: #333;
+        }
+
+        #app {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .ua-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            word-break: break-all;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            border-radius: 8px;
+            padding: 12px 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            font-size: 14px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .item .label {
+            color: #444;
+            font-weight: 500;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .badge.true {
+            background: #e6f7ec;
+            color: #1a9e4c;
+        }
+
+        .badge.false {
+            background: #fdeceb;
+            color: #e03e2f;
+        }
+
+        .badge.pending {
+            background: #eef0f3;
+            color: #8a8f99;
+        }
+
+        .badge.value {
+            background: #eef0f3;
+            color: #333;
+        }
+
+        .config-section {
+            margin-top: 30px;
+        }
+
+        .config-section h2 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .config-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .config-item {
+            background: #fff;
+            border-radius: 8px;
+            padding: 10px 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            font-size: 13px;
+            word-break: break-all;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            border-left: 4px solid transparent;
+        }
+
+        .config-item .config-text {
+            flex: 1;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .config-item .config-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .config-item .config-header {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .config-item .type-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: #eef0f3;
+            color: #5b6472;
+            letter-spacing: 0.2px;
+        }
+
+        .config-item .type-tag.decoder {
+            background: #e7f0ff;
+            color: #1d5fd1;
+        }
+
+        .config-item .type-tag.encoder {
+            background: #f3e8ff;
+            color: #7a2ed1;
+        }
+
+        .config-item .config-fields {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 16px;
+        }
+
+        .config-item .config-field {
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .config-item .field-key {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .config-item .field-key::after {
+            content: ':';
+            margin-right: 4px;
+        }
+
+        .config-item .hw-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.2px;
+        }
+
+        .config-item .hw-tag.hardware {
+            background: #fff2e0;
+            color: #b5641a;
+        }
+
+        .config-item .hw-tag.software {
+            background: #e8ecff;
+            color: #3d4fb5;
+        }
+
+        .config-item .hw-tag.no-preference {
+            background: #eef0f3;
+            color: #5b6472;
+        }
+
+        .config-item .codec-tag {
+            display: inline-block;
+            font-family: "SF Mono", Consolas, Monaco, monospace;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: #eef1ff;
+            color: #3b53c4;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .config-item.supported .codec-tag {
+            background: #dff3e6;
+            color: #147a3d;
+        }
+
+        .config-item.unsupported .codec-tag {
+            background: #fde2df;
+            color: #b5271b;
+        }
+
+        .config-item.supported {
+            border-left-color: #1a9e4c;
+            background: #f4fbf6;
+        }
+
+        .config-item.unsupported {
+            border-left-color: #e03e2f;
+            background: #fef6f5;
+        }
+
+        .config-item .config-badge {
+            flex-shrink: 0;
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
+
+        .config-item.supported .config-badge {
+            background: #e6f7ec;
+            color: #1a9e4c;
+        }
+
+        .config-item.unsupported .config-badge {
+            background: #fdeceb;
+            color: #e03e2f;
+        }
+    </style>
 </head>
 
 <body>
 <div id="app">
-    <p>UA: {{ ua }}</p>
-    <p>ASM: {{ asm }}</p>
-    <p>Blob: {{ blob }}</p>
-    <p>WASM: {{ wasm }}</p>
-    <p>SIMD: {{ simd }}</p>
-    <p>Fetch: {{ fetch }}</p>
-    <p>WebGL: {{ webGL }}</p>
-    <p>Worker: {{ worker }}</p>
-    <p>ArrayBuffer: {{ arrayBuffer }}</p>
-    <p>AudioContext: {{ audioContext }}</p>
-    <p>ReadableStream: {{ readableStream }}</p>
-    <p>ReadableStreamBody: {{ readableStreamBody }}</p>
-    <p>MediaSource-H264:{{checkSupportMSEH264()}}</p>
-    <p>MediaSource-H265:{{checkSupportMSEHevc()}}</p>
-    <p>VideoDecoder: {{checkVideoDecoder()}}</p>
-    <p>VideoEncoder: {{checkVideoEncoder()}}</p>
-    <p>AudioDecoder: {{checkAudioDecoder()}}</p>
-    <p>AudioEncoder: {{checkAudioEncoder()}}</p>
-    <p>OffscreenCanvas: {{checkOffscreenCanvas()}}</p>
-    <p>SharedArrayBuffer: {{supportSharedArrayBuffer()}}</p>
+    <h1>浏览器能力检测 Check Support</h1>
+    <div class="ua-card" id="uaCard"></div>
+
+    <div class="config-section">
+        <h2>浏览器信息 (User Agent 解析)</h2>
+        <div class="grid" id="uaInfoGrid"></div>
+    </div>
+
+    <div class="config-section">
+        <h2>基础能力</h2>
+        <div class="grid" id="basicGrid"></div>
+    </div>
+
+    <div class="config-section">
+        <h2>媒体源 (MediaSource)</h2>
+        <div class="grid" id="mediaSourceGrid"></div>
+    </div>
+
+    <div class="config-section">
+        <h2>原生播放能力 (HTMLMediaElement canPlayType)</h2>
+        <div class="grid" id="nativePlaybackGrid"></div>
+    </div>
+
+    <div class="config-section">
+        <h2>解码器 (WebCodecs Decoder)</h2>
+        <div class="grid" id="decoderGrid"></div>
+    </div>
+
+    <div class="config-section">
+        <h2>编码器 (WebCodecs Encoder)</h2>
+        <div class="grid" id="encoderGrid"></div>
+    </div>
+
+    <div class="config-section">
+        <h2>网络与设备</h2>
+        <div class="grid" id="networkDeviceGrid"></div>
+    </div>
+
+    <div class="config-section">
+        <h2>播放增强能力</h2>
+        <div class="grid" id="playbackEnhanceGrid"></div>
+    </div>
+
+    <div class="config-section">
+        <h2>VideoDecoder Config Support</h2>
+        <div class="config-list" id="decoderConfigList"></div>
+    </div>
+
+    <div class="config-section">
+        <h2>VideoEncoder Config Support</h2>
+        <div class="config-list" id="encoderConfigList"></div>
+    </div>
 </div>
 
 <script>
-    var app = new Vue({
-        el: '#app',
-        data: {
-            ua: navigator.userAgent,
-            asm: checkAsmJS(),
-            wasm: checkWebAssembly(),
-            simd: checkSIMD(),
-            worker: checkWorker(),
-            fetch: checkFetch(),
-            readableStream: checkReadableStream(),
-            readableStreamBody: checkReadableStreamBody(),
-            blob: checkBlob(),
-            arrayBuffer: checkArrayBuffer(),
-            audioContext: checkAudioContext(),
-            webGL: checkWebGL(),
-            aacEncoder: false,
-            avcEncoder: false,
-            hvcEncoder: false,
-        },
-        async mounted() {
-            this.aacEncoder = await checkAACEncoder();
-            this.avcEncoder = await checkAVCEncoder();
-            this.hvcEncoder = await checkHVCEncoder();
-        }
-    })
-
     function checkAsmJS() {
         try {
             (function MyAsmModule() { "use asm" })();
@@ -83,67 +351,103 @@
     }
 
     function checkWorker() {
-        return typeof window.Worker === 'function';
+        try {
+            return typeof window.Worker === 'function';
+        } catch (e) {
+            return false;
+        }
     }
 
     function checkFetch() {
-        return typeof window.fetch === 'function';
+        try {
+            return typeof window.fetch === 'function';
+        } catch (e) {
+            return false;
+        }
     }
 
     function checkURL() {
-        return window.URL && typeof window.URL.createObjectURL === 'function';
+        try {
+            return !!(window.URL && typeof window.URL.createObjectURL === 'function');
+        } catch (e) {
+            return false;
+        }
     }
 
     function checkReadableStream() {
-        return (
-            typeof window.ReadableStream === 'function' &&
-            typeof window.Response === 'function'
-        );
+        try {
+            return (
+                typeof window.ReadableStream === 'function' &&
+                typeof window.Response === 'function'
+            );
+        } catch (e) {
+            return false;
+        }
     }
 
     function checkReadableStreamBody() {
-        return Object.prototype.hasOwnProperty.call(window.Response.prototype, 'body');
+        try {
+            return Object.prototype.hasOwnProperty.call(window.Response.prototype, 'body');
+        } catch (e) {
+            return false;
+        }
     }
 
     function checkBlob() {
-        return (
-            typeof window.Blob === 'function' &&
-            (() => {
-                try {
-                    return !!new window.Blob();
-                } catch (e) {
-                    return false;
-                }
-            })()
-        );
+        try {
+            return (
+                typeof window.Blob === 'function' &&
+                (function () {
+                    try {
+                        return !!new window.Blob();
+                    } catch (e) {
+                        return false;
+                    }
+                })()
+            );
+        } catch (e) {
+            return false;
+        }
     }
 
     function checkArrayBuffer() {
-        return typeof window.ArrayBuffer === 'function';
+        try {
+            return typeof window.ArrayBuffer === 'function';
+        } catch (e) {
+            return false;
+        }
     }
 
     function checkAudioContext() {
-        return !!(window.AudioContext || window.webkitAudioContext);
+        try {
+            return !!(window.AudioContext || window.webkitAudioContext);
+        } catch (e) {
+            return false;
+        }
     }
 
     function checkWebGL() {
-        if (window.WebGLRenderingContext) {
-            const canvas = document.createElement('canvas');
-            const names = ['webgl2', 'webgl', 'experimental-webgl', 'moz-webgl', 'webkit-3d'];
-            let context = false;
-            for (let i = 0; i < names.length; i += 1) {
-                try {
-                    context = canvas.getContext(names[i]);
-                    if (context && typeof context.getParameter === 'function') {
-                        return true;
+        try {
+            if (window.WebGLRenderingContext) {
+                const canvas = document.createElement('canvas');
+                const names = ['webgl2', 'webgl', 'experimental-webgl', 'moz-webgl', 'webkit-3d'];
+                let context = false;
+                for (let i = 0; i < names.length; i += 1) {
+                    try {
+                        context = canvas.getContext(names[i]);
+                        if (context && typeof context.getParameter === 'function') {
+                            return true;
+                        }
+                    } catch (e) {
+                        //
                     }
-                } catch (e) {
-                    //
                 }
+                return false;
             }
             return false;
+        } catch (e) {
+            return false;
         }
-        return false;
     }
 
     function checkOffscreenCanvas() {
@@ -159,66 +463,462 @@
     }
 
     function checkVideoDecoder() {
-        return typeof window.VideoDecoder === 'function';
-    }
-
-    function checkVideoEncoder() {
-        return typeof window.VideoEncoder === 'function';
-    }
-
-    function checkAudioDecoder() {
-        return typeof window.AudioDecoder === 'function';
-    }
-
-    function checkAudioEncoder() {
-        return typeof window.AudioEncoder === 'function';
-    }
-
-    function checkSIMD() {
-        return WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11]));
-    }
-
-
-    async function checkAACEncoder() {
-        let s = await AudioEncoder.isConfigSupported({ codec: "mp4a.40.2", bitrate: 96000, numberOfChannels: 1, sampleRate: 48000 });
-        return s.supported;
-    }
-
-    async function checkAVCEncoder() {
-        let s = await VideoEncoder.isConfigSupported({ codec: "avc1.64001E", width: 1280, height: 720 });
-        return s.supported;
-    }
-
-    async function checkHVCEncoder() {
-        let s = await VideoEncoder.isConfigSupported({ codec: "hev1.1.6.L120.90", width: 1280, height: 720 });
-        return s.supported;
-    }
-
-    function checkSupportMSEHevc() {
-        return window.MediaSource && window.MediaSource.isTypeSupported('video/mp4; codecs="hev1.1.6.L123.b0"');
-    }
-
-    function checkSupportMSEH264() {
-        return ('MediaSource' in self) || ('ManagedMediaSource' in self)
-    }
-
-    function checkSupportWasm() {
         try {
-            if (typeof window.WebAssembly === 'object' && typeof window.WebAssembly.instantiate === 'function') {
-                const module = new window.WebAssembly.Module(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
-                if (module instanceof window.WebAssembly.Module) {
-                    return new window.WebAssembly.Instance(module) instanceof window.WebAssembly.Instance;
-                }
-            }
-            return false;
+            return typeof window.VideoDecoder === 'function';
         } catch (e) {
             return false;
         }
     }
 
+    function checkVideoEncoder() {
+        try {
+            return typeof window.VideoEncoder === 'function';
+        } catch (e) {
+            return false;
+        }
+    }
 
-    function checkSupportSIMD() {
-        return WebAssembly && WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11]));
+    function checkAudioDecoder() {
+        try {
+            return typeof window.AudioDecoder === 'function';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkAudioEncoder() {
+        try {
+            return typeof window.AudioEncoder === 'function';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkSIMD() {
+        try {
+            return WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11]));
+        } catch (e) {
+            return false;
+        }
+    }
+
+    async function checkAACEncoder() {
+        try {
+            let s = await AudioEncoder.isConfigSupported({ codec: "mp4a.40.2", bitrate: 96000, numberOfChannels: 1, sampleRate: 48000 });
+            return s.supported;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    async function checkAVCEncoder() {
+        try {
+            let s = await VideoEncoder.isConfigSupported({ codec: "avc1.64001E", width: 1280, height: 720 });
+            return s.supported;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    async function checkHVCEncoder() {
+        try {
+            let s = await VideoEncoder.isConfigSupported({ codec: "hev1.1.6.L120.90", width: 1280, height: 720 });
+            return s.supported;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkSupportMSEHevc() {
+        try {
+            return !!(window.MediaSource && window.MediaSource.isTypeSupported('video/mp4; codecs="hev1.1.6.L123.b0"'));
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkSupportMSEH264() {
+        try {
+            return ('MediaSource' in self) || ('ManagedMediaSource' in self);
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkSupportMSEAV1() {
+        try {
+            return !!(window.MediaSource && window.MediaSource.isTypeSupported('video/mp4; codecs="av01.0.04M.08"'));
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkSupportMSEVP9() {
+        try {
+            return !!(window.MediaSource && window.MediaSource.isTypeSupported('video/webm; codecs="vp9"'));
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkManagedMediaSource() {
+        try {
+            return ('ManagedMediaSource' in self) || typeof window.ManagedMediaSource === 'function';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkCanPlayH264() {
+        try {
+            const v = document.createElement('video');
+            return !!(v.canPlayType && v.canPlayType('video/mp4; codecs="avc1.42E01E"') !== '');
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkCanPlayHevc() {
+        try {
+            const v = document.createElement('video');
+            return !!(v.canPlayType && (v.canPlayType('video/mp4; codecs="hvc1.1.6.L93.90"') !== '' || v.canPlayType('video/mp4; codecs="hev1.1.6.L93.90"') !== ''));
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkCanPlayAV1() {
+        try {
+            const v = document.createElement('video');
+            return !!(v.canPlayType && v.canPlayType('video/mp4; codecs="av01.0.04M.08"') !== '');
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkCanPlayVP9() {
+        try {
+            const v = document.createElement('video');
+            return !!(v.canPlayType && v.canPlayType('video/webm; codecs="vp9"') !== '');
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkCanPlayAAC() {
+        try {
+            const a = document.createElement('audio');
+            return !!(a.canPlayType && a.canPlayType('audio/mp4; codecs="mp4a.40.2"') !== '');
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkCanPlayMP3() {
+        try {
+            const a = document.createElement('audio');
+            return !!(a.canPlayType && a.canPlayType('audio/mpeg') !== '');
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkCanPlayOpus() {
+        try {
+            const a = document.createElement('audio');
+            return !!(a.canPlayType && a.canPlayType('audio/webm; codecs="opus"') !== '');
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkWebSocket() {
+        try {
+            return typeof window.WebSocket === 'function';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkRTCPeerConnection() {
+        try {
+            return typeof window.RTCPeerConnection === 'function';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkWebTransport() {
+        try {
+            return typeof window.WebTransport === 'function';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkGetUserMedia() {
+        try {
+            return !!(navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function');
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkMediaRecorder() {
+        try {
+            return typeof window.MediaRecorder === 'function';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkAudioWorklet() {
+        try {
+            return typeof window.AudioWorkletNode === 'function';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkMediaCapabilities() {
+        try {
+            return !!(navigator.mediaCapabilities && typeof navigator.mediaCapabilities.decodingInfo === 'function');
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkRequestVideoFrameCallback() {
+        try {
+            return typeof window.HTMLVideoElement !== 'undefined' && typeof HTMLVideoElement.prototype.requestVideoFrameCallback === 'function';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkPictureInPicture() {
+        try {
+            return document.pictureInPictureEnabled === true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkFullscreen() {
+        try {
+            return !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkImageBitmap() {
+        try {
+            return typeof window.createImageBitmap === 'function';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function checkScreenWakeLock() {
+        try {
+            return !!(navigator.wakeLock && typeof navigator.wakeLock.request === 'function');
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // ---------- User-Agent parsing ----------
+
+    function parseUserAgent(ua) {
+        const defaults = {
+            browserName: 'Unknown',
+            browserVersion: '-',
+            engineName: 'Unknown',
+            engineVersion: '-',
+            osName: 'Unknown',
+            osVersion: '-',
+            deviceType: 'Desktop',
+            isMobile: false
+        };
+
+        try {
+            ua = ua || '';
+            const result = Object.assign ? Object.assign({}, defaults) : (function () {
+                const copy = {};
+                for (const k in defaults) {
+                    if (Object.prototype.hasOwnProperty.call(defaults, k)) {
+                        copy[k] = defaults[k];
+                    }
+                }
+                return copy;
+            })();
+
+            let m;
+            let maxTouchPoints = 0;
+            try {
+                maxTouchPoints = navigator.maxTouchPoints || 0;
+            } catch (e) {
+                maxTouchPoints = 0;
+            }
+
+            // ---- OS detection (order matters) ----
+            if (/iPhone|iPod/.test(ua)) {
+                result.osName = 'iOS';
+                result.deviceType = 'Mobile';
+                result.isMobile = true;
+                m = ua.match(/OS ([\d_]+) like Mac OS X/);
+                result.osVersion = m ? m[1].replace(/_/g, '.') : '-';
+            } else if (/iPad/.test(ua) || (/Macintosh/.test(ua) && maxTouchPoints > 1)) {
+                result.osName = 'iPadOS';
+                result.deviceType = 'Tablet';
+                result.isMobile = true;
+                m = ua.match(/OS ([\d_]+) like Mac OS X/);
+                result.osVersion = m ? m[1].replace(/_/g, '.') : '-';
+            } else if (/Android/.test(ua)) {
+                result.osName = 'Android';
+                m = ua.match(/Android ([\d.]+)/);
+                result.osVersion = m ? m[1] : '-';
+                result.deviceType = /Mobile/.test(ua) ? 'Mobile' : 'Tablet';
+                result.isMobile = true;
+            } else if (/HarmonyOS/.test(ua)) {
+                result.osName = 'HarmonyOS';
+                m = ua.match(/HarmonyOS ([\d.]+)/);
+                result.osVersion = m ? m[1] : '-';
+                result.deviceType = 'Mobile';
+                result.isMobile = true;
+            } else if (/Windows NT/.test(ua)) {
+                result.osName = 'Windows';
+                m = ua.match(/Windows NT ([\d.]+)/);
+                const versionMap = { '10.0': '10 / 11', '6.3': '8.1', '6.2': '8', '6.1': '7', '6.0': 'Vista', '5.1': 'XP' };
+                result.osVersion = m ? (versionMap[m[1]] || m[1]) : '-';
+            } else if (/CrOS/.test(ua)) {
+                result.osName = 'ChromeOS';
+            } else if (/Mac OS X ([\d_.]+)/.test(ua)) {
+                result.osName = 'macOS';
+                m = ua.match(/Mac OS X ([\d_.]+)/);
+                result.osVersion = m ? m[1].replace(/_/g, '.') : '-';
+            } else if (/Linux/.test(ua)) {
+                result.osName = 'Linux';
+            }
+
+            // ---- Browser detection (order matters, most specific first) ----
+            if ((m = ua.match(/MicroMessenger\/([\d.]+)/))) {
+                result.browserName = '微信内置浏览器 (WeChat)';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/EdgA?\/([\d.]+)/)) || (m = ua.match(/Edge\/([\d.]+)/))) {
+                result.browserName = 'Edge';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/SamsungBrowser\/([\d.]+)/))) {
+                result.browserName = 'Samsung Internet';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/HuaweiBrowser\/([\d.]+)/))) {
+                result.browserName = '华为浏览器';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/MiuiBrowser\/([\d.]+)/))) {
+                result.browserName = '小米浏览器';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/(?:MQQBrowser|QQBrowser)\/([\d.]+)/))) {
+                result.browserName = 'QQ浏览器';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/UCBrowser\/([\d.]+)/))) {
+                result.browserName = 'UC浏览器';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/OPR\/([\d.]+)/))) {
+                result.browserName = 'Opera';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/FxiOS\/([\d.]+)/))) {
+                result.browserName = 'Firefox (iOS)';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/CriOS\/([\d.]+)/))) {
+                result.browserName = 'Chrome (iOS)';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/Firefox\/([\d.]+)/))) {
+                result.browserName = 'Firefox';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/Chrome\/([\d.]+)/)) && !/Chromium/.test(ua)) {
+                result.browserName = 'Chrome';
+                result.browserVersion = m[1];
+            } else if ((m = ua.match(/Chromium\/([\d.]+)/))) {
+                result.browserName = 'Chromium';
+                result.browserVersion = m[1];
+            } else if (/Version\/([\d.]+).*Safari\//.test(ua)) {
+                m = ua.match(/Version\/([\d.]+)/);
+                result.browserName = 'Safari';
+                result.browserVersion = m ? m[1] : '-';
+            } else if ((m = ua.match(/MSIE ([\d.]+)/)) || /Trident/.test(ua)) {
+                result.browserName = 'Internet Explorer';
+                result.browserVersion = m ? m[1] : ((ua.match(/rv:([\d.]+)/) || [])[1] || '-');
+            }
+
+            // ---- Engine detection ----
+            try {
+                if (/Gecko\/\d+/.test(ua) && /Firefox\//.test(ua)) {
+                    result.engineName = 'Gecko';
+                    result.engineVersion = result.browserVersion;
+                } else if ((m = ua.match(/AppleWebKit\/([\d.]+)/))) {
+                    result.engineVersion = m[1];
+                    result.engineName = /Chrome\/|Edg|OPR\/|SamsungBrowser|Chromium/.test(ua) ? 'Blink' : 'WebKit';
+                } else if ((m = ua.match(/Trident\/([\d.]+)/))) {
+                    result.engineName = 'Trident';
+                    result.engineVersion = m[1];
+                }
+            } catch (e) {
+                // keep defaults
+            }
+
+            // ---- Device type fallback ----
+            if (!result.isMobile && /Mobi/.test(ua)) {
+                result.deviceType = 'Mobile';
+                result.isMobile = true;
+            }
+
+            return result;
+        } catch (e) {
+            return defaults;
+        }
+    }
+
+    function renderInfoItem(container, label, value) {
+        try {
+            if (!container) {
+                return;
+            }
+            const item = document.createElement('div');
+            item.className = 'item';
+
+            const labelSpan = document.createElement('span');
+            labelSpan.className = 'label';
+            labelSpan.textContent = label;
+
+            const badge = document.createElement('span');
+            badge.className = 'badge value';
+            badge.textContent = value === undefined || value === null || value === '' ? '-' : String(value);
+
+            item.appendChild(labelSpan);
+            item.appendChild(badge);
+            container.appendChild(item);
+        } catch (e) {
+            // ignore rendering failure for a single item
+        }
+    }
+
+    function renderInfoGroup(containerId, items) {
+        try {
+            const container = document.getElementById(containerId);
+            if (!container || !items) {
+                return;
+            }
+            items.forEach(function (entry) {
+                try {
+                    renderInfoItem(container, entry.label, entry.value);
+                } catch (e) {
+                    // ignore single entry failure
+                }
+            });
+        } catch (e) {
+            // ignore whole group failure
+        }
     }
 
     function supportSharedArrayBuffer() {
@@ -230,6 +930,186 @@
         }
     }
 
+    // ---------- rendering (no framework, plain DOM) ----------
+
+    function renderItem(container, label, value) {
+        try {
+            if (!container) {
+                return null;
+            }
+            const item = document.createElement('div');
+            item.className = 'item';
+
+            const labelSpan = document.createElement('span');
+            labelSpan.className = 'label';
+            labelSpan.textContent = label;
+
+            const badge = document.createElement('span');
+            badge.className = 'badge pending';
+            badge.textContent = '...';
+
+            item.appendChild(labelSpan);
+            item.appendChild(badge);
+            container.appendChild(item);
+
+            updateBadge(badge, value);
+
+            return badge;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function updateBadge(badge, value) {
+        try {
+            if (!badge) {
+                return;
+            }
+            if (value && typeof value.then === 'function') {
+                badge.className = 'badge pending';
+                badge.textContent = '...';
+                value.then(function (result) {
+                    setBadgeResult(badge, !!result);
+                }).catch(function () {
+                    setBadgeResult(badge, false);
+                });
+            } else {
+                setBadgeResult(badge, !!value);
+            }
+        } catch (e) {
+            setBadgeResult(badge, false);
+        }
+    }
+
+    function setBadgeResult(badge, result) {
+        try {
+            if (!badge) {
+                return;
+            }
+            badge.className = 'badge ' + (result ? 'true' : 'false');
+            badge.textContent = String(result);
+        } catch (e) {
+            // ignore
+        }
+    }
+
+    function safeRun(fn) {
+        try {
+            return fn();
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function renderGroup(containerId, items) {
+        try {
+            const container = document.getElementById(containerId);
+            if (!container || !items) {
+                return;
+            }
+            items.forEach(function (entry) {
+                try {
+                    renderItem(container, entry.label, safeRun(entry.fn));
+                } catch (e) {
+                    // ignore single entry failure
+                }
+            });
+        } catch (e) {
+            // ignore whole group failure
+        }
+    }
+
+    try {
+        const uaCard = document.getElementById('uaCard');
+        if (uaCard) {
+            uaCard.textContent = 'UA: ' + navigator.userAgent;
+        }
+    } catch (e) {
+        // ignore
+    }
+
+    const uaInfo = parseUserAgent(navigator.userAgent);
+    renderInfoGroup('uaInfoGrid', [
+        { label: '浏览器 (Browser)', value: uaInfo.browserName },
+        { label: '浏览器版本 (Version)', value: uaInfo.browserVersion },
+        { label: '渲染引擎 (Engine)', value: uaInfo.engineName },
+        { label: '引擎版本 (Engine Version)', value: uaInfo.engineVersion },
+        { label: '操作系统 (OS)', value: uaInfo.osName },
+        { label: '系统版本 (OS Version)', value: uaInfo.osVersion },
+        { label: '设备类型 (Device Type)', value: uaInfo.deviceType },
+        { label: '是否移动设备 (Is Mobile)', value: uaInfo.isMobile ? '是 (Yes)' : '否 (No)' },
+        { label: '平台 (Platform)', value: safeRun(function () { return navigator.platform; }) },
+        { label: '语言 (Language)', value: safeRun(function () { return navigator.language; }) },
+        { label: 'CPU 核心数 (hardwareConcurrency)', value: safeRun(function () { return navigator.hardwareConcurrency; }) },
+        { label: '屏幕分辨率 (Screen)', value: safeRun(function () { return window.screen ? window.screen.width + ' x ' + window.screen.height : '-'; }) },
+        { label: '像素比 (devicePixelRatio)', value: safeRun(function () { return window.devicePixelRatio; }) },
+        { label: '触摸点数 (maxTouchPoints)', value: safeRun(function () { return navigator.maxTouchPoints; }) }
+    ]);
+
+    renderGroup('basicGrid', [
+        { label: 'ASM', fn: checkAsmJS },
+        { label: 'WASM', fn: checkWebAssembly },
+        { label: 'SIMD', fn: checkSIMD },
+        { label: 'Worker', fn: checkWorker },
+        { label: 'Fetch', fn: checkFetch },
+        { label: 'Blob', fn: checkBlob },
+        { label: 'ArrayBuffer', fn: checkArrayBuffer },
+        { label: 'ReadableStream', fn: checkReadableStream },
+        { label: 'ReadableStreamBody', fn: checkReadableStreamBody },
+        { label: 'WebGL', fn: checkWebGL },
+        { label: 'AudioContext', fn: checkAudioContext },
+        { label: 'OffscreenCanvas', fn: checkOffscreenCanvas },
+        { label: 'SharedArrayBuffer', fn: supportSharedArrayBuffer }
+    ]);
+
+    renderGroup('mediaSourceGrid', [
+        { label: 'MediaSource-H264', fn: checkSupportMSEH264 },
+        { label: 'MediaSource-H265', fn: checkSupportMSEHevc },
+        { label: 'MediaSource-AV1', fn: checkSupportMSEAV1 },
+        { label: 'MediaSource-VP9', fn: checkSupportMSEVP9 },
+        { label: 'ManagedMediaSource', fn: checkManagedMediaSource }
+    ]);
+
+    renderGroup('nativePlaybackGrid', [
+        { label: 'canPlay H264', fn: checkCanPlayH264 },
+        { label: 'canPlay H265/HEVC', fn: checkCanPlayHevc },
+        { label: 'canPlay AV1', fn: checkCanPlayAV1 },
+        { label: 'canPlay VP9', fn: checkCanPlayVP9 },
+        { label: 'canPlay AAC', fn: checkCanPlayAAC },
+        { label: 'canPlay MP3', fn: checkCanPlayMP3 },
+        { label: 'canPlay Opus', fn: checkCanPlayOpus }
+    ]);
+
+    renderGroup('decoderGrid', [
+        { label: 'VideoDecoder', fn: checkVideoDecoder },
+        { label: 'AudioDecoder', fn: checkAudioDecoder }
+    ]);
+
+    renderGroup('encoderGrid', [
+        { label: 'VideoEncoder', fn: checkVideoEncoder },
+        { label: 'AudioEncoder', fn: checkAudioEncoder },
+        { label: 'AACEncoder', fn: checkAACEncoder },
+        { label: 'AVCEncoder', fn: checkAVCEncoder },
+        { label: 'HVCEncoder', fn: checkHVCEncoder }
+    ]);
+
+    renderGroup('networkDeviceGrid', [
+        { label: 'WebSocket', fn: checkWebSocket },
+        { label: 'RTCPeerConnection (WebRTC)', fn: checkRTCPeerConnection },
+        { label: 'WebTransport', fn: checkWebTransport },
+        { label: 'getUserMedia', fn: checkGetUserMedia },
+        { label: 'MediaRecorder', fn: checkMediaRecorder }
+    ]);
+
+    renderGroup('playbackEnhanceGrid', [
+        { label: 'AudioWorklet', fn: checkAudioWorklet },
+        { label: 'MediaCapabilities', fn: checkMediaCapabilities },
+        { label: 'requestVideoFrameCallback', fn: checkRequestVideoFrameCallback },
+        { label: 'PictureInPicture', fn: checkPictureInPicture },
+        { label: 'Fullscreen', fn: checkFullscreen },
+        { label: 'ImageBitmap', fn: checkImageBitmap },
+        { label: 'ScreenWakeLock', fn: checkScreenWakeLock }
+    ]);
 </script>
 
 <script>
@@ -237,64 +1117,207 @@
     const codecs = ["avc1.64002A", "hev1.1.6.L123.b0"];
     const accelerations = ["prefer-hardware", "prefer-software"];
     let configs = [];
-    async function run() {
-        for (const codec of codecs) {
-            for (const acceleration of accelerations) {
-                configs.push({
-                    codec,
-                    hardwareAcceleration: acceleration,
-                    codedWidth: 1920,
-                    codedHeight: 1080,
-                });
+
+    function renderConfigMessage(listId, message, kind) {
+        try {
+            const list = document.getElementById(listId);
+            if (!list) {
+                return;
             }
-        }
-
-        for (const config of configs) {
-            const support = await VideoDecoder.isConfigSupported(config);
-            const paragraph = document.createElement('p');
-
-            // 创建文本节点
-            const textNode = document.createTextNode(`VideoDecoder's config ${JSON.stringify(support.config)} support: ${support.supported}`);
-
-            // 将文本节点添加到 <p> 元素中
-            paragraph.appendChild(textNode);
-
-            // 将 <p> 元素插入到 <body> 元素的末尾
-            document.body.appendChild(paragraph);
-
-        }
-
-        configs = [];
-        for (const codec of codecs) {
-            for (const acceleration of accelerations) {
-                configs.push({
-                    codec,
-                    hardwareAcceleration: acceleration,
-                    width: 1280,
-                    height: 720,
-                    bitrate: 2_000_000,
-                    bitrateMode: "constant",
-                    framerate: 30,
-                    not_supported_field: 123,
-                });
-            }
-        }
-
-        for (const config of configs) {
-            const support = await VideoEncoder.isConfigSupported(config);
-            const paragraph = document.createElement('p');
-
-            // 创建文本节点
-            const textNode = document.createTextNode(`VideoEncoder's config ${JSON.stringify(support.config)} support: ${support.supported}`);
-
-            // 将文本节点添加到 <p> 元素中
-            paragraph.appendChild(textNode);
-
-            // 将 <p> 元素插入到 <body> 元素的末尾
-            document.body.appendChild(paragraph);
+            const item = document.createElement('div');
+            item.className = 'config-item ' + (kind || 'unsupported');
+            const text = document.createElement('span');
+            text.className = 'config-text';
+            text.textContent = message;
+            item.appendChild(text);
+            list.appendChild(item);
+        } catch (e) {
+            // ignore rendering failure
         }
     }
-    run();
+
+    function formatHardwareAcceleration(value) {
+        try {
+            const map = {
+                'prefer-hardware': { text: '硬解码 (prefer-hardware)', cls: 'hardware' },
+                'prefer-software': { text: '软解码 (prefer-software)', cls: 'software' },
+                'no-preference': { text: '无偏好 (no-preference)', cls: 'no-preference' }
+            };
+            return map[value] || { text: String(value), cls: 'no-preference' };
+        } catch (e) {
+            return { text: '-', cls: 'no-preference' };
+        }
+    }
+
+    function shallowCopy(obj) {
+        const copy = {};
+        try {
+            if (!obj) {
+                return copy;
+            }
+            if (typeof Object.assign === 'function') {
+                return Object.assign({}, obj);
+            }
+            for (const key in obj) {
+                if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                    copy[key] = obj[key];
+                }
+            }
+            return copy;
+        } catch (e) {
+            return copy;
+        }
+    }
+
+    function appendConfigItem(list, config, supported, type) {
+        try {
+            if (!list) {
+                return;
+            }
+            const item = document.createElement('div');
+            item.className = 'config-item ' + (supported ? 'supported' : 'unsupported');
+
+            const main = document.createElement('div');
+            main.className = 'config-main';
+
+            const header = document.createElement('div');
+            header.className = 'config-header';
+
+            const codec = config && config.codec;
+            if (codec) {
+                const codecTag = document.createElement('span');
+                codecTag.className = 'codec-tag';
+                codecTag.textContent = '格式 ' + codec;
+                header.appendChild(codecTag);
+            }
+
+            if (type) {
+                const typeTag = document.createElement('span');
+                typeTag.className = 'type-tag ' + type;
+                typeTag.textContent = type === 'decoder' ? '解码器 VideoDecoder' : '编码器 VideoEncoder';
+                header.appendChild(typeTag);
+            }
+
+            if (config && config.hardwareAcceleration) {
+                const hw = formatHardwareAcceleration(config.hardwareAcceleration);
+                const hwTag = document.createElement('span');
+                hwTag.className = 'hw-tag ' + hw.cls;
+                hwTag.textContent = hw.text;
+                header.appendChild(hwTag);
+            }
+
+            main.appendChild(header);
+
+            const fields = document.createElement('div');
+            fields.className = 'config-fields';
+
+            const rest = shallowCopy(config);
+            delete rest.codec;
+            delete rest.hardwareAcceleration;
+            Object.keys(rest).forEach(function (key) {
+                try {
+                    const field = document.createElement('span');
+                    field.className = 'config-field';
+
+                    const keySpan = document.createElement('span');
+                    keySpan.className = 'field-key';
+                    keySpan.textContent = key;
+
+                    field.appendChild(keySpan);
+                    field.appendChild(document.createTextNode(String(rest[key])));
+                    fields.appendChild(field);
+                } catch (e) {
+                    // ignore single field failure
+                }
+            });
+            main.appendChild(fields);
+
+            item.appendChild(main);
+
+            const badge = document.createElement('span');
+            badge.className = 'config-badge';
+            badge.textContent = supported ? 'supported' : 'unsupported';
+            item.appendChild(badge);
+
+            list.appendChild(item);
+        } catch (e) {
+            // ignore rendering failure for this item
+        }
+    }
+
+    async function run() {
+        try {
+            const decoderList = document.getElementById('decoderConfigList');
+            if (typeof window.VideoDecoder !== 'function') {
+                renderConfigMessage('decoderConfigList', '当前浏览器不支持 VideoDecoder', 'unsupported');
+            } else {
+                configs = [];
+                for (const codec of codecs) {
+                    for (const acceleration of accelerations) {
+                        configs.push({
+                            codec,
+                            hardwareAcceleration: acceleration,
+                            codedWidth: 1920,
+                            codedHeight: 1080,
+                        });
+                    }
+                }
+
+                for (const config of configs) {
+                    try {
+                        const support = await VideoDecoder.isConfigSupported(config);
+                        appendConfigItem(decoderList, support.config, support.supported, 'decoder');
+                    } catch (e) {
+                        renderConfigMessage('decoderConfigList', `config: ${JSON.stringify(config)}  error: ${(e && e.message) || e}`, 'unsupported');
+                    }
+                }
+            }
+        } catch (e) {
+            renderConfigMessage('decoderConfigList', '检测 VideoDecoder 时发生异常: ' + ((e && e.message) || e), 'unsupported');
+        }
+
+        try {
+            const encoderList = document.getElementById('encoderConfigList');
+            if (typeof window.VideoEncoder !== 'function') {
+                renderConfigMessage('encoderConfigList', '当前浏览器不支持 VideoEncoder', 'unsupported');
+            } else {
+                configs = [];
+                for (const codec of codecs) {
+                    for (const acceleration of accelerations) {
+                        configs.push({
+                            codec,
+                            hardwareAcceleration: acceleration,
+                            width: 1280,
+                            height: 720,
+                            bitrate: 2_000_000,
+                            bitrateMode: "constant",
+                            framerate: 30,
+                            not_supported_field: 123,
+                        });
+                    }
+                }
+
+                for (const config of configs) {
+                    try {
+                        const support = await VideoEncoder.isConfigSupported(config);
+                        appendConfigItem(encoderList, support.config, support.supported, 'encoder');
+                    } catch (e) {
+                        renderConfigMessage('encoderConfigList', `config: ${JSON.stringify(config)}  error: ${(e && e.message) || e}`, 'unsupported');
+                    }
+                }
+            }
+        } catch (e) {
+            renderConfigMessage('encoderConfigList', '检测 VideoEncoder 时发生异常: ' + ((e && e.message) || e), 'unsupported');
+        }
+    }
+
+    run().catch(function (e) {
+        try {
+            console.error('check-support run() failed:', e);
+        } catch (err) {
+            // ignore
+        }
+    });
 
 </script>
 </body>
